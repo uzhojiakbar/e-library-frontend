@@ -1,11 +1,24 @@
-# E-Library  || Nammqi
+# Online Open Library || NamMQI
 
-# Project Main components
+# Project components
 
-## Navbar (Logo, Search Books, Login to account)
-## 
+<b>======= Navbar =========</b>
 
+<pre>    - Logo</pre>
+<pre>    - Search Books</pre>
+<pre>    - Change Language</pre>
+<pre>    - Login to account</pre>
 
+<b>================</b>
 
-### Project owner: https://t.me/anonim_opisis (Murodillayev Hojakbar)
-### Project started: 27.02.2024
+# File Configuration
+
+<b>======= Mock Info.js file =========</b>
+
+<pre>   - Info.js file configuration</pre>
+<pre>   - title - HTML Format</pre>
+<pre>   - SearchPlaceholder - Text</pre>
+
+#### Project owner: https://t.me/anonim_opisis (Murodillayev Hojakbar)
+
+#### Project started: 27.02.2024

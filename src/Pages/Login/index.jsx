@@ -67,7 +67,7 @@ const Login = () => {
 
   //
 
-  const SignIn = async (mail, psw) => {
+  const SignIn = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, pass);
       localStorage.setItem("login", email);

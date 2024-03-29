@@ -4,8 +4,8 @@ import { getDocs, collection } from "firebase/firestore";
 import { HomeContainer } from "./style";
 
 const Home = () => {
-  const [users, setUsers] = useState([]);
-  const [currentUser, setCurrentUser] = useState(localStorage.getItem("login"));
+  const [setUsers] = useState([]);
+  const [currentUser] = useState(localStorage.getItem("login"));
 
   const usersCollection = collection(db, "users");
   const getUsers = async () => {

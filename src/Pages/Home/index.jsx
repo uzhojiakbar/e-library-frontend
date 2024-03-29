@@ -4,8 +4,8 @@ import { getDocs, collection } from "firebase/firestore";
 import { HomeContainer } from "./style";
 
 const Home = () => {
-  const [setUsers] = useState([]);
-  const [currentUser] = useState(localStorage.getItem("login"));
+  const [users, setUsers] = useState([]);
+  // const [currentUser] = useState(localStorage.getItem("login"));
 
   const usersCollection = collection(db, "users");
   const getUsers = async () => {
@@ -20,11 +20,17 @@ const Home = () => {
 
   useEffect(() => {
     getUsers();
-    if (currentUser) {
-    }
-  }, []);
+    // if (currentUser) {
+    // }
+  });
 
-  return <HomeContainer></HomeContainer>;
+  return (
+    <HomeContainer>
+      {users.map((v) => (
+        <h1>{v.name}</h1>
+      ))}
+    </HomeContainer>
+  );
 };
 
 export default Home;

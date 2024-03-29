@@ -63,7 +63,7 @@ const Login = () => {
     };
 
     getUsers();
-  }, []);
+  });
 
   //
 

@@ -148,12 +148,8 @@ const Login = () => {
                 pass: `najsnajnJNAISQOIWJQIONSOA7${user.password}`,
                 type: "user",
               };
-              try {
-                CreateUser(userDemo);
-                SignUp(user.email, user.password);
-              } catch (error) {
-                setRegError("Qandaydur xatolik ketdi");
-              }
+              CreateUser(userDemo);
+              SignUp(user.email, user.password);
             } else {
               setRegError(`Tugilgan yilingiz ${year} dan katta`);
             }

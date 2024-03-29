@@ -8,7 +8,6 @@ const CircleButton = ({
   link = "/login",
   isLogin,
 }) => {
-  console.log(isLogin);
   return (
     <ButtonStyle>
       <NavLink

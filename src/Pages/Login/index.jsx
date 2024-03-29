@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   InputLogin,
   LoginContainer,
@@ -12,6 +12,7 @@ import {
 } from "./style";
 import {
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
 } from "firebase/auth";
@@ -24,17 +25,71 @@ import { useNavigate } from "react-router-dom";
 import avatar from "../../assets/img/profil.svg";
 import Title from "../../components/Title";
 
-const Login = ({ isLogin, setIsLogin }) => {
+import { db } from "../../config/firebase";
+import { getDocs, collection, addDoc } from "firebase/firestore";
+
+const Login = () => {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [issLogin, setissLogin] = useState(localStorage.getItem("login"));
 
-  const SignIn = async () => {
+  const [reg, setReg] = useState(true);
+  const [regError, setRegError] = useState("");
+
+  const [user, setUser] = useState({
+    date: 2007,
+    coins: 100,
+    email: "uzhojiakbar3@gmail.com",
+    name: "Murodillayev Hojiakbar",
+    type: "user",
+    password: "",
+    rePassword: "",
+  });
+
+  // *GET USER
+  const [users, setUsers] = useState([]);
+
+  const usersCollection = collection(db, "users");
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const data = await getDocs(usersCollection);
+        const getData = data.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setUsers(getData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getUsers();
+  }, []);
+
+  //
+
+  const SignIn = async (mail, psw) => {
     try {
-      await createUserWithEmailAndPassword(auth, email, pass);
+      await signInWithEmailAndPassword(auth, email, pass);
       localStorage.setItem("login", email);
       setissLogin(localStorage.setItem("login", email));
+      document.location.reload();
     } catch (error) {
+      console.error(error);
+      if (error.code === "auth/invalid-credential") {
+        setRegError("Login yoki Parol xato");
+      } else {
+        setRegError("Qandaydur xato ketdi");
+      }
+    }
+  };
+
+  const SignUp = async (mail, password) => {
+    try {
+      await createUserWithEmailAndPassword(auth, mail, password);
+      localStorage.setItem("login", mail);
+      setissLogin(localStorage.setItem("login", mail));
+    } catch (error) {
+      setRegError("Qandaydur xatolik ketdi!");
       console.error(error);
     }
     document.location.reload();
@@ -65,6 +120,57 @@ const Login = ({ isLogin, setIsLogin }) => {
     event.preventDefault();
   };
 
+  const CreateUser = async (user) => {
+    try {
+      await addDoc(usersCollection, user);
+    } catch (error) {
+      setRegError("Qandaydur xatolik");
+      console.log(error);
+    }
+  };
+
+  const RegNewUser = () => {
+    setRegError("");
+    const filterEmail = users.map((v) => v.email);
+    const Date1 = new Date();
+    const year = Date1.getFullYear();
+
+    if (user.email && user.date && user.name && user.password) {
+      if (!filterEmail.includes(user.email)) {
+        if (user.password.length >= 5) {
+          if (user.password === user.rePassword) {
+            if (user.date < year && user.date > 0) {
+              let userDemo = {
+                coins: 100,
+                date: user.date,
+                email: user.email,
+                name: user.name,
+                pass: `najsnajnJNAISQOIWJQIONSOA7${user.password}`,
+                type: "user",
+              };
+              try {
+                CreateUser(userDemo);
+                SignUp(user.email, user.password);
+              } catch (error) {
+                setRegError("Qandaydur xatolik ketdi");
+              }
+            } else {
+              setRegError(`Tugilgan yilingiz ${year} dan katta`);
+            }
+          } else {
+            setRegError("Parollar Mos emas!");
+          }
+        } else {
+          setRegError("Parol juda qisqa, minimal 6 ta harf bolsin");
+        }
+      } else {
+        setRegError("Email oldin kiritilgan!");
+      }
+    } else {
+      setRegError("Barcha maydonlarni to'ldiring");
+    }
+  };
+
   const navigate = useNavigate();
   return (
     <>
@@ -85,11 +191,11 @@ const Login = ({ isLogin, setIsLogin }) => {
             Chiqish
           </div>
         </LoginPage>
-      ) : (
+      ) : reg ? (
         <LoginPage>
           <LoginPageStyle>
             <LoginPageHeader>
-              <Title nav={"/"} title={"Ro'yxatdan o'tish Kirish"} />
+              <Title nav={"/"} title={"Hisobga Kirish"} />
             </LoginPageHeader>
             <LoginPageForm onSubmit={(e) => onSubmit(e)}>
               <InputLogin
@@ -115,6 +221,66 @@ const Login = ({ isLogin, setIsLogin }) => {
                 <div className="txt">Google orqali kirish</div>
               </LoginWithPopupButton>
             </LoginPageSignInFast>
+            <p>
+              Hisobingiz yo'qmi?
+              <span onClick={() => setReg(!reg)}> Ro'yxatdan o'tish</span>
+            </p>
+          </LoginPageStyle>
+        </LoginPage>
+      ) : (
+        <LoginPage>
+          <LoginPageStyle>
+            <LoginPageHeader>
+              <Title nav={"/"} title={"Ro'yxatdan o'tish "} />
+            </LoginPageHeader>
+            <LoginPageForm onSubmit={(e) => onSubmit(e)}>
+              <InputLogin
+                onChange={(e) => setUser({ ...user, name: e.target.value })}
+                placeholder="F.I.SH ni kiriting"
+                type="text"
+              />
+              <InputLogin
+                onChange={(e) => setUser({ ...user, date: e.target.value })}
+                placeholder="Tug'ilgan yilingizni kiriting"
+                type="number"
+              />
+              <InputLogin
+                onChange={(e) => setUser({ ...user, email: e.target.value })}
+                placeholder="Elektron pochtangizni kiriting"
+                type="email"
+              />
+              <InputLogin
+                onChange={(e) => setUser({ ...user, password: e.target.value })}
+                placeholder="Parol oylab toping"
+                type="password"
+              />
+              <InputLogin
+                onChange={(e) =>
+                  setUser({ ...user, rePassword: e.target.value })
+                }
+                placeholder="Parolni takrorlang"
+                type="password"
+              />
+
+              <button onClick={RegNewUser}>Royxatdan otish</button>
+
+              {regError.length ? <p>{regError}</p> : ""}
+
+              <p>
+                Hisobgiz Bormi? <span onClick={() => setReg(!reg)}>Kirish</span>
+              </p>
+            </LoginPageForm>
+            {/* <LoginPageSignInFast>
+              <LoginWithPopupButton
+                className="google"
+                onClick={SignInwithGoogle}
+              >
+                <div className="img">
+                  <img src={LogoGoogle} alt="google" />
+                </div>
+                <div className="txt">Google orqali kirish</div>
+              </LoginWithPopupButton>
+            </LoginPageSignInFast> */}
           </LoginPageStyle>
         </LoginPage>
       )}

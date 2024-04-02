@@ -6,13 +6,16 @@ const CircleButton = ({
   text = "Kirish1",
   icon = "fa-regular fa-user",
   link = "/login",
-  isLogin,
+  nonActive = true,
+  click,
 }) => {
   return (
-    <ButtonStyle>
+    <ButtonStyle onClick={click}>
       <NavLink
-        to={document.location.pathname === "link" ? 0 : link}
-        className={({ isActive }) => (isActive ? "active link" : "link")}
+        to={document.location.pathname === "link" ? false : link}
+        className={({ isActive }) =>
+          isActive && nonActive ? "active link" : "link"
+        }
       >
         <ButtonLogo>
           <i className={icon}></i>

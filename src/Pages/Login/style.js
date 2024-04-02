@@ -11,12 +11,26 @@ const media = {
 const background = keyframes`
   0%{
     opacity: 0;
+    backdrop-filter: blur(0);
   }
   100%{
     opacity: 1;
+    backdrop-filter: blur(5px);
   }
 `;
 
+const closeback = keyframes`
+  0%{
+    opacity: 1;
+    backdrop-filter: blur(5px);
+  }
+
+  100%{
+    opacity: 0;
+    display: none;
+    backdrop-filter: blur(0);
+  }
+`;
 const LoginContainer = styled.div`
   position: absolute;
   top: 0;
@@ -25,7 +39,7 @@ const LoginContainer = styled.div`
   height: 100vh;
 
   background-color: rgba(0, 0, 0, 0.5);
-  animation: ${background} 0.5s 1;
+  animation: ${({ close }) => (close ? closeback : background)} 0.3s 1;
   animation-fill-mode: forwards;
 `;
 

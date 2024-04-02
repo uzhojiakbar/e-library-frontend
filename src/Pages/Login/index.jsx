@@ -20,7 +20,6 @@ import {
 import { GoogleProvider, auth } from "../../config/firebase";
 
 import LogoGoogle from "../../assets/icon/google-logo.svg";
-import { useNavigate } from "react-router-dom";
 
 import avatar from "../../assets/img/profil.svg";
 import Title from "../../components/Title";
@@ -28,7 +27,7 @@ import Title from "../../components/Title";
 import { db } from "../../config/firebase";
 import { getDocs, collection, addDoc } from "firebase/firestore";
 
-const Login = () => {
+const Login = ({ setLoginMenu }) => {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [issLogin, setissLogin] = useState(localStorage.getItem("login"));
@@ -48,6 +47,7 @@ const Login = () => {
 
   // *GET USER
   const [users, setUsers] = useState([]);
+  const [close, setClose] = useState(0);
 
   const usersCollection = collection(db, "users");
 
@@ -167,10 +167,16 @@ const Login = () => {
     }
   };
 
-  const navigate = useNavigate();
+  const onClosePage = () => {
+    setClose(1);
+    setTimeout(() => {
+      setLoginMenu(false);
+    }, 100);
+  };
+
   return (
     <>
-      <LoginContainer onClick={() => navigate("/")}></LoginContainer>
+      <LoginContainer close={close} onClick={onClosePage}></LoginContainer>
       {issLogin !== "false" ? (
         <LoginPage login="true">
           <Title title={"Hisob malumotlari"} />

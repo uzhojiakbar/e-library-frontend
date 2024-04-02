@@ -11,8 +11,8 @@ const ButtonStyle = styled.div`
     cursor: pointer;
     gap: 5px;
 
-    width: 60px;
-    height: 60px;
+    width: 65px;
+    height: 65px;
     user-select: none;
 
     background-color: transparent;
@@ -20,6 +20,7 @@ const ButtonStyle = styled.div`
     padding: 2px;
     border-radius: 50%;
     text-decoration: none;
+    text-align: center;
 
     color: #001869;
 

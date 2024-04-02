@@ -6,13 +6,14 @@ import { Route, Routes } from "react-router-dom";
 import { NavbarMock } from "../mock/pages";
 import Login from "../Pages/Login";
 import Home from "../Pages/Home";
+import NotFound from "../Pages/NotFound";
 
 const Root = () => {
   const [isLogin, setIsLogin] = [localStorage.getItem("login")];
   return (
     <LibraryRoot className="root">
-      <Navbar />
-      <Routes>
+      <Navbar isLogin={isLogin} setIsLogin={setIsLogin} />
+      <Routes basename="/tothepoint_login">
         <Route
           path={"/"}
           element={<Home isLogin={isLogin} setIsLogin={setIsLogin} />}
@@ -21,7 +22,7 @@ const Root = () => {
           path={"/login"}
           element={<Login isLogin={isLogin} setIsLogin={setIsLogin} />}
         />
-        <Route path={"*"} element={<h1>Not Found</h1>} />
+        <Route path={"*"} element={<NotFound />} />
         {NavbarMock.map((v) => {
           return <Route key={v.id} path={v.path} element={v.element} />;
         })}

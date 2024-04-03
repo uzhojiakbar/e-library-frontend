@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   InputLogin,
   LoginContainer,
@@ -47,31 +47,40 @@ const Login = ({ setLoginMenu }) => {
 
   // *GET USER
   const [users, setUsers] = useState([]);
+  const [curuser, setCuruser] = useState(
+    JSON.parse(localStorage.getItem("user")) || {}
+  );
   const [close, setClose] = useState(0);
 
   const usersCollection = collection(db, "users");
 
-  useEffect(() => {
-    const getUsers = async () => {
-      try {
-        const data = await getDocs(usersCollection);
-        const getData = data.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setUsers(getData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const optimazation = (user) => {
+    if (user.email === email) {
+      setCuruser({ ...user, pass: "Ruxsat yoq" });
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+  };
 
-    getUsers();
-  });
-
-  //
+  const getUsers = async () => {
+    try {
+      const data = await getDocs(usersCollection);
+      const getData = data.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setUsers(getData);
+      await getData.map((v) => optimazation(v));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const SignIn = async () => {
     try {
+      await getUsers();
       await signInWithEmailAndPassword(auth, email, pass);
       localStorage.setItem("login", email);
+      localStorage.setItem("type", curuser?.type || "user");
       setissLogin(localStorage.setItem("login", email));
+      await getUsers();
+
       document.location.reload();
     } catch (error) {
       console.error(error);
@@ -97,6 +106,14 @@ const Login = ({ setLoginMenu }) => {
   const SignInwithGoogle = async () => {
     try {
       await signInWithPopup(auth, GoogleProvider);
+      await CreateUser({
+        coins: 100,
+        date: "undefined",
+        email: auth.currentUser?.email,
+        name: "undefined",
+        pass: `undefined`,
+        type: "user",
+      });
       localStorage.setItem("login", auth.currentUser?.email);
       setissLogin(localStorage.setItem("login", localStorage.getItem("login")));
       document.location.reload();
@@ -109,6 +126,8 @@ const Login = ({ setLoginMenu }) => {
     try {
       await signOut(auth);
       localStorage.setItem("login", false);
+      localStorage.setItem("type", "user");
+      localStorage.setItem("user", "{}");
       setissLogin(localStorage.setItem("login", false));
     } catch (error) {
       console.error(error);
@@ -123,14 +142,19 @@ const Login = ({ setLoginMenu }) => {
   const CreateUser = async (user) => {
     try {
       await addDoc(usersCollection, user);
+      await setCuruser({ ...user, pass: "Ruxsat yoq" });
+      await localStorage.setItem(
+        "user",
+        JSON.stringify({ ...user, pass: "Ruxsat yoq" })
+      );
     } catch (error) {
       setRegError("Qandaydur xatolik");
       console.log(error);
     }
   };
 
-  const RegNewUser = () => {
-    setRegError("");
+  const RegNewUser = async () => {
+    await getUsers();
     const filterEmail = users.map((v) => v.email);
     const Date1 = new Date();
     const year = Date1.getFullYear();
@@ -148,8 +172,8 @@ const Login = ({ setLoginMenu }) => {
                 pass: `najsnajnJNAISQOIWJQIONSOA7${user.password}`,
                 type: "user",
               };
-              CreateUser(userDemo);
-              SignUp(user.email, user.password);
+              await CreateUser(userDemo);
+              await SignUp(user.email, user.password);
             } else {
               setRegError(`Tugilgan yilingiz ${year} dan katta`);
             }
@@ -183,9 +207,17 @@ const Login = ({ setLoginMenu }) => {
           <Nav>
             <img src={auth.currentUser?.photoURL || avatar} alt="ReLoad site" />
             <Nav.ProfileInfo>
-              <p className="name">Murodillayev Hojiakbar</p>
-              <p className="job-email">Oddiy Foydaluvchi</p>
-              <p className="job-email">{auth.currentUser?.email}</p>
+              <p className="name">{curuser.name || "nomalum"}</p>
+              <p className="job-email">
+                {curuser?.type === "user"
+                  ? "Foydalanuvchi"
+                  : curuser?.type === "admin"
+                  ? "admin"
+                  : curuser?.type === "nazoratchi"
+                  ? "Nazoratchi"
+                  : "Nomalum"}
+              </p>
+              <p className="job-email">{curuser.email || "Nomalum"}</p>
             </Nav.ProfileInfo>
           </Nav>
           <div></div>

@@ -28,6 +28,7 @@ const FileUpload = () => {
     name: "",
     desc: "",
     path: "",
+    pics: [],
   });
 
   const [Picture, setPicture] = useState({
@@ -36,9 +37,7 @@ const FileUpload = () => {
     pic3: "",
   });
 
-  if (Picture.pic1) {
-    console.log(URL.createObjectURL(Picture.pic1));
-  }
+  const [uploadPrcnt, setUploadPrcnt] = useState([]);
 
   const nav = useNavigate();
 
@@ -63,11 +62,36 @@ const FileUpload = () => {
     }
 
     const fileLocaton = `files/${file[0].name}`;
+    const Pic1Locaton = `pics/${Picture?.pic1?.name}`;
+    const Pic2Locaton = `pics/${Picture?.pic2?.name}`;
+    const Pic3Locaton = `pics/${Picture?.pic3?.name}`;
     const fileRef = ref(storage, fileLocaton);
+    const Pic1Ref = ref(storage, Pic1Locaton);
+    const Pic2Ref = ref(storage, Pic2Locaton);
+    const Pic3Ref = ref(storage, Pic3Locaton);
 
     try {
+      await setUploadPrcnt(["Fayl yuklanmoqda", 0]);
       await uploadBytes(fileRef, file[0]);
-      await CreateDoc({ ...FileObj, path: fileLocaton, hidden: true });
+      await setUploadPrcnt(["Birinchi surat yuklanmoqda", 20]);
+      await uploadBytes(Pic1Ref, Picture?.pic1);
+      await setUploadPrcnt(["Ikkinchi surat yuklanoqda", 40]);
+      await uploadBytes(Pic2Ref, Picture?.pic2);
+      await setUploadPrcnt(["Uchinchi surat yuklanoqda", 60]);
+      await uploadBytes(Pic3Ref, Picture?.pic3);
+      await setUploadPrcnt(["Kitob nazoratchiga yuborilmoqda", 80]);
+      await CreateDoc({
+        ...FileObj,
+        path: fileLocaton,
+        hidden: true,
+        pics: [
+          `pics/${Picture?.pic1?.name || ""}`,
+          `pics/${Picture?.pic2?.name || ""}`,
+          `pics/${Picture?.pic3?.name || ""}`,
+        ],
+      });
+      await setUploadPrcnt(["Tayyor", 100]);
+      await onClose();
     } catch (err) {
       console.error(err);
     }
@@ -85,7 +109,11 @@ const FileUpload = () => {
     <FileUploadContainer close={close}>
       <FileUploadMain>
         <div className="header">
-          <div>Kitob Yuklash</div>
+          {uploadPrcnt[0] ? (
+            <div>{`${uploadPrcnt[0]}, ${uploadPrcnt[1]}%`}</div>
+          ) : (
+            <div>Kitob Yuklash</div>
+          )}
           <div onClick={onClose} className="close">
             x
           </div>
@@ -109,7 +137,7 @@ const FileUpload = () => {
                   setPicture({ ...Picture, pic1: e.target.files[0] })
                 }
                 type="file"
-                accept="images"
+                accept="image/*"
                 id="pic1"
               />
             </label>
@@ -131,7 +159,7 @@ const FileUpload = () => {
                     setPicture({ ...Picture, pic2: e.target.files[0] })
                   }
                   type="file"
-                  accept="images"
+                  accept="image/*"
                   id="pic2"
                 />
               </label>
@@ -152,7 +180,7 @@ const FileUpload = () => {
                     setPicture({ ...Picture, pic3: e.target.files[0] })
                   }
                   type="file"
-                  accept="images"
+                  accept="image/*"
                   id="pic3"
                 />
               </label>

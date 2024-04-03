@@ -179,6 +179,8 @@ const UploadPicture = styled.div`
     cursor: pointer;
     text-align: center;
 
+    border-radius: 10px;
+
     > .fa-image {
       font-size: 200%;
     }
@@ -228,6 +230,7 @@ const UploadPicture = styled.div`
 const PictureStyle = styled.div`
   background-image: url(${({ back }) => back});
   background-size: cover;
+  background-repeat: no-repeat;
 
   border: 1px solid gray;
   display: flex;
@@ -238,6 +241,8 @@ const PictureStyle = styled.div`
   cursor: pointer;
   text-align: center;
   height: 100%;
+
+  border-radius: 10px;
 
   ${media.mobileL} {
     height: 100%;

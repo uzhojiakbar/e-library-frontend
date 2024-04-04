@@ -38,6 +38,7 @@ const FileUploadContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 3;
 
   animation: ${({ close }) => (close ? CloseKey : Open)} 0.4s 1;
 `;

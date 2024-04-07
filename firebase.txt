@@ -1,0 +1,17 @@
+const FilesCollection = collection(db, "files");
+
+
+GET DOCS 
+    const BookCollection = collection(db, "files");
+    const data = await getDocs(BookCollection);
+    const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
+
+CREATE DOC
+    const FilesCollection = collection(db, "files");
+    await addDoc(FilesCollection, doc);
+
+
+UPLOAD FILE
+    const Pic1Ref = ref(storage, Pic1Locaton);
+    uploadBytes(Pic1Ref, Picture?.pic1);
+

@@ -9,6 +9,7 @@ import {
 } from "./style";
 import { db } from "../../config/firebase";
 import { NavLink } from "react-router-dom";
+import Admin from "../../components/Admin";
 
 const Home = ({ setCurrentBooks }) => {
   const [user] = useState(JSON.parse(localStorage.getItem("user")) || {});
@@ -30,15 +31,9 @@ const Home = ({ setCurrentBooks }) => {
 
   getBooks();
 
-  console.log(books);
-
   return (
     <HomeContainer>
-      {user?.type === "admin" ? (
-        <h1>ADMIN, sizga Vazifa tez kunda yuklanadi...</h1>
-      ) : (
-        ""
-      )}
+      {user?.type === "admin" ? <Admin /> : ""}
       <Container>
         {user?.type === "nazoratchi" ? (
           <>

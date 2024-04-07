@@ -249,7 +249,7 @@ const FileUpload = () => {
       <div className="main">
         <div className="title">Ro'yxatdan o'ting</div>
         <div className="info">
-          Kitoblarni yuklash va ballarni to'plash uchun platformamizdagi
+          Kitoblarni yuklash va ballarni to'plash uchun platformamizdan
           ro'yxatdan o'ting
         </div>
       </div>

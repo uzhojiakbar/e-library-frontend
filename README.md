@@ -1,13 +1,33 @@
-# Online Open Library || NamMQI
+<h1>Online Open Library || NamMQI</h1>
 
 # Project components
 
 <b>======= Navbar =========</b>
 
-<pre>    - Logo</pre>
-<pre>    - Search Books</pre>
-<pre>    - Change Language</pre>
-<pre>    - Login to account</pre>
+<pre>    - Return Home Page with Logo</pre>
+<pre>    - Search</pre>
+<pre>    - SignIn/SiginUp</pre>
+<pre>    - Upload Book</pre>
+
+<b>======= SIGNIN =========</b>
+
+<pre>    - Return Home Page with Logo</pre>
+<pre>    - enter email</pre>
+<pre>    - enter password</pre>
+<pre>    - login</pre>
+<pre>    - login with google</pre>
+<pre>    - return to SignUp</pre>
+
+<b>======= SIGNUP =========</b>
+
+<pre>    - Return Home Page with Logo</pre>
+<pre>    - enter full name</pre>
+<pre>    - age</pre>
+<pre>    - enter email</pre>
+<pre>    - enter password</pre>
+<pre>    - enter re-password</pre>
+<pre>    - singup</pre>
+<pre>    - return to SignIn</pre>
 
 <b>================</b>
 
@@ -15,10 +35,6 @@
 
 <b>======= Mock Info.js file =========</b>
 
-<pre>   - Info.js file configuration</pre>
-<pre>   - title - HTML Format</pre>
-<pre>   - SearchPlaceholder - Text</pre>
+###### Project owner: https://t.me/anonim_opisis (Murodillayev Hojakbar)
 
-#### Project owner: https://t.me/anonim_opisis (Murodillayev Hojakbar)
-
-#### Project started: 27.02.2024
+###### Project started: 30.02.2024

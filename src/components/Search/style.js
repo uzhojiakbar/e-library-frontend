@@ -66,4 +66,8 @@ const SearchIcon = styled.div`
   }
 `;
 
-export { SearchDesign, SearchInput, SearchIcon };
+const CategoryFilter = styled.div`
+
+`
+
+export { SearchDesign, SearchInput, SearchIcon, CategoryFilter };

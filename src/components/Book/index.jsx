@@ -4,7 +4,7 @@ import { BookInformation, Container, Images } from "./style";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/firebase";
 
-const Book = () => {
+const Book = ({ books, setBook }) => {
   const [user] = useState(JSON.parse(localStorage.getItem("user")) || {});
 
   const { id } = useParams();
@@ -14,18 +14,17 @@ const Book = () => {
   const [BookCurrent, setBookInfo] = useState(false);
   const navigate = useNavigate();
 
-  const getBooks = async () => {
+  const getBook = () => {
     if (!BookCurrent) {
-      try {
-        const docRef = doc(db, "files", id);
-        const data = await getDoc(docRef);
-
-        setBookInfo(data.data());
-      } catch (error) {}
+      books.filter((v) => {
+        if (v.id === id) {
+          setBookInfo(v)
+        }
+      })
     }
   };
 
-  getBooks();
+  getBook();
 
   const AcceptBook = async () => {
     const BookDoc = doc(db, "files", id);
@@ -34,7 +33,7 @@ const Book = () => {
   };
 
   return (
-    BookCurrent && (
+    BookCurrent ? (
       <Container>
         <Images>
           <div className="thumb">
@@ -45,7 +44,7 @@ const Book = () => {
                   src={`https://firebasestorage.googleapis.com/v0/b/ochiqkutubxona-d034a.appspot.com/o/pics%2F${v2.slice(
                     5
                   )}?alt=media&token=27b56b0f-821a-45ae-9ccb-f282a53987fd`}
-                  alt="rasim"
+                  alt="loading..."
                 />
               </div>
             ))}
@@ -82,6 +81,8 @@ const Book = () => {
         </BookInformation>
       </Container>
     )
+      :
+      <div>loading</div>
   );
 };
 

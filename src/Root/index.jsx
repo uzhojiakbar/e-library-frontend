@@ -87,7 +87,7 @@ const Root = () => {
         {/* Book Info Page */}
         <Route
           path="/book/:id"
-          element={<Book CurrentBooks={CurrentBooks} />}
+          element={<Book books={books} setBook={setBook} CurrentBooks={CurrentBooks} />}
         />
 
         {/* Login page (with route) */}

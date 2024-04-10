@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BookInformation, Container, Images } from "./style";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/firebase";
+import { ButtonLink } from "../ui/button-link";
 
-const Book = ({ books, setBook }) => {
+const Book = ({ id, books, setBook }) => {
   const [user] = useState(JSON.parse(localStorage.getItem("user")) || {});
 
-  const { id } = useParams();
 
   const [picid, setPicId] = useState(0);
 
@@ -17,7 +17,6 @@ const Book = ({ books, setBook }) => {
   const getBook = () => {
     if (!BookCurrent) {
       books.filter((v) => v.id === id ? setBookInfo(v) : '')
-
     }
   };
 
@@ -59,14 +58,16 @@ const Book = ({ books, setBook }) => {
           <div className="first">
             <div className="title">{BookCurrent?.name}</div>
             <div className="desc">{BookCurrent?.desc}</div>
-            <a
+            <ButtonLink
               href={`https://firebasestorage.googleapis.com/v0/b/ochiqkutubxona-d034a.appspot.com/o/files%2F${BookCurrent.path.slice(
                 6
               )}?alt=media&token=864fc05d-344c-4dd6-81f7-243b5451021b`}
-              className="button"
+              className="bg-slate-700 hover:bg-slate-600"
+              target="_blank"
+              variant="destructive"
             >
               Kitobni korish
-            </a>
+            </ButtonLink>
             {user?.type === "nazoratchi" ? (
               <button onClick={AcceptBook} className="button">
                 Ruhsat berish

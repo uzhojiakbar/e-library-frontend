@@ -212,10 +212,10 @@ const Login = ({ setLoginMenu }) => {
                 {curuser?.type === "user"
                   ? "Foydalanuvchi"
                   : curuser?.type === "admin"
-                  ? "admin"
-                  : curuser?.type === "nazoratchi"
-                  ? "Nazoratchi"
-                  : "Nomalum"}
+                    ? "admin"
+                    : curuser?.type === "nazoratchi"
+                      ? "Nazoratchi"
+                      : "Nomalum"}
               </p>
               <p className="job-email">{curuser.email || "Nomalum"}</p>
             </Nav.ProfileInfo>

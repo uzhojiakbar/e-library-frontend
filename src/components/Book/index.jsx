@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BookInformation, Container, Images } from "./style";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/firebase";
 
 const Book = ({ books, setBook }) => {
@@ -16,11 +16,8 @@ const Book = ({ books, setBook }) => {
 
   const getBook = () => {
     if (!BookCurrent) {
-      books.filter((v) => {
-        if (v.id === id) {
-          setBookInfo(v)
-        }
-      })
+      books.filter((v) => v.id === id ? setBookInfo(v) : '')
+
     }
   };
 

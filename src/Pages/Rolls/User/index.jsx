@@ -22,7 +22,7 @@ const User = ({ books = [] }) => {
                                 </CardText>
                             </ProductCard>
                         </DrawerTrigger>
-                        <DrawerContent className="pl-28" >
+                        <DrawerContent >
                             <Book id={v.id} books={books} />
                         </DrawerContent>
                     </Drawer>

@@ -19,7 +19,8 @@ const Container = styled.div`
   }
   ${media.tabletMax} {
     padding: 20px;
-    max-height: 90vh;
+    max-height: 80vh;
+    height: fit-content;
   }
   ${media.mobileL} {
     padding-top: 5px;

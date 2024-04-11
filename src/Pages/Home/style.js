@@ -46,7 +46,10 @@ const ProductCard = styled.div`
  
 `;
 const CardText = styled.div`
-  padding: 20px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 25px 16px 16px;
   @media (max-width: 450px) {
     padding: 7px;
   }
@@ -58,34 +61,33 @@ const CardText = styled.div`
     color: #001869;
     opacity: 0.8;
     @media (max-width: 930px) {
-      font-size: 20px;
+      font-size: 30px;
+      padding-top: 10px;
+      line-height: 30px;
     }
     @media (max-width: 800px) {
-      font-size: 17px;
+      font-size: 30px;
+      line-height: 30px;
     }
     @media (max-width: 530px) {
-      font-size: 25px;
+      font-size: 22px;
       line-height: 16px;
     }
   }
   p {
     font-style: normal;
     font-weight: 400;
-    font-size: 14px;
-    line-height: 21px;
+    font-size: 18px;
     color: rgba(0, 0, 0, 0.5);
     padding: 8px 0 4px;
     @media (max-width: 930px) {
-      font-size: 13px;
-      line-height: 19px;
+      font-size: 18px;
     }
     @media (max-width: 800px) {
-      font-size: 10px;
-      line-height: 15px;
+      font-size: 20px;
     }
     @media (max-width: 530px) {
-      font-size: 8px;
-      line-height: 12px;
+      line-height: 20px;
     }
   }
   .card-flex {

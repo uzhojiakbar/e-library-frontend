@@ -31,8 +31,8 @@ const Home = ({ setCurrentBooks, categories, setCategories, FilerCategories, boo
       : <HomeContainer>
         <ProductPage>
           {
-            [1, 2, 3, 4, 5, 6, 7, 8].map(() => {
-              return <div className="flex flex-col space-y-3 pt-18">
+            [1, 2, 3, 4, 5, 6, 7, 8].map((v) => {
+              return <div key={v} className="flex flex-col space-y-3 pt-18">
                 <Skeleton className="h-[250px] w-[250px] rounded-xl" />
                 <div className="space-y-2">
                   <Skeleton className="h-4 w-[250px]" />

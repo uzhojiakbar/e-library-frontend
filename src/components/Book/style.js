@@ -3,18 +3,32 @@ import { media } from "../../mock/media";
 
 const Container = styled.div`
   padding: 40px;
+  padding-left: 10%;
   display: flex;
+  align-items: center;
   gap: 40px;
-  height: 500px;
+  height: fit-content;
+  max-width: 1920px;
+  width: 100%;
+  margin: 10px auto;
 
   ${media.tablet} {
     flex-direction: column;
-    align-items: flex-start;
+    overflow: auto;
+    align-items: center;
   }
-
+  ${media.tabletMax} {
+    padding: 20px;
+    max-height: 90vh;
+  }
   ${media.mobileL} {
-    padding: 5px;
+    padding-top: 5px;
   }
+  ${media.mobileS} {
+    padding: 10px;
+    padding-top: 0;
+  }
+  
 `;
 const Images = styled.div`
   display: flex;
@@ -44,7 +58,7 @@ const Images = styled.div`
 
   ${media.tabletMax} {
     .currentPic img {
-      width: 350px;
+      width:  350px;
       height: 350px;
     }
 
@@ -60,6 +74,13 @@ const Images = styled.div`
 
     .thumb {
       flex-direction: row;
+    }
+  }
+
+  ${media.mobileS} {
+    img{
+      width:  100px;
+      height: 80px;
     }
   }
 `;
@@ -96,19 +117,20 @@ const BookInformation = styled.div`
   }
 
   .button {
-    background-color: rgb(82, 136, 193);
-    padding: 10px 15px;
+    padding: 15px 25px;
+    height: 50px;
     font-size: 18px;
     color: #ececec;
     text-decoration: none;
     border: 2px solid transparent;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
 
     &:hover {
-      background-color: #ececec;
-      border: 2px solid rgb(82, 136, 193);
-      color: rgb(82, 136, 193);
+      opacity: 0.9;
+    }
+    &:active {
+      opacity: 0.95;
     }
   }
   .buttons {

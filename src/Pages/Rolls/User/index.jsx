@@ -7,7 +7,7 @@ const User = ({ books = [] }) => {
         <ProductPage>
             {books.map((v) =>
                 !v.hidden && (
-                    <Drawer  >
+                    <Drawer key={v.id}>
                         <DrawerTrigger asChild>
                             <ProductCard
                                 url={`https://firebasestorage.googleapis.com/v0/b/ochiqkutubxona-d034a.appspot.com/o/pics%2F${v.pics[0].slice(
@@ -28,7 +28,7 @@ const User = ({ books = [] }) => {
                     </Drawer>
                 )
             )}
-        </ProductPage>
+        </ProductPage >
     )
 }
 

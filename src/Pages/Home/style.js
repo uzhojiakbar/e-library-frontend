@@ -12,12 +12,13 @@ const Container = styled.div`
 `;
 
 const ProductPage = styled.div`
-  padding: 32px 52px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 32px;
-  max-width: 1360px;
+
   margin: 0 auto;
+  gap: 40px;
+  padding: 20px 0;
+
   @media (max-width: 1100px) {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -32,20 +33,17 @@ const ProductPage = styled.div`
 `;
 const ProductCard = styled.div`
   background: #ffffff;
+  cursor: pointer;
 
   .img {
     width: 100%;
-    height: 45vh;
+    height: 300px;
     background-image: url(${({ url }) => url});
     background-size: cover;
     background-repeat: no-repeat;
   }
 
-  @media (max-width: 500px) {
-    .img {
-      height: 70vh;
-    }
-  }
+ 
 `;
 const CardText = styled.div`
   padding: 20px 16px 16px;

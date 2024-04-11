@@ -62,9 +62,8 @@ const Book = ({ id, books, setBook }) => {
               href={`https://firebasestorage.googleapis.com/v0/b/ochiqkutubxona-d034a.appspot.com/o/files%2F${BookCurrent.path.slice(
                 6
               )}?alt=media&token=864fc05d-344c-4dd6-81f7-243b5451021b`}
-              className="bg-slate-700 hover:bg-slate-600"
+              className="bg-slate-700 hover:bg-slate-600 button"
               target="_blank"
-              variant="destructive"
             >
               Kitobni korish
             </ButtonLink>

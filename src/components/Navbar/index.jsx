@@ -10,6 +10,7 @@ import { useLocation } from "react-router-dom";
 const Navbar = ({ isLogin, setIsLogin }) => {
   const [LoginMenu, setLoginMenu] = useState(false);
   const history = useLocation();
+
   return (
     <NavbarSt>
       <div className="malumot">

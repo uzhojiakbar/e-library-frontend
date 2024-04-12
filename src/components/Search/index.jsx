@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { SearchDesign, SearchIcon, SearchInput } from "./style";
 import { useNavigate } from "react-router-dom";
 

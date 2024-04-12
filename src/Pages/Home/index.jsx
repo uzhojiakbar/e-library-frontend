@@ -8,9 +8,11 @@ import Admin from "../Rolls/Admin";
 import Nazoratchi from "../Rolls/Nazoratchi";
 import User from "../Rolls/User";
 import { Skeleton } from "src/components/ui/skeleton";
+import { useParams } from "react-router-dom";
 
 
 const Home = ({ setCurrentBooks, categories, setCategories, FilerCategories, books = [], setBook }) => {
+  const query = useParams()
   const [user] = useState(JSON.parse(localStorage.getItem("user")) || {});
   return (
     books.length ? <HomeContainer>
@@ -22,7 +24,7 @@ const Home = ({ setCurrentBooks, categories, setCategories, FilerCategories, boo
           ""
         )}
         {user?.type === "user" || user?.type === undefined ? (
-          <User books={books} />
+          <User q={query.q} books={books} />
         ) : (
           ""
         )}

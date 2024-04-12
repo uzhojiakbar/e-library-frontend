@@ -1,33 +1,34 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { SearchDesign, SearchIcon, SearchInput } from "./style";
+import { useNavigate } from "react-router-dom";
 
 const Search = () => {
-  const [text, setText] = useState("");
-
+  const searchRef = useRef("")
+  const nav = useNavigate()
   const OnSearch = () => {
-    console.log(text);
+    let text = searchRef.current.value
+    console.log(document.location.pathname);
+    if (text.length) {
+      nav(`search/${searchRef.current.value}`)
+    } else {
+      if (document.location.pathname !== '/') {
+        nav(`/`)
+      }
+    }
   };
-  const clearText = () => {
-    setText("");
-  };
+
   return (
     <SearchDesign>
       <SearchInput
         onKeyDown={(e) => e.key === "Enter" && OnSearch()}
-        onChange={(e) => setText(e.target.value.toLowerCase())}
-        value={text}
+        // onChange={(e) => setText(e.target.value.toLowerCase())}
+        ref={searchRef}
         type="text"
         placeholder="Qidiruv..."
       />
-      {text.length ? (
-        <SearchIcon onClick={clearText}>
-          <i className="fa-solid fa-x"></i>
-        </SearchIcon>
-      ) : (
-        <SearchIcon onClick={OnSearch}>
-          <i className="fa-solid fa-magnifying-glass"></i>
-        </SearchIcon>
-      )}
+      <SearchIcon onClick={OnSearch}>
+        <i className="fa-solid fa-magnifying-glass"></i>
+      </SearchIcon>
     </SearchDesign>
   );
 };

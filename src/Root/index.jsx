@@ -89,6 +89,17 @@ const Root = () => {
           path="/book/:id"
           element={<Book books={books} setBook={setBook} CurrentBooks={CurrentBooks} />}
         />
+        <Route
+          path="/search/:q"
+          element={<Home
+            FilerCategories={FilerCategories}
+            categories={categories}
+            setCategories={setCategories}
+            setCurrentBooks={setCurrentBooks}
+            books={books}
+            setBook={setBook}
+          />}
+        />
 
         {/* Login page (with route) */}
 

@@ -2,11 +2,11 @@ import React from 'react'
 import { CardText, ProductCard, ProductPage } from '../../Home/style'
 import { Drawer, DrawerContent, DrawerTrigger } from "../../../components/ui/drawer";
 import Book from '../../../components/Book';
-const User = ({ books = [] }) => {
+const User = ({ books = [], q = "" }) => {
     return (
         <ProductPage>
             {books.map((v) =>
-                !v.hidden && (
+                !v.hidden && v.name.toLowerCase().includes(q) && (
                     <Drawer key={v.id}>
                         <DrawerTrigger asChild>
                             <ProductCard

@@ -41,26 +41,26 @@ const LoginContainer = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
   animation: ${({ close }) => (close ? closeback : background)} 0.3s 1;
   animation-fill-mode: forwards;
+
+  
 `;
 
 const LoginPage = styled.div`
-  position: fixed;
-
+  position: ${({ mobile }) => mobile === "mobile" ? "flex" : "fixed"};
   right: 40px;
   top: 20px;
-  width: 400px;
-  height: ${({ login }) => (login === "true" ? "320px" : "500px")};
+  width: ${({ mobile }) => mobile === "mobile" ? "100%" : "400px"};
+  min-height: ${({ login, mobile }) => (mobile === "mobile" ? "70vh" : login === "true" ? "320px" : "600px")};
   background: rgb(255, 255, 255);
   border-radius: 16px;
   padding: 25px 20px;
-  z-index: 999;
+  z-index: 10;
   overflow: auto;
   display: flex;
   flex-direction: column;
   -webkit-box-pack: justify;
   justify-content: space-between;
 
-  width: 400px;
 
   animation: ${background} 0.5s 1;
   animation-fill-mode: forwards;
@@ -93,21 +93,13 @@ const LoginPage = styled.div`
   }
 
   ${media.tablet} {
-    width: 350px;
-    height: ${({ login }) => (login === "true" ? "320px" : "480px")};
     padding: 20px 15px;
   }
   ${media.mobileM} {
-    width: 320px;
-    height: ${({ login }) => (login === "true" ? "320px" : "480px")};
-
     padding: 12px 15px;
     margin: 0 auto;
-    left: 7%;
   }
   ${media.mobileS} {
-    width: 310px;
-    left: 1.5%;
   }
 `;
 

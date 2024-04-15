@@ -5,11 +5,9 @@ import Search from "../Search";
 import CircleButton from "../Generic/CircleButton";
 import { NavbarMock } from "../../mock/pages";
 import Login from "../../Pages/Login";
-import { useLocation } from "react-router-dom";
 
 const Navbar = ({ isLogin, setIsLogin }) => {
   const [LoginMenu, setLoginMenu] = useState(false);
-  const history = useLocation();
 
   return (
     <NavbarSt>
@@ -17,13 +15,15 @@ const Navbar = ({ isLogin, setIsLogin }) => {
         <Title />
         <Search />
         <ButtonsNav>
-          <CircleButton
+          {/* <CircleButton
             nonActive={false}
             link={history.pathname}
             click={() => setLoginMenu(!LoginMenu)}
             text={"Profil"}
             icon={"fa-regular fa-user"}
-          />
+          /> */}
+
+          <Login />
           {LoginMenu ? (
             <Login
               setLoginMenu={setLoginMenu}

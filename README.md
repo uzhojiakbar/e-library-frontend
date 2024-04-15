@@ -38,3 +38,33 @@
 ###### Project owner: https://t.me/anonim_opisis (Murodillayev Hojakbar)
 
 ###### Project started: 30.02.2024
+
+<!--
+    Nom
+    muallif
+    yil
+    nashriyot
+    ctg
+    decs
+
+    name: "",
+    path: "",
+    year: "",
+    muallif: "",
+    nashriyot: "",
+    ctg: "",
+    desc: "",
+    pics: [],
+
+    {
+        "name": "",
+        "path": "",
+        "year": "",
+        "muallif": "",
+        "nashriyot": "",
+        "ctg": "",
+        "desc": "",
+        "pics": []
+    }
+
+ -->

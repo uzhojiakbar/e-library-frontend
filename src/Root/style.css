@@ -58,6 +58,15 @@ body {
   }
 }
 
+.he {
+  z-index: 999 !important;
+}
+
+.hee {
+  z-index: 999 !important;
+  display: block;
+}
+
 
 /* *SHADCN */
 

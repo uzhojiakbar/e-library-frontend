@@ -27,7 +27,9 @@ const CloseKey = keyframes`
 const FileUploadContainer = styled.div`
   /* padding: var(--padding); */
   width: 100vw;
+  min-width: 300px;
   height: 100vh;
+  min-height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
 
@@ -45,6 +47,7 @@ const FileUploadContainer = styled.div`
 
 const FileUploadMain = styled.div`
   width: 800px;
+  
   height: 90vh;
   max-height: 700px;
 
@@ -64,6 +67,13 @@ const FileUploadMain = styled.div`
     justify-content: space-between;
     align-items: center;
 
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 99;
+
+    background-color: white;
+    
     > div {
       color: rgb(0, 24, 105);
       font-family: Poppins;
@@ -86,12 +96,7 @@ const FileUploadMain = styled.div`
       user-select: none;
     }
 
-    position: sticky;
-    top: 0;
-    left: 0;
-    z-index: 99;
-
-    background-color: white;
+   
     ${media.tablet} {
       > div {
         font-size: 20px;
@@ -130,9 +135,10 @@ const FileUploadMain = styled.div`
   }
 
   ${media.mobileL} {
-    padding: 0 12px;
+    padding: 0 4px;
     padding-bottom: 20px;
-    width: 90%;
+    width: 95%;
+    min-width: 300px;
 
     > .header {
       padding: 10px 0;
@@ -212,8 +218,8 @@ const UploadPicture = styled.div`
     flex-direction: column;
     width: 100%;
 
-    padding: 5px 0;
-    padding-top: 400px;
+    padding: 5px 5px;
+    padding-top: 200px;
 
     > .first {
       width: 100%;
@@ -255,7 +261,8 @@ const UploadFileInfo = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  gap: 5px;
+  gap: 15px;
+  overflow: auto;
 
   padding: 5px;
   justify-content: space-between;
@@ -312,17 +319,10 @@ const UploadFileInfo = styled.div`
 
   /* *INFO */
 
-  > .warning {
-    text-align: center;
-    color: red;
-
-    font-size: 16px;
-    font-weight: 900;
-    font-family: "Times New Roman", Times, serif;
-  }
+  
   .Info-input {
     width: 100%;
-    height: 50px;
+    height: 500px !important;
 
     resize: none;
 
@@ -341,11 +341,12 @@ const UploadFileInfo = styled.div`
   }
 
   .desc {
-    height: 25%;
+    height: 100px;
   }
 
   ${media.mobileL} {
     height: 400px;
+    overflow: visible;
   }
 `;
 

@@ -17,19 +17,27 @@ import NotFound from "../../assets/icon/NotFound.svg";
 import { useNavigate } from "react-router-dom";
 import { addDoc, collection } from "firebase/firestore";
 
-const FileUpload = () => {
+const FileUpload = ({ categories, FilerCategories }) => {
   const [file, setFile] = useState([]);
   const [isLogin] = useState(localStorage.getItem("login"));
   const [close, setClose] = useState(0);
 
   const [err, setErr] = useState([]);
 
+  console.log(err);
+
   const [FileObj, setFileObj] = useState({
     name: "",
-    desc: "",
     path: "",
+    year: "",
+    muallif: "",
+    nashriyot: "",
+    ctg: "",
+    desc: "",
     pics: [],
   });
+
+
 
   const [Picture, setPicture] = useState({
     pic1: "",
@@ -187,7 +195,6 @@ const FileUpload = () => {
             </div>
           </UploadPicture>
           <UploadFileInfo className="section">
-            <div className="warning">{err}</div>
             {/* INPUT FILE */}
             <label
               htmlFor="books"
@@ -209,9 +216,41 @@ const FileUpload = () => {
             <input
               onChange={(e) => setFileObj({ ...FileObj, name: e.target.value })}
               className="Info-input"
-              placeholder="Kitob nomini yozing..."
+              placeholder="Kitob nomini"
               type="text"
             />
+            <input
+              onChange={(e) => setFileObj({ ...FileObj, muallif: e.target.value })}
+              className="Info-input"
+              placeholder="Kitob mualifi"
+              type="text"
+            />
+            <input
+              onChange={(e) => setFileObj({ ...FileObj, year: +e.target.value })}
+              className="Info-input"
+              placeholder="Kitob chiqgan yili"
+              type="number"
+            />
+            <input
+              onChange={(e) => setFileObj({ ...FileObj, nashriyot: e.target.value })}
+              className="Info-input"
+              placeholder="Nashriyot"
+              type="text"
+            />
+            <select
+              onChange={(e) => setFileObj({ ...FileObj, ctg: e.target.value })}
+              className="Info-input"
+              name="" id="">
+              <option value="">Kategoriya kiriting</option>
+              {
+                categories.map((v) => {
+                  return <option value={v.id} >
+                    {v.name}
+                  </option>
+                })
+              }
+            </select>
+
             {/* INPUT FILE DESCRIPTION */}
 
             <textarea

@@ -3,13 +3,13 @@ import { LibraryRoot } from "./style";
 import "./style.css";
 import Navbar from "../components/Navbar";
 import { Route, Routes } from "react-router-dom";
-import { NavbarMock } from "../mock/pages";
 import Login from "../Pages/Login";
 import Home from "../Pages/Home";
 import NotFound from "../Pages/NotFound";
 import Book from "../components/Book";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../config/firebase";
+import FileUpload from "../Pages/FIleUpload";
 
 const Root = () => {
   const [isLogin, setIsLogin] = [localStorage.getItem("login")];
@@ -39,6 +39,7 @@ const Root = () => {
         const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
 
         setCategories(getData);
+
         console.log("Categoriya yuklandi!");
       } catch (error) {
         console.error(error);
@@ -87,7 +88,9 @@ const Root = () => {
         {/* Book Info Page */}
         <Route
           path="/book/:id"
-          element={<Book books={books} setBook={setBook} CurrentBooks={CurrentBooks} />}
+          element={<Book
+            books={books} setBook={setBook}
+            CurrentBooks={CurrentBooks} />}
         />
         <Route
           path="/search/:q"
@@ -110,10 +113,10 @@ const Root = () => {
 
         {/* Not Found Page */}
 
+        <Route path={'/file-upload'} element={<FileUpload FilerCategories={FilerCategories} categories={categories} />} />
+
         <Route path={"*"} element={<NotFound />} />
-        {NavbarMock.map((v) => {
-          return <Route key={v.id} path={v.path} element={v.element} />;
-        })}
+
       </Routes>
     </LibraryRoot>
   );

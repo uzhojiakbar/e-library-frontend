@@ -27,6 +27,10 @@ import Title from "../../components/Title";
 import { db } from "../../config/firebase";
 import { getDocs, collection, addDoc } from "firebase/firestore";
 import toast, { Toaster } from "react-hot-toast";
+import { useMediaQuery } from "@uidotdev/usehooks";
+import { Drawer, DrawerContent, DrawerTrigger } from "../../components/ui/drawer";
+import { ButtonLogo, ButtonStyle, ButtonText } from "../../components/Generic/CircleButton/style";
+
 
 const Login = ({ setLoginMenu }) => {
   const [email, setEmail] = useState("");
@@ -52,6 +56,7 @@ const Login = ({ setLoginMenu }) => {
     JSON.parse(localStorage.getItem("user")) || {}
   );
   const [close, setClose] = useState(0);
+
 
   const usersCollection = collection(db, "users");
 
@@ -109,7 +114,6 @@ const Login = ({ setLoginMenu }) => {
   const SignInwithGoogle = async () => {
     try {
       await getUsers();
-      const filterEmail = await users.map((v) => v.email);
 
       await signInWithPopup(auth, GoogleProvider);
       await CreateUser({
@@ -147,7 +151,6 @@ const Login = ({ setLoginMenu }) => {
 
   const CreateUser = async (user) => {
     try {
-
       await addDoc(usersCollection, user);
       await setCuruser({ ...user, pass: "Ruxsat yoq" });
       await localStorage.setItem(
@@ -211,62 +214,141 @@ const Login = ({ setLoginMenu }) => {
     }
   };
 
-  const onClosePage = () => {
-    setClose(1);
-    setTimeout(() => {
-      setLoginMenu(false);
-    }, 100);
-  };
+  // const onClosePage = () => {
+  //   setClose(1);
+  //   setTimeout(() => {
+  //     setLoginMenu(false);
+  //   }, 100);
+  // };
 
-  return (
+  // const isDesktop = useMediaQuery("(min-width: 768px)")
+  const IsMobile = useMediaQuery("(max-width : 605px)");
+  console.log(IsMobile);
+
+
+  return IsMobile ? (
     <>
-      <LoginContainer close={close} onClick={onClosePage}></LoginContainer>
-      {issLogin !== "false" && issLogin !== null ?
-        (
-          <LoginPage login="true">
-            <Title title={"Hisob malumotlari"} />
-            <Nav>
-              <img src={auth.currentUser?.photoURL || avatar} alt="ReLoad site" />
-              <Nav.ProfileInfo>
-                <p className="name">{curuser.name || "nomalum"}</p>
-                <p className="job-email">
-                  {curuser?.type === "user"
-                    ? "Foydalanuvchi"
-                    : curuser?.type === "admin"
-                      ? "admin"
-                      : curuser?.type === "nazoratchi"
-                        ? "Nazoratchi"
-                        : "Nomalum"}
-                </p>
-                <p className="job-email">{curuser.email || "Nomalum"}</p>
-              </Nav.ProfileInfo>
-            </Nav>
-            <div></div>
-            <div onClick={LogOut} className="log-out">
-              Chiqish
+      <Drawer>
+        <DrawerTrigger asChild>
+          <ButtonStyle>
+            <div
+              className={"link"}
+            >
+              <ButtonLogo>
+                <i className={"fa-regular fa-user"}></i>
+              </ButtonLogo>
+              <ButtonText>{"Profil"}</ButtonText>
             </div>
-          </LoginPage>
-        ) : reg ? (
-          // *LOGIN
-          <LoginPage>
-            <LoginPageStyle>
-              <LoginPageHeader>
-                <Title nav={"/"} title={"Hisobga Kirish"} />
-              </LoginPageHeader>
-              <LoginPageForm onSubmit={(e) => onSubmit(e)}>
-                <InputLogin
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="example@mail.ru"
-                  type="email"
-                />
-                <InputLogin
-                  onChange={(e) => setPass(e.target.value)}
-                  placeholder="Password"
-                  type="password"
-                />
-                <button onClick={SignIn}>Kirish</button>
-              </LoginPageForm>
-              <LoginPageSignInFast>
+          </ButtonStyle>
+        </DrawerTrigger>
+        <DrawerContent className="min-h-[500px] max-h-[90vh] h-fit" >
+          {issLogin !== "false" && issLogin !== null ?
+            (
+              <LoginPage login="true" mobile="mobile" >
+                <Title title={"Hisob malumotlari"} />
+                <Nav>
+                  <img src={auth.currentUser?.photoURL || avatar} alt="ReLoad site" />
+                  <Nav.ProfileInfo>
+                    <p className="name">{curuser.name || "nomalum"}</p>
+                    <p className="job-email">
+                      {curuser?.type === "user"
+                        ? "Foydalanuvchi"
+                        : curuser?.type === "admin"
+                          ? "admin"
+                          : curuser?.type === "nazoratchi"
+                            ? "Nazoratchi"
+                            : "Nomalum"}
+                    </p>
+                    <p className="job-email">{curuser.email || "Nomalum"}</p>
+                  </Nav.ProfileInfo>
+                </Nav>
+                <div></div>
+                <div onClick={LogOut} className="log-out">
+                  Chiqish
+                </div>
+              </LoginPage>
+            ) : reg ? (
+              // *LOGIN
+              <LoginPage mobile="mobile">
+                <LoginPageStyle>
+                  <LoginPageHeader>
+                    <Title nav={"/"} title={"Hisobga Kirish"} />
+                  </LoginPageHeader>
+                  <LoginPageForm onSubmit={(e) => onSubmit(e)}>
+                    <InputLogin
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="example@mail.ru"
+                      type="email"
+                    />
+                    <InputLogin
+                      onChange={(e) => setPass(e.target.value)}
+                      placeholder="Password"
+                      type="password"
+                    />
+                    <button onClick={SignIn}>Kirish</button>
+                  </LoginPageForm>
+                  <LoginPageSignInFast>
+                    <LoginWithPopupButton
+                      className="google"
+                      onClick={SignInwithGoogle}
+                    >
+                      <div className="img">
+                        <img src={LogoGoogle} alt="google" />
+                      </div>
+                      <div className="txt">Google orqali kirish</div>
+                    </LoginWithPopupButton>
+                  </LoginPageSignInFast>
+                  <p>
+                    Hisobingiz yo'qmi?
+                    <span onClick={() => setReg(!reg)}> Ro'yxatdan o'tish</span>
+                  </p>
+                </LoginPageStyle>
+              </LoginPage>
+            ) : (
+              // *ROYXATDAN OTISH
+              <LoginPage mobile="mobile">
+                <LoginPageStyle>
+                  <LoginPageHeader>
+                    <Title nav={"/"} title={"Ro'yxatdan o'tish "} />
+                  </LoginPageHeader>
+                  <LoginPageForm onSubmit={(e) => onSubmit(e)}>
+                    <InputLogin
+                      onChange={(e) => setUser({ ...user, name: e.target.value })}
+                      placeholder="F.I.SH ni kiriting"
+                      type="text"
+                    />
+                    <InputLogin
+                      onChange={(e) => setUser({ ...user, date: e.target.value })}
+                      placeholder="Tug'ilgan yilingizni kiriting"
+                      type="number"
+                    />
+                    <InputLogin
+                      onChange={(e) => setUser({ ...user, email: e.target.value })}
+                      placeholder="Elektron pochtangizni kiriting"
+                      type="email"
+                    />
+                    <InputLogin
+                      onChange={(e) => setUser({ ...user, password: e.target.value })}
+                      placeholder="Parol oylab toping"
+                      type="password"
+                    />
+                    <InputLogin
+                      onChange={(e) =>
+                        setUser({ ...user, rePassword: e.target.value })
+                      }
+                      placeholder="Parolni takrorlang"
+                      type="password"
+                    />
+
+                    <button onClick={RegNewUser}>Royxatdan otish</button>
+
+                    {regError.length ? <p>{regError}</p> : ""}
+
+                    <p>
+                      Hisobgiz Bormi? <span onClick={() => setReg(!reg)}>Kirish</span>
+                    </p>
+                  </LoginPageForm>
+                  {/* <LoginPageSignInFast>
                 <LoginWithPopupButton
                   className="google"
                   onClick={SignInwithGoogle}
@@ -276,74 +358,150 @@ const Login = ({ setLoginMenu }) => {
                   </div>
                   <div className="txt">Google orqali kirish</div>
                 </LoginWithPopupButton>
-              </LoginPageSignInFast>
-              <p>
-                Hisobingiz yo'qmi?
-                <span onClick={() => setReg(!reg)}> Ro'yxatdan o'tish</span>
-              </p>
-            </LoginPageStyle>
-          </LoginPage>
-        ) : (
-          // *ROYXATDAN OTISH
-          <LoginPage>
-            <LoginPageStyle>
-              <LoginPageHeader>
-                <Title nav={"/"} title={"Ro'yxatdan o'tish "} />
-              </LoginPageHeader>
-              <LoginPageForm onSubmit={(e) => onSubmit(e)}>
-                <InputLogin
-                  onChange={(e) => setUser({ ...user, name: e.target.value })}
-                  placeholder="F.I.SH ni kiriting"
-                  type="text"
-                />
-                <InputLogin
-                  onChange={(e) => setUser({ ...user, date: e.target.value })}
-                  placeholder="Tug'ilgan yilingizni kiriting"
-                  type="number"
-                />
-                <InputLogin
-                  onChange={(e) => setUser({ ...user, email: e.target.value })}
-                  placeholder="Elektron pochtangizni kiriting"
-                  type="email"
-                />
-                <InputLogin
-                  onChange={(e) => setUser({ ...user, password: e.target.value })}
-                  placeholder="Parol oylab toping"
-                  type="password"
-                />
-                <InputLogin
-                  onChange={(e) =>
-                    setUser({ ...user, rePassword: e.target.value })
-                  }
-                  placeholder="Parolni takrorlang"
-                  type="password"
-                />
-
-                <button onClick={RegNewUser}>Royxatdan otish</button>
-
-                {regError.length ? <p>{regError}</p> : ""}
-
-                <p>
-                  Hisobgiz Bormi? <span onClick={() => setReg(!reg)}>Kirish</span>
-                </p>
-              </LoginPageForm>
-              {/* <LoginPageSignInFast>
-              <LoginWithPopupButton
-                className="google"
-                onClick={SignInwithGoogle}
-              >
-                <div className="img">
-                  <img src={LogoGoogle} alt="google" />
-                </div>
-                <div className="txt">Google orqali kirish</div>
-              </LoginWithPopupButton>
-            </LoginPageSignInFast> */}
-            </LoginPageStyle>
-          </LoginPage>
-        )}
-      <Toaster />
+              </LoginPageSignInFast> */}
+                </LoginPageStyle>
+              </LoginPage>
+            )}
+          <Toaster />
+        </DrawerContent>
+      </Drawer>
     </>
-  );
+  )
+    :
+    (
+      <>
+        <ButtonStyle
+          onClick={() => setClose(!close)}
+        >
+          <div
+            className={"link"}
+          >
+            <ButtonLogo>
+              <i className={"fa-regular fa-user"}></i>
+            </ButtonLogo>
+            <ButtonText>{"Profil"}</ButtonText>
+          </div>
+        </ButtonStyle>
+
+        {
+          close ?
+            <>
+              <LoginContainer onClick={() => setClose(!close)} />
+              {issLogin !== "false" && issLogin !== null ?
+                (
+                  <LoginPage login="true">
+                    <Title title={"Hisob malumotlari"} />
+                    <Nav>
+                      <img src={auth.currentUser?.photoURL || avatar} alt="ReLoad site" />
+                      <Nav.ProfileInfo>
+                        <p className="name">{curuser.name || "nomalum"}</p>
+                        <p className="job-email">
+                          {curuser?.type === "user"
+                            ? "Foydalanuvchi"
+                            : curuser?.type === "admin"
+                              ? "admin"
+                              : curuser?.type === "nazoratchi"
+                                ? "Nazoratchi"
+                                : "Nomalum"}
+                        </p>
+                        <p className="job-email">{curuser.email || "Nomalum"}</p>
+                      </Nav.ProfileInfo>
+                    </Nav>
+                    <div></div>
+                    <div onClick={LogOut} className="log-out">
+                      Chiqish
+                    </div>
+                  </LoginPage>
+                ) : reg ? (
+                  // *LOGIN
+                  <LoginPage>
+                    <LoginPageStyle>
+                      <LoginPageHeader>
+                        <Title nav={"/"} title={"Hisobga Kirish"} />
+                      </LoginPageHeader>
+                      <LoginPageForm onSubmit={(e) => onSubmit(e)}>
+                        <InputLogin
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="example@mail.ru"
+                          type="email"
+                        />
+                        <InputLogin
+                          onChange={(e) => setPass(e.target.value)}
+                          placeholder="Password"
+                          type="password"
+                        />
+                        <button onClick={SignIn}>Kirish</button>
+                      </LoginPageForm>
+                      <LoginPageSignInFast>
+                        <LoginWithPopupButton
+                          className="google"
+                          onClick={SignInwithGoogle}
+                        >
+                          <div className="img">
+                            <img src={LogoGoogle} alt="google" />
+                          </div>
+                          <div className="txt">Google orqali kirish</div>
+                        </LoginWithPopupButton>
+                      </LoginPageSignInFast>
+                      <p>
+                        Hisobingiz yo'qmi?
+                        <span onClick={() => setReg(!reg)}> Ro'yxatdan o'tish</span>
+                      </p>
+                    </LoginPageStyle>
+                  </LoginPage>
+                ) : (
+                  // *ROYXATDAN OTISH
+                  <LoginPage>
+                    <LoginPageStyle>
+                      <LoginPageHeader>
+                        <Title nav={"/"} title={"Ro'yxatdan o'tish "} />
+                      </LoginPageHeader>
+                      <LoginPageForm onSubmit={(e) => onSubmit(e)}>
+                        <InputLogin
+                          onChange={(e) => setUser({ ...user, name: e.target.value })}
+                          placeholder="F.I.SH ni kiriting"
+                          type="text"
+                        />
+                        <InputLogin
+                          onChange={(e) => setUser({ ...user, date: e.target.value })}
+                          placeholder="Tug'ilgan yilingizni kiriting"
+                          type="number"
+                        />
+                        <InputLogin
+                          onChange={(e) => setUser({ ...user, email: e.target.value })}
+                          placeholder="Elektron pochtangizni kiriting"
+                          type="email"
+                        />
+                        <InputLogin
+                          onChange={(e) => setUser({ ...user, password: e.target.value })}
+                          placeholder="Parol oylab toping"
+                          type="password"
+                        />
+                        <InputLogin
+                          onChange={(e) =>
+                            setUser({ ...user, rePassword: e.target.value })
+                          }
+                          placeholder="Parolni takrorlang"
+                          type="password"
+                        />
+
+                        <button onClick={RegNewUser}>Royxatdan otish</button>
+
+                        {regError.length ? <p>{regError}</p> : ""}
+
+                        <p>
+                          Hisobgiz Bormi? <span onClick={() => setReg(!reg)}>Kirish</span>
+                        </p>
+                      </LoginPageForm>
+                    </LoginPageStyle>
+                  </LoginPage>
+                )}
+            </>
+            :
+            ""
+        }
+      </>
+    );
 };
 
 export default Login;

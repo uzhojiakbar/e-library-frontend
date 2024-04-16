@@ -16,11 +16,8 @@ const Root = () => {
 
   const [categories, setCategories] = useState([]);
 
-
   const [CurrentBooks, setCurrentBooks] = useState("");
   const [books, setBook] = useState([]);
-
-
 
   const FilerCategories = (filter) => {
     if (filter) {
@@ -57,51 +54,51 @@ const Root = () => {
         setBook(getData);
         setCurrentBooks(getData);
         console.log("Kitoblar yuklandi");
-      } catch (error) { }
+      } catch (error) {}
     }
   };
 
-
   getBooks();
   getCategories();
-
-
 
   return (
     <LibraryRoot className="root">
       <Navbar isLogin={isLogin} setIsLogin={setIsLogin} />
       <Routes>
-
         {/* HOME PAGE */}
         <Route
           path={"/"}
-          element={<Home
-            FilerCategories={FilerCategories}
-            categories={categories}
-            setCategories={setCategories}
-            setCurrentBooks={setCurrentBooks}
-            books={books}
-            setBook={setBook}
-          />}
+          element={
+            <Home
+              FilerCategories={FilerCategories}
+              categories={categories}
+              setCategories={setCategories}
+              setCurrentBooks={setCurrentBooks}
+              books={books}
+              setBook={setBook}
+            />
+          }
         />
 
         {/* Book Info Page */}
         <Route
           path="/book/:id"
-          element={<Book
-            books={books} setBook={setBook}
-            CurrentBooks={CurrentBooks} />}
+          element={
+            <Book books={books} setBook={setBook} CurrentBooks={CurrentBooks} />
+          }
         />
         <Route
           path="/search/:q"
-          element={<Home
-            FilerCategories={FilerCategories}
-            categories={categories}
-            setCategories={setCategories}
-            setCurrentBooks={setCurrentBooks}
-            books={books}
-            setBook={setBook}
-          />}
+          element={
+            <Home
+              FilerCategories={FilerCategories}
+              categories={categories}
+              setCategories={setCategories}
+              setCurrentBooks={setCurrentBooks}
+              books={books}
+              setBook={setBook}
+            />
+          }
         />
 
         {/* Login page (with route) */}
@@ -113,10 +110,17 @@ const Root = () => {
 
         {/* Not Found Page */}
 
-        <Route path={'/file-upload'} element={<FileUpload FilerCategories={FilerCategories} categories={categories} />} />
+        <Route
+          path={"/file-upload"}
+          element={
+            <FileUpload
+              FilerCategories={FilerCategories}
+              categories={categories}
+            />
+          }
+        />
 
         <Route path={"*"} element={<NotFound />} />
-
       </Routes>
     </LibraryRoot>
   );

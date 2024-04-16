@@ -41,16 +41,15 @@ const LoginContainer = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
   animation: ${({ close }) => (close ? closeback : background)} 0.3s 1;
   animation-fill-mode: forwards;
-
-  
 `;
 
 const LoginPage = styled.div`
-  position: ${({ mobile }) => mobile === "mobile" ? "flex" : "fixed"};
+  position: ${({ mobile }) => (mobile === "mobile" ? "flex" : "fixed")};
   right: 40px;
   top: 20px;
-  width: ${({ mobile }) => mobile === "mobile" ? "100%" : "400px"};
-  min-height: ${({ login, mobile }) => (mobile === "mobile" ? "70vh" : login === "true" ? "320px" : "600px")};
+  width: ${({ mobile }) => (mobile === "mobile" ? "100%" : "400px")};
+  min-height: ${({ login, mobile }) =>
+    mobile === "mobile" ? "70vh" : login === "true" ? "320px" : "600px"};
   background: rgb(255, 255, 255);
   border-radius: 16px;
   padding: 25px 20px;
@@ -60,7 +59,6 @@ const LoginPage = styled.div`
   flex-direction: column;
   -webkit-box-pack: justify;
   justify-content: space-between;
-
 
   animation: ${background} 0.5s 1;
   animation-fill-mode: forwards;

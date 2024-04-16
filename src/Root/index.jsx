@@ -18,6 +18,7 @@ const Root = () => {
 
   const [CurrentBooks, setCurrentBooks] = useState("");
   const [books, setBook] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const FilerCategories = (filter) => {
     if (filter) {
@@ -54,11 +55,24 @@ const Root = () => {
         setBook(getData);
         setCurrentBooks(getData);
         console.log("Kitoblar yuklandi");
-      } catch (error) {}
+      } catch (error) { }
+    }
+  };
+  const getUsers = async () => {
+    if (books.length === 0) {
+      try {
+        const UserCollection = collection(db, "users");
+        const data = await getDocs(UserCollection);
+        const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
+        setUsers(getData);
+        console.log(getData);
+        console.log("Foydaluvchilar yuklandi");
+      } catch (error) { }
     }
   };
 
   getBooks();
+  getUsers();
   getCategories();
 
   return (
@@ -74,7 +88,9 @@ const Root = () => {
               categories={categories}
               setCategories={setCategories}
               setCurrentBooks={setCurrentBooks}
+              getCategories={getCategories}
               books={books}
+              users={users}
               setBook={setBook}
             />
           }

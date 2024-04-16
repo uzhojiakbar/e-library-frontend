@@ -13,6 +13,8 @@ const Home = ({
   FilerCategories,
   books = [],
   setBook,
+  users,
+  getCategories
 }) => {
   const query = useParams();
   const [user] = useState(JSON.parse(localStorage.getItem("user")) || {});
@@ -21,7 +23,9 @@ const Home = ({
       {user?.type === "admin" ? (
         <Admin
           FilerCategories={FilerCategories}
+          getCategories={getCategories}
           categories={categories}
+          users={users}
           setCategories={setCategories}
         />
       ) : (

@@ -1,64 +1,30 @@
 import React, { useRef, useState } from "react";
-import { AdminContainer } from "./style";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { addDoc, collection, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../../config/firebase";
 import * as XLSX from "xlsx";
 import toast, { Toaster } from "react-hot-toast";
+import { DataGrid } from "@mui/x-data-grid";
+import { AdminContainer } from "./style";
+import CategoryAdmin from "src/components/CategoryAdmin";
 
 const Admin = ({ categories, setCategories, FilerCategories, users }) => {
-  const ctgNameRef = useRef("");
 
   const [page, setPage] = useState("admin");
-  const [ctgs, setctgs] = useState(categories);
 
-  const notify = (type = "ok", text) => {
-    if (type === "ok") {
-      toast.success(text || "Tayyor");
-    } else if (type === "err") {
-      toast.error(text || "Xato");
-    } else if (type === "wait") {
-      toast.loading(text || "Kuting...");
-    }
-  };
+  // const notify = (type = "ok", text) => {
+  //   if (type === "ok") {
+  //     toast.success(text || "Tayyor");
+  //   } else if (type === "err") {
+  //     toast.error(text || "Xato");
+  //   } else if (type === "wait") {
+  //     toast.loading(text || "Kuting...");
+  //   }
+  // };
 
   FilerCategories(1);
 
-  const AddCtg = async () => {
-    try {
-      await FilerCategories(1);
-      setctgs([
-        ...ctgs,
-        {
-          auth: "admin",
-          count: 0,
-          idForFilter: categories[categories.length - 2].idForFilter + 1,
-          name: ctgNameRef.current.value,
-        },
-      ]);
-      const CollenctionRef = collection(db, "category");
-      await addDoc(CollenctionRef, {
-        auth: "admin",
-        count: 0,
-        idForFilter: categories[categories.length - 2].idForFilter + 1,
-        name: ctgNameRef.current.value,
-      });
-      notify("ok", "Kategoriya qoshildi!");
-    } catch (error) {
-      notify("err", "Qandaydur xatolik!");
-    }
-  };
-  const DelCtg = async (id) => {
-    try {
-      await deleteDoc(doc(db, "category", id));
-      let res = ctgs.filter((v) => (v.id !== id ? v : ""));
-      setctgs(res);
-      notify("ok", "Kategoriya o'chirildi!");
-    } catch (error) {
-      notify("err", "Qandaydur xatolik!");
-    }
-  };
 
   const nav = [
     { id: 1, page: "ctg", name: "Kategoriya sozlamari" },
@@ -76,6 +42,24 @@ const Admin = ({ categories, setCategories, FilerCategories, users }) => {
     XLSX.writeFile(wb, "Foydalanuvchilar_ochiq_baza.xlsx");
   };
 
+  const notify = (type = "ok", text) => {
+    if (type === "ok") {
+      toast.success(text || "Tayyor");
+    } else if (type === "err") {
+      toast.error(text || "Xato");
+    } else if (type === "wait") {
+      toast.loading(text || "Kuting...");
+    }
+  };
+
+
+  const columns = [
+    { field: 'id', headerName: 'ID', width: '200' },
+    { field: 'name', headerName: 'FIO', width: '200' },
+    { field: 'email', headerName: 'Email', width: '200' },
+    { field: 'pass', headerName: 'Parol', width: '200' },
+    { field: 'type', headerName: 'status', width: '200' },
+  ];
   return (
     <>
       <AdminContainer>
@@ -96,94 +80,36 @@ const Admin = ({ categories, setCategories, FilerCategories, users }) => {
         <h1 className="text-[40px]">Admin, Xush kelibsiz</h1>
         {page === "admin" ? <h1>Home</h1> : ""}
         {page === "ctg" ? (
-          <div
-            className={`w-[100%] max-w-[100vw] flex flex-col gap-[40px] border-red-600 gap-[30px]`}
-          >
-            <div className="flex flex-col gap-[40px] flex-1">
-              <h1 className="text-[20px]">Kategoriya boyicha amallar</h1>
-              <div className="flex gap-[10px]">
-                <Input
-                  ref={ctgNameRef}
-                  className="w-[500px] text-[20px] border-black bg-white border-none"
-                  type="text"
-                  placeholder="Kategoriya qo'shish (nomini kiriting)"
-                />
-                <Button
-                  onClick={() => AddCtg()}
-                  className="text-[20] button"
-                  type="submit"
-                >
-                  Kategoriya qoshish
-                </Button>
-              </div>
-            </div>
-            <div className="main">
-              <div className="row rowtitle">
-                <div className="leftfixed ">ID raqam</div>
-                <div>Nomi</div>
-                <div>Soni</div>
-                <p className="">Turi</p>
-                <div className="rightfixed">Boshqarish</div>
-              </div>
-              {ctgs.map((v) => {
-                return (
-                  <div className="ctgs row p-[18px]" key={v.id}>
-                    <p className="leftfixed">{v.id ? v.id : "NULL_RELOAD"}</p>
-                    <b className="">{v.name}</b>
-                    <p className="">{v.count}</p>
-                    <p className="">Kategoriya</p>
-                    <p
-                      onClick={() => DelCtg(v.id)}
-                      className="rightfixed fa-solid fa-trash"
-                    ></p>
-                    {/* <p onClick={() => DelCtg(v.id)} className="desc w-[25%] fa-solid fa-trash"></p> */}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          <CategoryAdmin
+            categories={categories}
+            FilerCategories={FilerCategories}
+            notify={notify}
+          />
         ) : (
           ""
         )}
         {page === "user" ? (
           <div
-            className={`w-[100%] max-w-[100vw] flex flex-col  border-red-600 gap-[30px]`}
           >
-            <div className="flex flex-col gap-[20px] w-[100%]">
-              <div>
+            <div className="flex flex-col gap-[20px]">
+              <div className="flex justify-between">
                 <h1 className="text-[20px]">Foydaluvchilar: {users.length}</h1>
                 <h1 className="text-[20px]" onClick={exportXlsx}>
                   Export
                 </h1>
               </div>
-
-              <div className="main" name="" id="">
-                <div className="row rowtitle">
-                  <div className="leftfixed ">ID raqam</div>
-                  <div>F.I.O</div>
-                  <div>Email</div>
-                  <div>parol</div>
-                  <div className="rightfixed">STATUS</div>
-                </div>
-                {users.map((v) => {
-                  return (
-                    <div className="ctgs row p-[18px]" key={v.id}>
-                      <p className=" leftfixed">
-                        {v.id ? v.id : "NULL_RELOAD"}
-                      </p>
-                      <b className="flex-2">{v.name}</b>
-                      <p className="">{v.email}</p>
-                      <p className="">
-                        {v.pass === "undefined"
-                          ? "Google orqali"
-                          : v.pass.slice(26, v.pass.length)}
-                      </p>
-                      <p className="rightfixed">{v.type}</p>
-                      {/* <p onClick={() => DelCtg(v.id)} className="desc w-[25%] fa-solid fa-trash"></p> */}
-                    </div>
-                  );
-                })}
-              </div>
+              <DataGrid
+                rows={users}
+                columns={columns}
+                sx={'background-color: #ffffffb4; font-size: 16px;'}
+                initialState={{
+                  pagination: {
+                    paginationModel: { page: 0, pageSize: 5 },
+                  },
+                }}
+                pageSizeOptions={[5, 10]}
+                checkboxSelection
+              />
             </div>
           </div>
         ) : (

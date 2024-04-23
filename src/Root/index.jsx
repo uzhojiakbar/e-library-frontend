@@ -55,7 +55,7 @@ const Root = () => {
         setBook(getData);
         setCurrentBooks(getData);
         console.log("Kitoblar yuklandi");
-      } catch (error) {}
+      } catch (error) { }
     }
   };
   const getUsers = async () => {
@@ -67,7 +67,7 @@ const Root = () => {
         setUsers(getData);
         console.log(getData);
         console.log("Foydaluvchilar yuklandi");
-      } catch (error) {}
+      } catch (error) { }
     }
   };
 

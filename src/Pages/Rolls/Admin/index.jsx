@@ -8,23 +8,13 @@ import toast, { Toaster } from "react-hot-toast";
 import { DataGrid } from "@mui/x-data-grid";
 import { AdminContainer } from "./style";
 import CategoryAdmin from "src/components/CategoryAdmin";
+import ToplamAdmin from "src/components/ToplamAdmin";
 
 const Admin = ({ categories, setCategories, FilerCategories, users }) => {
 
   const [page, setPage] = useState("admin");
 
-  // const notify = (type = "ok", text) => {
-  //   if (type === "ok") {
-  //     toast.success(text || "Tayyor");
-  //   } else if (type === "err") {
-  //     toast.error(text || "Xato");
-  //   } else if (type === "wait") {
-  //     toast.loading(text || "Kuting...");
-  //   }
-  // };
-
   FilerCategories(1);
-
 
   const nav = [
     { id: 1, page: "ctg", name: "Kategoriya sozlamari" },
@@ -69,7 +59,7 @@ const Admin = ({ categories, setCategories, FilerCategories, users }) => {
               return (
                 <p
                   onClick={() => setPage(v.page)}
-                  className={`child ${page === v.page ? "active" : ""}`}
+                  className={` ${page === v.page ? "child active" : "child"}`}
                 >
                   {v.name}
                 </p>
@@ -77,7 +67,6 @@ const Admin = ({ categories, setCategories, FilerCategories, users }) => {
             })}
           </div>
         </div>
-        <h1 className="text-[40px]">Admin, Xush kelibsiz</h1>
         {page === "admin" ? <h1>Home</h1> : ""}
         {page === "ctg" ? (
           <CategoryAdmin
@@ -115,6 +104,8 @@ const Admin = ({ categories, setCategories, FilerCategories, users }) => {
         ) : (
           ""
         )}
+
+        {page === "toplam" ? <ToplamAdmin /> : ''}
       </AdminContainer>
       <Toaster />
     </>

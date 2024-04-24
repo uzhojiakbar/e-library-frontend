@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { keyframes } from "styled-components";
 
 const media = {
   laptop: "@media (max-width: 1240px)",
@@ -8,46 +7,7 @@ const media = {
   mobileS: "@media (max-width: 320px)",
 };
 
-const background = keyframes`
-  0%{
-    opacity: 0;
-    backdrop-filter: blur(0);
-  }
-  100%{
-    opacity: 1;
-    backdrop-filter: blur(5px);
-  }
-`;
-
-const closeback = keyframes`
-  0%{
-    opacity: 1;
-    backdrop-filter: blur(5px);
-  }
-
-  100%{
-    opacity: 0;
-    display: none;
-    backdrop-filter: blur(0);
-  }
-`;
-const LoginContainer = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-
-  background-color: rgba(0, 0, 0, 0.5);
-  animation: ${({ close }) => (close ? closeback : background)} 0.3s 1;
-  animation-fill-mode: forwards;
-`;
-
 const LoginPage = styled.div`
-  position: ${({ mobile }) => (mobile === "mobile" ? "flex" : "fixed")};
-  right: 40px;
-  top: 20px;
-  width: ${({ mobile }) => (mobile === "mobile" ? "100%" : "400px")};
   min-height: ${({ login, mobile }) =>
     mobile === "mobile" ? "70vh" : login === "true" ? "320px" : "600px"};
   background: rgb(255, 255, 255);
@@ -59,36 +19,6 @@ const LoginPage = styled.div`
   flex-direction: column;
   -webkit-box-pack: justify;
   justify-content: space-between;
-
-  animation: ${background} 0.5s 1;
-  animation-fill-mode: forwards;
-
-  > .log-out {
-    cursor: pointer;
-    margin-top: 25px;
-
-    font-family: "Poppins";
-    font-style: normal;
-    font-weight: 400;
-    font-size: 20px;
-    line-height: 30px;
-    color: #ffffff;
-
-    display: flex;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-
-    height: 60px;
-    background: #001869;
-    border-radius: 8px;
-    &:hover {
-      opacity: 0.8;
-    }
-    &:active {
-      opacity: 1;
-    }
-  }
 
   ${media.tablet} {
     padding: 20px 15px;
@@ -115,6 +45,33 @@ const LoginPageStyle = styled.div`
   margin: 0 auto;
 
   padding: var(--padding);
+`;
+
+const LogOutButton = styled.div`
+  cursor: pointer;
+  margin-top: 25px;
+
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+  color: #ffffff;
+
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+
+  height: 60px;
+  background: #001869;
+  border-radius: 8px;
+  &:hover {
+    opacity: 0.8;
+  }
+  &:active {
+    opacity: 1;
+  }
 `;
 
 const LoginPageHeader = styled.div`
@@ -298,7 +255,6 @@ Nav.ProfileInfo = styled.div`
 
 export {
   Nav,
-  LoginContainer,
   LoginPage,
   LoginPageStyle,
   LoginPageHeader,
@@ -306,4 +262,5 @@ export {
   LoginPageSignInFast,
   LoginWithPopupButton,
   InputLogin,
+  LogOutButton,
 };

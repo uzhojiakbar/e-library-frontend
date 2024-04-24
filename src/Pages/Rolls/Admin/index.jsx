@@ -1,8 +1,4 @@
-import React, { useRef, useState } from "react";
-import { Button } from "../../../components/ui/button";
-import { Input } from "../../../components/ui/input";
-import { addDoc, collection, deleteDoc, doc } from "firebase/firestore";
-import { db } from "../../../config/firebase";
+import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import toast, { Toaster } from "react-hot-toast";
 import { DataGrid } from "@mui/x-data-grid";
@@ -11,7 +7,6 @@ import CategoryAdmin from "src/components/CategoryAdmin";
 import ToplamAdmin from "src/components/ToplamAdmin";
 
 const Admin = ({ categories, setCategories, FilerCategories, users }) => {
-
   const [page, setPage] = useState("admin");
 
   FilerCategories(1);
@@ -42,13 +37,12 @@ const Admin = ({ categories, setCategories, FilerCategories, users }) => {
     }
   };
 
-
   const columns = [
-    { field: 'id', headerName: 'ID', width: '200' },
-    { field: 'name', headerName: 'FIO', width: '200' },
-    { field: 'email', headerName: 'Email', width: '200' },
-    { field: 'pass', headerName: 'Parol', width: '200' },
-    { field: 'type', headerName: 'status', width: '200' },
+    { field: "id", headerName: "ID", width: "200" },
+    { field: "name", headerName: "FIO", width: "200" },
+    { field: "email", headerName: "Email", width: "200" },
+    { field: "pass", headerName: "Parol", width: "200" },
+    { field: "type", headerName: "status", width: "200" },
   ];
   return (
     <>
@@ -78,8 +72,7 @@ const Admin = ({ categories, setCategories, FilerCategories, users }) => {
           ""
         )}
         {page === "user" ? (
-          <div
-          >
+          <div>
             <div className="flex flex-col gap-[20px]">
               <div className="flex justify-between">
                 <h1 className="text-[20px]">Foydaluvchilar: {users.length}</h1>
@@ -90,7 +83,7 @@ const Admin = ({ categories, setCategories, FilerCategories, users }) => {
               <DataGrid
                 rows={users}
                 columns={columns}
-                sx={'background-color: #ffffffb4; font-size: 16px;'}
+                sx={"background-color: #ffffffb4; font-size: 16px;"}
                 initialState={{
                   pagination: {
                     paginationModel: { page: 0, pageSize: 5 },
@@ -105,7 +98,7 @@ const Admin = ({ categories, setCategories, FilerCategories, users }) => {
           ""
         )}
 
-        {page === "toplam" ? <ToplamAdmin /> : ''}
+        {page === "toplam" ? <ToplamAdmin /> : ""}
       </AdminContainer>
       <Toaster />
     </>

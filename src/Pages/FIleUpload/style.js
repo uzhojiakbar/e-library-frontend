@@ -1,60 +1,11 @@
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { media } from "../../mock/media";
 
-const Open = keyframes`
-    0%{
-        backdrop-filter: blur(0);
-        background-color: rgba(0, 0, 0, 0);
-
-    }
-    100%{
-        background-color: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(5px);
-    }
-`;
-
-const CloseKey = keyframes`
-    0%{
-        background-color: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(5px);
-    }
-    100%{
-        background-color: rgba(0, 0, 0, 0);
-        backdrop-filter: blur(0);
-    }
-`;
-
-const FileUploadContainer = styled.div`
-  /* padding: var(--padding); */
-  width: 100vw;
-  min-width: 300px;
-  height: 100vh;
-  min-height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
-
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 3;
-
-  animation: ${({ close }) => (close ? CloseKey : Open)} 0.4s 1;
-`;
-
 const FileUploadMain = styled.div`
-  width: 800px;
-  
+  width: 100%;
+
   height: 90vh;
   max-height: 700px;
-
-  padding: 20px 40px;
-
-  background-color: white;
-  border-radius: 15px;
 
   display: flex;
   flex-direction: column;
@@ -73,7 +24,7 @@ const FileUploadMain = styled.div`
     z-index: 99;
 
     background-color: white;
-    
+
     > div {
       color: rgb(0, 24, 105);
       font-family: Poppins;
@@ -96,7 +47,6 @@ const FileUploadMain = styled.div`
       user-select: none;
     }
 
-   
     ${media.tablet} {
       > div {
         font-size: 20px;
@@ -148,7 +98,7 @@ const FileUploadMain = styled.div`
 
 const FileUploaderCon = styled.div`
   display: flex;
-  height: 70%;
+  height: 95%;
   gap: 5px;
   justify-content: center;
   overflow: auto;
@@ -159,7 +109,6 @@ const FileUploaderCon = styled.div`
 
   ${media.mobileL} {
     flex-direction: column;
-    height: 100%;
   }
 `;
 
@@ -319,7 +268,6 @@ const UploadFileInfo = styled.div`
 
   /* *INFO */
 
-  
   .Info-input {
     width: 100%;
     height: 500px !important;
@@ -440,7 +388,6 @@ const AuthError = styled.div`
 `;
 
 export {
-  FileUploadContainer,
   AuthError,
   FileUploadMain,
   ButtonUpload,

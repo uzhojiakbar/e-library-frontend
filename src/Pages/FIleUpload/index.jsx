@@ -5,7 +5,6 @@ import { ref, uploadBytes } from "firebase/storage";
 import {
   AuthError,
   ButtonUpload,
-  FileUploadContainer,
   FileUploadMain,
   FileUploaderCon,
   PictureStyle,
@@ -16,11 +15,12 @@ import {
 import NotFound from "../../assets/icon/NotFound.svg";
 import { useNavigate } from "react-router-dom";
 import { addDoc, collection } from "firebase/firestore";
+import { Modal } from "antd";
 
 const FileUpload = ({ categories, FilerCategories }) => {
   const [file, setFile] = useState([]);
   const [isLogin] = useState(localStorage.getItem("login"));
-  const [close, setClose] = useState(0);
+  const [close, setClose] = useState(1);
 
   const [err, setErr] = useState([]);
 
@@ -36,8 +36,6 @@ const FileUpload = ({ categories, FilerCategories }) => {
     desc: "",
     pics: [],
   });
-
-
 
   const [Picture, setPicture] = useState({
     pic1: "",
@@ -113,8 +111,12 @@ const FileUpload = ({ categories, FilerCategories }) => {
     }, 300);
   };
 
+  const handleCancel = () => {
+    nav("/");
+  };
+
   return isLogin !== "false" ? (
-    <FileUploadContainer close={close}>
+    <Modal width={1000} open={close} onCancel={handleCancel} footer={[]}>
       <FileUploadMain>
         <div className="header">
           {uploadPrcnt[0] ? (
@@ -122,9 +124,6 @@ const FileUpload = ({ categories, FilerCategories }) => {
           ) : (
             <div>Kitob Yuklash</div>
           )}
-          <div onClick={onClose} className="close">
-            x
-          </div>
         </div>
         <FileUploaderCon>
           <UploadPicture className="section">
@@ -220,19 +219,25 @@ const FileUpload = ({ categories, FilerCategories }) => {
               type="text"
             />
             <input
-              onChange={(e) => setFileObj({ ...FileObj, muallif: e.target.value })}
+              onChange={(e) =>
+                setFileObj({ ...FileObj, muallif: e.target.value })
+              }
               className="Info-input"
               placeholder="Kitob mualifi"
               type="text"
             />
             <input
-              onChange={(e) => setFileObj({ ...FileObj, year: +e.target.value })}
+              onChange={(e) =>
+                setFileObj({ ...FileObj, year: +e.target.value })
+              }
               className="Info-input"
               placeholder="Kitob chiqgan yili"
               type="number"
             />
             <input
-              onChange={(e) => setFileObj({ ...FileObj, nashriyot: e.target.value })}
+              onChange={(e) =>
+                setFileObj({ ...FileObj, nashriyot: e.target.value })
+              }
               className="Info-input"
               placeholder="Nashriyot"
               type="text"
@@ -240,15 +245,13 @@ const FileUpload = ({ categories, FilerCategories }) => {
             <select
               onChange={(e) => setFileObj({ ...FileObj, ctg: e.target.value })}
               className="Info-input"
-              name="" id="">
+              name=""
+              id=""
+            >
               <option value="">Kategoriya kiriting</option>
-              {
-                categories.map((v) => {
-                  return <option value={v.id} >
-                    {v.name}
-                  </option>
-                })
-              }
+              {categories.map((v) => {
+                return <option value={v.id}>{v.name}</option>;
+              })}
             </select>
 
             {/* INPUT FILE DESCRIPTION */}
@@ -281,7 +284,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
           </ButtonUpload>
         </div>
       </FileUploadMain>
-    </FileUploadContainer>
+    </Modal>
   ) : (
     <AuthError>
       <img src={NotFound} alt="" />

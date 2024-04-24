@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {
   InputLogin,
-  LoginContainer,
+  LogOutButton,
   LoginPage,
   LoginPageForm,
   LoginPageHeader,
@@ -38,6 +38,7 @@ import {
   ButtonStyle,
   ButtonText,
 } from "../../components/Generic/CircleButton/style";
+import { Modal } from "antd";
 
 const Login = ({ setLoginMenu }) => {
   const [email, setEmail] = useState("");
@@ -216,14 +217,9 @@ const Login = ({ setLoginMenu }) => {
     }
   };
 
-  // const onClosePage = () => {
-  //   setClose(1);
-  //   setTimeout(() => {
-  //     setLoginMenu(false);
-  //   }, 100);
-  // };
-
-  // const isDesktop = useMediaQuery("(min-width: 768px)")
+  const handleCancel = () => {
+    setClose(false);
+  };
   const IsMobile = useMediaQuery("(max-width : 605px)");
   console.log(IsMobile);
 
@@ -385,122 +381,144 @@ const Login = ({ setLoginMenu }) => {
 
       {close ? (
         <>
-          <LoginContainer onClick={() => setClose(!close)} />
+          {/* <LoginContainer onClick={() => setClose(!close)} /> */}
           {issLogin !== "false" && issLogin !== null ? (
-            <LoginPage login="true">
-              <Title title={"Hisob malumotlari"} />
-              <Nav>
-                <img
-                  src={auth.currentUser?.photoURL || avatar}
-                  alt="ReLoad site"
-                />
-                <Nav.ProfileInfo>
-                  <p className="name">{curuser.name || "nomalum"}</p>
-                  <p className="job-email">
-                    {curuser?.type === "user"
-                      ? "Foydalanuvchi"
-                      : curuser?.type === "admin"
-                      ? "admin"
-                      : curuser?.type === "nazoratchi"
-                      ? "Nazoratchi"
-                      : "Nomalum"}
-                  </p>
-                  <p className="job-email">{curuser.email || "Nomalum"}</p>
-                </Nav.ProfileInfo>
-              </Nav>
-              <div></div>
-              <div onClick={LogOut} className="log-out">
-                Chiqish
-              </div>
-            </LoginPage>
+            <Modal
+              open={close}
+              onCancel={handleCancel}
+              footer={[
+                <LogOutButton onClick={LogOut} className="log-out">
+                  Chiqish
+                </LogOutButton>,
+              ]}
+            >
+              <LoginPage login="true">
+                <Title title={"Hisob malumotlari"} />
+                <Nav>
+                  <img
+                    src={auth.currentUser?.photoURL || avatar}
+                    alt="ReLoad site"
+                  />
+                  <Nav.ProfileInfo>
+                    <p className="name">{curuser.name || "nomalum"}</p>
+                    <p className="job-email">
+                      {curuser?.type === "user"
+                        ? "Foydalanuvchi"
+                        : curuser?.type === "admin"
+                        ? "admin"
+                        : curuser?.type === "nazoratchi"
+                        ? "Nazoratchi"
+                        : "Nomalum"}
+                    </p>
+                    <p className="job-email">{curuser.email || "Nomalum"}</p>
+                  </Nav.ProfileInfo>
+                </Nav>
+                <div></div>
+              </LoginPage>
+            </Modal>
           ) : reg ? (
             // *LOGIN
-            <LoginPage>
-              <LoginPageStyle>
-                <LoginPageHeader>
-                  <Title nav={"/"} title={"Hisobga Kirish"} />
-                </LoginPageHeader>
-                <LoginPageForm onSubmit={(e) => onSubmit(e)}>
-                  <InputLogin
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="example@mail.ru"
-                    type="email"
-                  />
-                  <InputLogin
-                    onChange={(e) => setPass(e.target.value)}
-                    placeholder="Password"
-                    type="password"
-                  />
-                  <button onClick={SignIn}>Kirish</button>
-                </LoginPageForm>
-                <LoginPageSignInFast>
-                  <LoginWithPopupButton
-                    className="google"
-                    onClick={SignInwithGoogle}
-                  >
-                    <div className="img">
-                      <img src={LogoGoogle} alt="google" />
-                    </div>
-                    <div className="txt">Google orqali kirish</div>
-                  </LoginWithPopupButton>
-                </LoginPageSignInFast>
-                <p>
+            <Modal
+              open={close}
+              onCancel={handleCancel}
+              footer={[
+                <p className="text-center text-[20px]">
                   Hisobingiz yo'qmi?
                   <span onClick={() => setReg(!reg)}> Ro'yxatdan o'tish</span>
-                </p>
-              </LoginPageStyle>
-            </LoginPage>
+                </p>,
+              ]}
+            >
+              <LoginPage>
+                <LoginPageStyle>
+                  <LoginPageHeader>
+                    <Title nav={"/"} title={"Hisobga Kirish"} />
+                  </LoginPageHeader>
+                  <LoginPageForm onSubmit={(e) => onSubmit(e)}>
+                    <InputLogin
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="example@mail.ru"
+                      type="email"
+                    />
+                    <InputLogin
+                      onChange={(e) => setPass(e.target.value)}
+                      placeholder="Password"
+                      type="password"
+                    />
+                    <button onClick={SignIn}>Kirish</button>
+                  </LoginPageForm>
+                  <LoginPageSignInFast>
+                    <LoginWithPopupButton
+                      className="google"
+                      onClick={SignInwithGoogle}
+                    >
+                      <div className="img">
+                        <img src={LogoGoogle} alt="google" />
+                      </div>
+                      <div className="txt">Google orqali kirish</div>
+                    </LoginWithPopupButton>
+                  </LoginPageSignInFast>
+                </LoginPageStyle>
+              </LoginPage>
+            </Modal>
           ) : (
             // *ROYXATDAN OTISH
-            <LoginPage>
-              <LoginPageStyle>
-                <LoginPageHeader>
-                  <Title nav={"/"} title={"Ro'yxatdan o'tish "} />
-                </LoginPageHeader>
-                <LoginPageForm onSubmit={(e) => onSubmit(e)}>
-                  <InputLogin
-                    onChange={(e) => setUser({ ...user, name: e.target.value })}
-                    placeholder="F.I.SH ni kiriting"
-                    type="text"
-                  />
-                  <InputLogin
-                    onChange={(e) => setUser({ ...user, date: e.target.value })}
-                    placeholder="Tug'ilgan yilingizni kiriting"
-                    type="number"
-                  />
-                  <InputLogin
-                    onChange={(e) =>
-                      setUser({ ...user, email: e.target.value })
-                    }
-                    placeholder="Elektron pochtangizni kiriting"
-                    type="email"
-                  />
-                  <InputLogin
-                    onChange={(e) =>
-                      setUser({ ...user, password: e.target.value })
-                    }
-                    placeholder="Parol oylab toping"
-                    type="password"
-                  />
-                  <InputLogin
-                    onChange={(e) =>
-                      setUser({ ...user, rePassword: e.target.value })
-                    }
-                    placeholder="Parolni takrorlang"
-                    type="password"
-                  />
+            <Modal
+              open={close}
+              footer={[
+                <p className="text-center text-[20px]">
+                  Hisobingiz yo'qmi?
+                  <span onClick={() => setReg(!reg)}> Kirish</span>
+                </p>,
+              ]}
+              onCancel={handleCancel}
+            >
+              <LoginPage>
+                <LoginPageStyle>
+                  <LoginPageHeader>
+                    <Title nav={"/"} title={"Ro'yxatdan o'tish "} />
+                  </LoginPageHeader>
+                  <LoginPageForm onSubmit={(e) => onSubmit(e)}>
+                    <InputLogin
+                      onChange={(e) =>
+                        setUser({ ...user, name: e.target.value })
+                      }
+                      placeholder="F.I.SH ni kiriting"
+                      type="text"
+                    />
+                    <InputLogin
+                      onChange={(e) =>
+                        setUser({ ...user, date: e.target.value })
+                      }
+                      placeholder="Tug'ilgan yilingizni kiriting"
+                      type="number"
+                    />
+                    <InputLogin
+                      onChange={(e) =>
+                        setUser({ ...user, email: e.target.value })
+                      }
+                      placeholder="Elektron pochtangizni kiriting"
+                      type="email"
+                    />
+                    <InputLogin
+                      onChange={(e) =>
+                        setUser({ ...user, password: e.target.value })
+                      }
+                      placeholder="Parol oylab toping"
+                      type="password"
+                    />
+                    <InputLogin
+                      onChange={(e) =>
+                        setUser({ ...user, rePassword: e.target.value })
+                      }
+                      placeholder="Parolni takrorlang"
+                      type="password"
+                    />
 
-                  <button onClick={RegNewUser}>Royxatdan otish</button>
-
-                  {regError.length ? <p>{regError}</p> : ""}
-
-                  <p>
-                    Hisobgiz Bormi?{" "}
-                    <span onClick={() => setReg(!reg)}>Kirish</span>
-                  </p>
-                </LoginPageForm>
-              </LoginPageStyle>
-            </LoginPage>
+                    <button onClick={RegNewUser}>Royxatdan otish</button>
+                  </LoginPageForm>
+                </LoginPageStyle>
+              </LoginPage>
+            </Modal>
           )}
         </>
       ) : (

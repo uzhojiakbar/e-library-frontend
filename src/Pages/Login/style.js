@@ -184,8 +184,6 @@ const LoginWithPopupButton = styled.button`
 
 const Nav = styled.div`
   margin: 5px 0;
-  /* min-width: 140px; */
-  /* height: 140px; */
   display: flex;
   align-items: center;
 

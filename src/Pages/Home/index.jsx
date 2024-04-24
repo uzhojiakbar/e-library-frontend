@@ -14,7 +14,7 @@ const Home = ({
   books = [],
   setBook,
   users,
-  getCategories
+  getCategories,
 }) => {
   const query = useParams();
   const [user] = useState(JSON.parse(localStorage.getItem("user")) || {});
@@ -27,6 +27,7 @@ const Home = ({
           categories={categories}
           users={users}
           setCategories={setCategories}
+          books={books}
         />
       ) : (
         ""

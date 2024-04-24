@@ -6,7 +6,13 @@ import { AdminContainer } from "./style";
 import CategoryAdmin from "src/components/CategoryAdmin";
 import ToplamAdmin from "src/components/ToplamAdmin";
 
-const Admin = ({ categories, setCategories, FilerCategories, users }) => {
+const Admin = ({
+  categories,
+  books,
+  setCategories,
+  FilerCategories,
+  users,
+}) => {
   const [page, setPage] = useState("admin");
 
   FilerCategories(1);
@@ -98,7 +104,7 @@ const Admin = ({ categories, setCategories, FilerCategories, users }) => {
           ""
         )}
 
-        {page === "toplam" ? <ToplamAdmin /> : ""}
+        {page === "toplam" ? <ToplamAdmin books={books} /> : ""}
       </AdminContainer>
       <Toaster />
     </>

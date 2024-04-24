@@ -55,7 +55,7 @@ const CategoryAdmin = ({ categories, FilerCategories, notify }) => {
 
   return (
     <div
-      className={`w-[100%] max-w-[100vw] flex flex-col gap-[40px] border-red-600 gap-[30px]`}
+      className={`w-[100%] max-w-[100vw] flex flex-col  border-red-600 gap-[30px]`}
     >
       <div className="flex flex-col gap-[40px] flex-1">
         <div className="flex gap-[10px]">

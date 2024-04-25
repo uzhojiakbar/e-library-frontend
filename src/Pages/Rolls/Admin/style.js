@@ -44,7 +44,6 @@ const AdminContainer = styled.div`
       padding: 5px 10px;
       color: white;
 
-
      
     }
 

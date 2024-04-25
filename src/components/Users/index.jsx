@@ -30,8 +30,6 @@ const Users = ({ users }) => {
     { field: "pass", headerName: "Parol", width: "200" },
     { field: "type", headerName: "status", width: "200" },
   ];
-  let edit = false;
-
   return (
     <div>
       <div className="flex flex-col gap-[20px]">

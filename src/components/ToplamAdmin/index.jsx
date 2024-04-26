@@ -57,6 +57,7 @@ const ToplamAdmin = ({ books, notify }) => {
       handleCancel();
     } catch (error) {
       console.log(error);
+      notify("err", "Toplam qoshilmadi, Qandaydur xatolik!");
     }
   };
 

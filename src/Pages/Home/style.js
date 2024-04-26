@@ -4,32 +4,19 @@ export const HomeContainer = styled.div`
   padding: var(--padding);
 `;
 
-const Book = styled.div``;
-
 const Container = styled.div`
   background: #e2e2e2;
   width: 100%;
 `;
 
 const ProductPage = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-
   margin: 0 auto;
-  gap: 40px;
-  padding: 20px 0;
+  gap: 20px;
 
-  @media (max-width: 1100px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  @media (max-width: 700px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media (max-width: 500px) {
-    grid-template-columns: repeat(1, 1fr);
+  display: flex;
+  flex-direction: column;
 
-    padding: 16px 24px;
-  }
+  padding: 20px;
 `;
 const ProductCard = styled.div`
   background: #ffffff;
@@ -42,8 +29,6 @@ const ProductCard = styled.div`
     background-size: cover;
     background-repeat: no-repeat;
   }
-
- 
 `;
 const CardText = styled.div`
   display: flex;
@@ -129,6 +114,70 @@ const CardText = styled.div`
     }
   }
 `;
-export { Container, ProductPage, ProductCard, CardText };
 
-export { Book };
+const Books = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+
+  padding: 20px 0;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 700px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 500px) {
+    grid-template-columns: repeat(1, 1fr);
+
+    padding: 16px 24px;
+  }
+`;
+
+const ChangeView = styled.div`
+  background-color: #001869;
+  margin: 10px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  padding: 10px 5px;
+  gap: 5px;
+
+  .active {
+    color: #001869;
+    background-color: white;
+  }
+
+  .seperator {
+    height: 90%;
+    width: 3px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 5px;
+  }
+`;
+const View = styled.div`
+  padding: 4px 10px;
+  color: white;
+  font-family: Poppins;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+
+    color: #001869;
+  }
+`;
+
+export {
+  Container,
+  Books,
+  View,
+  ChangeView,
+  ProductPage,
+  ProductCard,
+  CardText,
+};

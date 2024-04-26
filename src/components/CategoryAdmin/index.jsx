@@ -39,6 +39,7 @@ const CategoryAdmin = ({ categories, FilerCategories, notify }) => {
       });
       notify("ok", "Kategoriya qoshildi!");
     } catch (error) {
+      console.log(error);
       notify("err", "Qandaydur xatolik!");
     }
   };

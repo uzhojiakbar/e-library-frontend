@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, HomeContainer, ProductPage } from "./style";
+import { Books, Container, HomeContainer, ProductPage } from "./style";
 import Admin from "../Rolls/Admin";
 import Nazoratchi from "../Rolls/Nazoratchi";
 import User from "../Rolls/User";
@@ -46,17 +46,19 @@ const Home = ({
   ) : (
     <HomeContainer>
       <ProductPage>
-        {[1, 2, 3, 4, 5, 6, 7, 8].map((v) => {
-          return (
-            <div key={v} className="flex flex-col space-y-3 pt-18">
-              <Skeleton className="h-[250px] w-[250px] rounded-xl" />
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-[250px]" />
-                <Skeleton className="h-4 w-[200px]" />
+        <Books>
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((v) => {
+            return (
+              <div key={v} className="flex flex-col space-y-3 pt-18">
+                <Skeleton className="h-[250px] w-[250px] rounded-xl" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-[250px]" />
+                  <Skeleton className="h-4 w-[200px]" />
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </Books>
       </ProductPage>
     </HomeContainer>
   );

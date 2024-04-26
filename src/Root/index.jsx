@@ -123,7 +123,10 @@ const Root = () => {
         />
 
         {/*  */}
-        <Route path="/toplam/:toplam" element={<ToplamView />} />
+        <Route
+          path="/toplam/:toplamId"
+          element={<ToplamView toplam={toplam} books={books} />}
+        />
         {/*  */}
         <Route
           path="/search/:q"

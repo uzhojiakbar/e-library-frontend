@@ -1,16 +1,56 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
-import { Avatar, Card, Input, Modal } from "antd";
+import { Card, Checkbox, Input, Modal } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import Meta from "antd/es/card/Meta";
+import { Toplam, ToplamCard } from "./style";
+import { ButtonUpload } from "src/Pages/FIleUpload/style";
+// import { addDoc, collection } from "firebase/firestore";
+// import { db } from "src/config/firebase";
 
 const ToplamAdmin = ({ books }) => {
   const [openModal, setOpenModal] = useState(false);
+
+  const [bookInner, setBookInner] = useState(books);
+
+  const [search, setSearch] = useState("");
 
   const handleClose = () => setOpenModal(!openModal);
 
   const handleCancel = () => {
     setOpenModal(false);
+  };
+
+  const onChecked = (id, status) => {
+    let res = bookInner.map((v) => {
+      return v.id === id ? { ...v, checked: status } : v;
+    });
+    setBookInner(res);
+  };
+
+  const UploadToplam = async () => {
+    console.log("uplaod");
+
+    let resBooks = [];
+
+    await bookInner.map((v) => {
+      return v.checked ? resBooks.push(v) : "";
+    });
+
+    console.log(resBooks);
+
+    // const toplamCollection = collection(db, "toplam");
+
+    // const doc = {
+    //   name: "name",
+    //   desc: "desc",
+    //   books: [],
+    // };
+
+    // try {
+    //   await addDoc(toplamCollection, doc);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (
@@ -23,7 +63,26 @@ const ToplamAdmin = ({ books }) => {
         title="Toplam qoshish"
         open={openModal}
         onCancel={handleCancel}
-        footer={[<button>qoshish</button>]}
+        footer={[
+          <div className="buttons w-[100%] flex justify-between">
+            <ButtonUpload
+              onClick={handleCancel}
+              type="reset"
+              color="red"
+              className="button "
+            >
+              Bekor qilish
+            </ButtonUpload>
+            <ButtonUpload
+              onClick={UploadToplam}
+              type="close"
+              color="green"
+              className="button "
+            >
+              Toplamni yuklash
+            </ButtonUpload>
+          </div>,
+        ]}
       >
         <div className="flex flex-col gap-[20px] pt-[20px] pb-[20px]">
           <Input
@@ -41,46 +100,38 @@ const ToplamAdmin = ({ books }) => {
             }}
             placeholder="Toplam haqida malumot kiriting"
           />
-          <div className="flex gap-[20px]">
-            <Card
-              style={{
-                width: 200,
-              }}
-              cover={
-                <img
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-              }
-            >
-              <Meta
-                avatar={
-                  <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
-                }
-                title="Card title"
-                description="This is the description"
+          <Card title="Kitoblarni tanlang" type="inner">
+            <div className="flex flex-col gap-[15px]">
+              <Input
+                showCount
+                type="text"
+                placeholder="Kitob qidirish"
+                onChange={(e) => setSearch(e.target.value)}
               />
-            </Card>
-            <Card
-              style={{
-                width: 200,
-              }}
-              cover={
-                <img
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-              }
-            >
-              <Meta
-                avatar={
-                  <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
-                }
-                title="Card title"
-                description="This is the description"
-              />
-            </Card>
-          </div>
+              <Toplam>
+                {bookInner.map((v) => {
+                  return (
+                    v.name.toLowerCase().includes(search.toLowerCase()) && (
+                      <Card>
+                        <ToplamCard>
+                          <Checkbox
+                            checked={v?.checked}
+                            onChange={(e) => onChecked(v.id, e.target.checked)}
+                          >
+                            <div className="inner">
+                              <div>{v.name}</div>
+                              <div>{v.muallif}</div>
+                              <div>{v.year}</div>
+                            </div>
+                          </Checkbox>
+                        </ToplamCard>
+                      </Card>
+                    )
+                  );
+                })}
+              </Toplam>
+            </div>
+          </Card>
         </div>
       </Modal>
     </div>

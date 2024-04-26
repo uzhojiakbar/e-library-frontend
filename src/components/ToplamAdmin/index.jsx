@@ -4,13 +4,15 @@ import { Card, Checkbox, Input, Modal } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { Toplam, ToplamCard } from "./style";
 import { ButtonUpload } from "src/Pages/FIleUpload/style";
-// import { addDoc, collection } from "firebase/firestore";
-// import { db } from "src/config/firebase";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "src/config/firebase";
 
-const ToplamAdmin = ({ books }) => {
+const ToplamAdmin = ({ books, notify }) => {
   const [openModal, setOpenModal] = useState(false);
 
   const [bookInner, setBookInner] = useState(books);
+  const [name, setname] = useState("");
+  const [desc, setDesc] = useState("");
 
   const [search, setSearch] = useState("");
 
@@ -38,19 +40,24 @@ const ToplamAdmin = ({ books }) => {
 
     console.log(resBooks);
 
-    // const toplamCollection = collection(db, "toplam");
+    const toplamCollection = collection(db, "toplam");
 
-    // const doc = {
-    //   name: "name",
-    //   desc: "desc",
-    //   books: [],
-    // };
+    const doc = {
+      name: name || "nomalum",
+      desc: desc || "nomalum",
+    };
 
-    // try {
-    //   await addDoc(toplamCollection, doc);
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    console.log({ ...doc, books: resBooks });
+
+    try {
+      await addDoc(toplamCollection, { ...doc, books: resBooks });
+      setname("");
+      setDesc("");
+      notify("ok", "Toplam qoshildi!");
+      handleCancel();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -69,7 +76,7 @@ const ToplamAdmin = ({ books }) => {
               onClick={handleCancel}
               type="reset"
               color="red"
-              className="button "
+              className="button"
             >
               Bekor qilish
             </ButtonUpload>
@@ -90,15 +97,19 @@ const ToplamAdmin = ({ books }) => {
             maxLength={64}
             type="text"
             placeholder="Toplam nomini kiriting"
+            value={name}
+            onChange={(e) => setname(e.target.value)}
           />
           <TextArea
             showCount
+            value={desc}
             maxLength={1024}
             autoSize={{
               minRows: 2,
               maxRows: 12,
             }}
             placeholder="Toplam haqida malumot kiriting"
+            onChange={(e) => setDesc(e.target.value)}
           />
           <Card title="Kitoblarni tanlang" type="inner">
             <div className="flex flex-col gap-[15px]">

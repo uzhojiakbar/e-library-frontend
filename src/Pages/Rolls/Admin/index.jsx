@@ -22,7 +22,6 @@ const Admin = ({
     { id: 3, page: "toplam", name: "Toplamlar" },
   ];
 
-
   const notify = (type = "ok", text) => {
     if (type === "ok") {
       toast.success(text || "Tayyor");
@@ -32,7 +31,6 @@ const Admin = ({
       toast.loading(text || "Kuting...");
     }
   };
-
 
   return (
     <>
@@ -61,13 +59,9 @@ const Admin = ({
         ) : (
           ""
         )}
-        {page === "user" ? (
-          <Users users={users} />
-        ) : (
-          ""
-        )}
+        {page === "user" ? <Users users={users} /> : ""}
 
-        {page === "toplam" ? <ToplamAdmin books={books} /> : ""}
+        {page === "toplam" ? <ToplamAdmin notify={notify} books={books} /> : ""}
       </AdminContainer>
       <Toaster />
     </>

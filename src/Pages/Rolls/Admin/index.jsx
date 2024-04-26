@@ -12,6 +12,7 @@ const Admin = ({
   setCategories,
   FilerCategories,
   users,
+  toplam,
 }) => {
   const [page, setPage] = useState("admin");
 
@@ -63,7 +64,11 @@ const Admin = ({
         )}
         {page === "user" ? <Users users={users} /> : ""}
 
-        {page === "toplam" ? <ToplamAdmin notify={notify} books={books} /> : ""}
+        {page === "toplam" ? (
+          <ToplamAdmin toplam={toplam} notify={notify} books={books} />
+        ) : (
+          ""
+        )}
         {page === "kitoblar" ? (
           <ToplamAdmin notify={notify} books={books} />
         ) : (

@@ -15,6 +15,7 @@ const Home = ({
   setBook,
   users,
   getCategories,
+  toplam,
 }) => {
   const query = useParams();
   const [user] = useState(JSON.parse(localStorage.getItem("user")) || {});
@@ -28,6 +29,7 @@ const Home = ({
           users={users}
           setCategories={setCategories}
           books={books}
+          toplam={toplam}
         />
       ) : (
         ""
@@ -35,7 +37,7 @@ const Home = ({
       <Container>
         {user?.type === "nazoratchi" ? <Nazoratchi books={books} /> : ""}
         {user?.type === "user" || user?.type === undefined ? (
-          <User q={query.q} books={books} />
+          <User toplam={toplam} q={query.q} books={books} />
         ) : (
           ""
         )}

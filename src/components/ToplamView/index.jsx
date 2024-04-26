@@ -1,7 +1,9 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 
 const ToplamView = () => {
-  return <div>ToplamView</div>;
+  const { toplam } = useParams();
+  return <div>{toplam || "not"}</div>;
 };
 
 export default ToplamView;

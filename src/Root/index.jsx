@@ -10,6 +10,7 @@ import Book from "../components/Book";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../config/firebase";
 import FileUpload from "../Pages/FIleUpload";
+import ToplamView from "src/components/ToplamView";
 
 const Root = () => {
   const [isLogin, setIsLogin] = [localStorage.getItem("login")];
@@ -18,6 +19,7 @@ const Root = () => {
 
   const [CurrentBooks, setCurrentBooks] = useState("");
   const [books, setBook] = useState([]);
+  const [toplam, setToplam] = useState([]);
   const [users, setUsers] = useState([]);
 
   const FilerCategories = (filter) => {
@@ -58,6 +60,20 @@ const Root = () => {
       } catch (error) {}
     }
   };
+
+  const getToplam = async () => {
+    if (toplam.length === 0) {
+      try {
+        const ToplamCollection = collection(db, "toplam");
+        const data = await getDocs(ToplamCollection);
+        const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
+        console.log("Data: ", data);
+        setToplam(getData);
+        console.log("Toplam: ", toplam);
+        console.log("Toplam yuklandi");
+      } catch (error) {}
+    }
+  };
   const getUsers = async () => {
     if (books.length === 0) {
       try {
@@ -72,6 +88,7 @@ const Root = () => {
   };
 
   getBooks();
+  getToplam();
   getUsers();
   getCategories();
 
@@ -84,6 +101,7 @@ const Root = () => {
           path={"/"}
           element={
             <Home
+              toplam={toplam}
               FilerCategories={FilerCategories}
               categories={categories}
               setCategories={setCategories}
@@ -103,6 +121,10 @@ const Root = () => {
             <Book books={books} setBook={setBook} CurrentBooks={CurrentBooks} />
           }
         />
+
+        {/*  */}
+        <Route path="/toplam/:toplam" element={<ToplamView />} />
+        {/*  */}
         <Route
           path="/search/:q"
           element={

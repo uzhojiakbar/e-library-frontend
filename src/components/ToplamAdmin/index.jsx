@@ -7,7 +7,7 @@ import { ButtonUpload } from "src/Pages/FIleUpload/style";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "src/config/firebase";
 
-const ToplamAdmin = ({ books, notify }) => {
+const ToplamAdmin = ({ books, notify, toplam }) => {
   const [openModal, setOpenModal] = useState(false);
 
   const [bookInner, setBookInner] = useState(books);

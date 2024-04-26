@@ -16,7 +16,7 @@ import {
 import Book from "../../../components/Book";
 import { Card, List } from "antd";
 import { NavLink } from "react-router-dom";
-const User = ({ books = [], q = "" }) => {
+const User = ({ books = [], q = "", toplam }) => {
   const [view, setView] = useState("book");
   //* book,toplam
 
@@ -73,19 +73,17 @@ const User = ({ books = [], q = "" }) => {
       {view === "toplam" ? (
         <List
           itemLayout="vertical"
-          dataSource={[{ title: "Toplam nomi" }, { title: "Toplam nomi" }]}
+          dataSource={toplam}
           renderItem={(item, index) => (
-            <NavLink to={"/toplam/id"}>
+            <NavLink to={`/toplam/${item.id}`}>
               <Card style={{ margin: "10px", cursor: "pointer" }}>
                 <List.Item>
                   <List.Item.Meta
                     avatar={
                       <i className="fa-solid fa-book text-[30px] text-[#001869]"></i>
                     }
-                    title={<div>{item.title}</div>}
-                    description={
-                      <h1 className="text-[18px]">Toplam haqida malumot</h1>
-                    }
+                    title={<div>{item.name}</div>}
+                    description={<h1 className="text-[18px]">{item.desc}</h1>}
                   />
                 </List.Item>
               </Card>

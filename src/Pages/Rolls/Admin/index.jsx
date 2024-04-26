@@ -4,6 +4,7 @@ import { AdminContainer } from "./style";
 import CategoryAdmin from "src/components/CategoryAdmin";
 import ToplamAdmin from "src/components/ToplamAdmin";
 import Users from "src/components/Users";
+import Nazoratchi from "../Nazoratchi";
 
 const Admin = ({
   categories,
@@ -20,6 +21,7 @@ const Admin = ({
     { id: 1, page: "ctg", name: "Kategoriya sozlamari" },
     { id: 2, page: "user", name: "Foydaluvchilar" },
     { id: 3, page: "toplam", name: "Toplamlar" },
+    { id: 4, page: "kitob", name: "Kitoblar" },
   ];
 
   const notify = (type = "ok", text) => {
@@ -62,6 +64,12 @@ const Admin = ({
         {page === "user" ? <Users users={users} /> : ""}
 
         {page === "toplam" ? <ToplamAdmin notify={notify} books={books} /> : ""}
+        {page === "kitoblar" ? (
+          <ToplamAdmin notify={notify} books={books} />
+        ) : (
+          ""
+        )}
+        {page === "kitob" ? <Nazoratchi books={books} /> : ""}
       </AdminContainer>
       <Toaster />
     </>

@@ -108,7 +108,8 @@ const Book = ({ id, books, setBook }) => {
             >
               Kitobni korish
             </ButtonLink>
-            {user?.type === "nazoratchi" && BookCurrent?.hidden ? (
+            {(user?.type === "nazoratchi" || user?.type === "admin") &&
+            BookCurrent?.hidden ? (
               <ButtonLink
                 onClick={AcceptBook}
                 className="bg-slate-700 hover:bg-slate-600 button"

@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { db, storage } from "../../config/firebase";
 
-import { ref, uploadBytes } from "firebase/storage";
 import {
   AuthError,
   ButtonUpload,
@@ -14,17 +12,12 @@ import {
 
 import NotFound from "../../assets/icon/NotFound.svg";
 import { useNavigate } from "react-router-dom";
-import { addDoc, collection } from "firebase/firestore";
 import { Modal } from "antd";
 
 const FileUpload = ({ categories, FilerCategories }) => {
   const [file, setFile] = useState([]);
   const [isLogin] = useState(localStorage.getItem("login"));
-  const [close, setClose] = useState(1);
-
-  const [err, setErr] = useState([]);
-
-  console.log(err);
+  const [close] = useState(1);
 
   const [FileObj, setFileObj] = useState({
     name: "",
@@ -34,6 +27,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
     nashriyot: "",
     ctg: "",
     desc: "",
+    tili: "",
     pics: [],
   });
 
@@ -47,68 +41,110 @@ const FileUpload = ({ categories, FilerCategories }) => {
 
   const nav = useNavigate();
 
-  const FilesCollection = collection(db, "files");
-
   const CreateDoc = async (doc) => {
     try {
-      await addDoc(FilesCollection, doc);
+      await fetch("http://localhost:3030/books", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(doc),
+      })
+        .then((response) => response.text())
+        .then((result) => {
+          console.log(result);
+          // Muvaffaqiyatli yuborilganligini ko'rsatish
+        })
+        .catch((error) => console.error("Xatolik:", error));
+      // await addDoc(FilesCollection, doc);
     } catch (error) {
       console.log(error);
     }
   };
 
   const FileUpload = async () => {
-    setErr("");
     if (!file.length) {
-      setErr("Oldin file tanlang");
+      console.log("Oldin file tanlang");
       return false;
     } else if (file[0].size > 31_800_000) {
-      setErr("Fayl hajmi 30 mb dan katta");
+      console.log("Fayl hajmi 30 mb dan katta");
       return false;
     }
 
-    const fileLocaton = `files/${file[0].name}`;
-    const Pic1Locaton = `pics/${Picture?.pic1?.name}`;
-    const Pic2Locaton = `pics/${Picture?.pic2?.name}`;
-    const Pic3Locaton = `pics/${Picture?.pic3?.name}`;
-    const fileRef = ref(storage, fileLocaton);
-    const Pic1Ref = ref(storage, Pic1Locaton);
-    const Pic2Ref = ref(storage, Pic2Locaton);
-    const Pic3Ref = ref(storage, Pic3Locaton);
+    const fileLocaton = `files/books/${file[0].name}`;
+    const Pic1Locaton = `files/pics/${Picture?.pic1?.name}`;
+    const Pic2Locaton = `files/pics/${Picture?.pic2?.name}`;
+    const Pic3Locaton = `files/pics/${Picture?.pic3?.name}`;
+
+    const formData = new FormData();
+    const PicData1 = new FormData();
+    const PicData2 = new FormData();
+    const PicData3 = new FormData();
 
     try {
+      await formData.append("file", file[0]);
+      await PicData1.append("image", Picture.pic1);
+      await PicData2.append("image", Picture.pic2);
+      await PicData3.append("image", Picture.pic3);
+
       await setUploadPrcnt(["Fayl yuklanmoqda", 0]);
-      await uploadBytes(fileRef, file[0]);
+
+      fetch("http://localhost:3030/uploadFile", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.text())
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => console.error("Xatolik:", error));
+
       await setUploadPrcnt(["Birinchi surat yuklanmoqda", 20]);
-      await uploadBytes(Pic1Ref, Picture?.pic1);
-      await setUploadPrcnt(["Ikkinchi surat yuklanoqda", 40]);
-      await uploadBytes(Pic2Ref, Picture?.pic2);
-      await setUploadPrcnt(["Uchinchi surat yuklanoqda", 60]);
-      await uploadBytes(Pic3Ref, Picture?.pic3);
-      await setUploadPrcnt(["Kitob nazoratchiga yuborilmoqda", 80]);
+      fetch("http://localhost:3030/uploadPic", {
+        method: "POST",
+        body: PicData1,
+      })
+        .then((response) => response.text())
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => console.error("Xatolik:", error));
+
+      await setUploadPrcnt(["Ikkinchi surat yuklanmoqda", 40]);
+      fetch("http://localhost:3030/uploadPic", {
+        method: "POST",
+        body: PicData2,
+      })
+        .then((response) => response.text())
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => console.error("Xatolik:", error));
+
+      await setUploadPrcnt(["Uchinchi surat yuklanmoqda", 60]);
+      fetch("http://localhost:3030/uploadPic", {
+        method: "POST",
+        body: PicData3,
+      })
+        .then((response) => response.text())
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => console.error("Xatolik:", error));
+
+      await setUploadPrcnt(["Nazoratchiga yuborilmoqda", 80]);
+
       await CreateDoc({
         ...FileObj,
         path: fileLocaton,
         hidden: true,
-        pics: [
-          `pics/${Picture?.pic1?.name || ""}`,
-          `pics/${Picture?.pic2?.name || ""}`,
-          `pics/${Picture?.pic3?.name || ""}`,
-        ],
+        pics: [Pic1Locaton || "", Pic2Locaton || "", Pic3Locaton || ""],
       });
       await setUploadPrcnt(["Tayyor", 100]);
-      await onClose();
+      handleCancel();
     } catch (err) {
       console.error(err);
     }
-  };
-
-  const onClose = () => {
-    setClose(1);
-    setFile([]);
-    setTimeout(() => {
-      nav("/");
-    }, 300);
   };
 
   const handleCancel = () => {
@@ -235,6 +271,12 @@ const FileUpload = ({ categories, FilerCategories }) => {
               type="number"
             />
             <input
+              onChange={(e) => setFileObj({ ...FileObj, tili: e.target.value })}
+              className="Info-input"
+              placeholder="Adabiyot tili"
+              type="text"
+            />
+            <input
               onChange={(e) =>
                 setFileObj({ ...FileObj, nashriyot: e.target.value })
               }
@@ -270,7 +312,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
             type="reset"
             color="red"
             className="button "
-            onClick={onClose}
+            onClick={handleCancel}
           >
             Bekor qilish
           </ButtonUpload>

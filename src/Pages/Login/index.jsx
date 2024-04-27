@@ -245,7 +245,6 @@ const Login = ({ setLoginMenu }) => {
   };
 
   const IsMobile = useMediaQuery("(max-width : 605px)");
-  console.log(IsMobile);
 
   return IsMobile ? (
     <>

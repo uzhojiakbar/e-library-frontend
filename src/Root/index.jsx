@@ -22,11 +22,12 @@ const Root = () => {
   const [toplam, setToplam] = useState([]);
   const [users, setUsers] = useState([]);
 
+
   const FilerCategories = (filter) => {
     if (filter) {
       const data = categories.sort((a, b) => a.idForFilter - b.idForFilter);
       setCategories(data);
-      console.log("Kategoriyalar filterlandi!");
+      // console.log("Kategoriyalar filterlandi!");
       console.log(data);
     }
   };
@@ -40,7 +41,7 @@ const Root = () => {
 
         setCategories(getData);
 
-        console.log("Categoriya yuklandi!");
+        // console.log("Categoriya yuklandi!");
       } catch (error) {
         console.error(error);
         console.log("Categoriya yuklanmadi!");
@@ -51,13 +52,14 @@ const Root = () => {
   const getBooks = async () => {
     if (books.length === 0) {
       try {
-        const BookCollection = collection(db, "files");
-        const data = await getDocs(BookCollection);
-        const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
-        setBook(getData);
-        setCurrentBooks(getData);
-        console.log("Kitoblar yuklandi");
-      } catch (error) {}
+        await fetch('http://localhost:3030/books').then((response) => response.json())
+          .then((result) => {
+            setBook(result);
+            setCurrentBooks(result);
+          })
+          .catch((error) => console.error("Xatolik:", error));
+        // console.log("Kitoblar yuklandi");
+      } catch (error) { }
     }
   };
 
@@ -67,23 +69,23 @@ const Root = () => {
         const ToplamCollection = collection(db, "toplam");
         const data = await getDocs(ToplamCollection);
         const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
-        console.log("Data: ", data);
+        // console.log("Data: ", data);
         setToplam(getData);
-        console.log("Toplam: ", toplam);
-        console.log("Toplam yuklandi");
-      } catch (error) {}
+        // console.log("Toplam: ", toplam);
+        // console.log("Toplam yuklandi");
+      } catch (error) { }
     }
   };
   const getUsers = async () => {
-    if (books.length === 0) {
+    if (users.length === 0) {
       try {
         const UserCollection = collection(db, "users");
         const data = await getDocs(UserCollection);
         const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
         setUsers(getData);
-        console.log(getData);
-        console.log("Foydaluvchilar yuklandi");
-      } catch (error) {}
+        // console.log(getData);
+        // console.log("Foydaluvchilar yuklandi");
+      } catch (error) { }
     }
   };
 

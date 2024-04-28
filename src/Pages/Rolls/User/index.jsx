@@ -18,6 +18,11 @@ import { Card, List } from "antd";
 import { NavLink } from "react-router-dom";
 const User = ({ books = [], q = "", toplam }) => {
   const [view, setView] = useState("book");
+
+  const GetPic = (name) => {
+    return `http://localhost:3030/files/${name.slice(6)}`;
+  }
+
   //* book,toplam
 
   return (
@@ -38,6 +43,7 @@ const User = ({ books = [], q = "", toplam }) => {
         <div className="seperator"></div>
       </ChangeView>
       {view === "book" ? (
+
         <ProductPage>
           <Books>
             {books.map(
@@ -47,10 +53,7 @@ const User = ({ books = [], q = "", toplam }) => {
                   <Drawer key={v.id}>
                     <DrawerTrigger asChild>
                       <ProductCard
-                        url={`https://firebasestorage.googleapis.com/v0/b/ochiqkutubxona-d034a.appspot.com/o/pics%2F${v.pics[0].slice(
-                          5
-                        )}?alt=media&token=27b56b0f-821a-45ae-9ccb-f282a53987fd`}
-                        key={v.id}
+                        url={GetPic(v.pics[0])}
                       >
                         <div className="img"></div>
                         <CardText>
@@ -67,6 +70,15 @@ const User = ({ books = [], q = "", toplam }) => {
             )}
           </Books>
         </ProductPage>
+        // <div>
+        //   {
+        //     books.map((v) => {
+        //       return <>
+        //         {v.name}
+        //         <img src={GetPic(v.pics[0])} style={{ width: '100%' }} alt="asas" /></>
+        //     })
+        //   }
+        // </div>
       ) : (
         ""
       )}

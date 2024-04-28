@@ -59,9 +59,26 @@ const Book = ({ id, books, setBook }) => {
     return a[0]?.name;
   };
 
-  const GetPic = (name) => {
+  const getPic = (name) => {
     return `http://localhost:3030/files/${name.slice(6)}`;
   }
+
+
+  const onDownloadFile = (src, name) => {
+    console.log(src);
+    fetch(`http://localhost:3030/${src}`)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${src}`;
+        document.body.appendChild(link);
+        link.click();
+        URL.revokeObjectURL(url);
+        link.remove();
+      });
+  };
 
   return BookCurrent ? (
     <Container>
@@ -71,7 +88,7 @@ const Book = ({ id, books, setBook }) => {
             <div key={i} className="carusel-img">
               <img
                 onClick={() => setPicId(i)}
-                src={GetPic(v2)}
+                src={getPic(v2)}
                 alt="loading..."
               />
             </div>
@@ -79,7 +96,7 @@ const Book = ({ id, books, setBook }) => {
         </div>
         <div className="currentPic">
           <img
-            src={GetPic(BookCurrent.pics[picid])}
+            src={getPic(BookCurrent.pics[picid])}
             alt="loading...."
           />
         </div>
@@ -106,14 +123,13 @@ const Book = ({ id, books, setBook }) => {
           <div className="desc">{BookCurrent?.desc}</div>
           <div className="flex gap-[20px]">
             <ButtonLink
-              href={`https://firebasestorage.googleapis.com/v0/b/ochiqkutubxona-d034a.appspot.com/o/files%2F${BookCurrent.path.slice(
-                6
-              )}?alt=media&token=864fc05d-344c-4dd6-81f7-243b5451021b`}
+              href={getPic(BookCurrent.path)}
               className="bg-slate-700 hover:bg-slate-600 button"
               target="_blank"
             >
               Kitobni korish
             </ButtonLink>
+
             {(user?.type === "nazoratchi" || user?.type === "admin") &&
               BookCurrent?.hidden ? (
               <ButtonLink
@@ -123,7 +139,13 @@ const Book = ({ id, books, setBook }) => {
                 Ruhsat berish
               </ButtonLink>
             ) : (
-              ""
+              <ButtonLink
+                onClick={() => onDownloadFile(BookCurrent.path)}
+                className="bg-slate-700 hover:bg-slate-600 button"
+                target="_blank"
+              >
+                Kitobni yuklash
+              </ButtonLink>
             )}
           </div>
         </div>

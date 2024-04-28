@@ -53,10 +53,8 @@ const FileUpload = ({ categories, FilerCategories }) => {
         .then((response) => response.text())
         .then((result) => {
           console.log(result);
-          // Muvaffaqiyatli yuborilganligini ko'rsatish
         })
         .catch((error) => console.error("Xatolik:", error));
-      // await addDoc(FilesCollection, doc);
     } catch (error) {
       console.log(error);
     }
@@ -142,6 +140,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
       });
       await setUploadPrcnt(["Tayyor", 100]);
       handleCancel();
+      document.location.reload()
     } catch (err) {
       console.error(err);
     }

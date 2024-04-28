@@ -30,12 +30,13 @@ const Home = ({
           setCategories={setCategories}
           books={books}
           toplam={toplam}
+          q={query.q}
         />
       ) : (
         ""
       )}
       <Container>
-        {user?.type === "nazoratchi" ? <Nazoratchi books={books} /> : ""}
+        {user?.type === "nazoratchi" ? <Nazoratchi q={query.q} books={books} /> : ""}
         {user?.type === "user" || user?.type === undefined ? (
           <User toplam={toplam} q={query.q} books={books} />
         ) : (

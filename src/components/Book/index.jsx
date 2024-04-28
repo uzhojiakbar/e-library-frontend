@@ -33,9 +33,15 @@ const Book = ({ id, books, setBook }) => {
 
   getCategories();
 
-  const getBook = () => {
-    if (!BookCurrent) {
-      books.filter((v) => (v.id === id ? setBookInfo(v) : ""));
+  const getBook = async () => {
+    if (!BookCurrent.name) {
+      try {
+        await fetch(`http://localhost:3030/book/${id}`).then((response) => response.json())
+          .then((result) => {
+            setBookInfo(result)
+          })
+          .catch((error) => console.error("Xatolik:", error));
+      } catch (error) { }
     }
   };
 
@@ -53,6 +59,10 @@ const Book = ({ id, books, setBook }) => {
     return a[0]?.name;
   };
 
+  const GetPic = (name) => {
+    return `http://localhost:3030/files/${name.slice(6)}`;
+  }
+
   return BookCurrent ? (
     <Container>
       <Images>
@@ -61,9 +71,7 @@ const Book = ({ id, books, setBook }) => {
             <div key={i} className="carusel-img">
               <img
                 onClick={() => setPicId(i)}
-                src={`https://firebasestorage.googleapis.com/v0/b/ochiqkutubxona-d034a.appspot.com/o/pics%2F${v2.slice(
-                  5
-                )}?alt=media&token=27b56b0f-821a-45ae-9ccb-f282a53987fd`}
+                src={GetPic(v2)}
                 alt="loading..."
               />
             </div>
@@ -71,10 +79,8 @@ const Book = ({ id, books, setBook }) => {
         </div>
         <div className="currentPic">
           <img
-            src={`https://firebasestorage.googleapis.com/v0/b/ochiqkutubxona-d034a.appspot.com/o/pics%2F${BookCurrent.pics[
-              picid
-            ].slice(5)}?alt=media&token=27b56b0f-821a-45ae-9ccb-f282a53987fd`}
-            alt=""
+            src={GetPic(BookCurrent.pics[picid])}
+            alt="loading...."
           />
         </div>
       </Images>
@@ -109,7 +115,7 @@ const Book = ({ id, books, setBook }) => {
               Kitobni korish
             </ButtonLink>
             {(user?.type === "nazoratchi" || user?.type === "admin") &&
-            BookCurrent?.hidden ? (
+              BookCurrent?.hidden ? (
               <ButtonLink
                 onClick={AcceptBook}
                 className="bg-slate-700 hover:bg-slate-600 button"

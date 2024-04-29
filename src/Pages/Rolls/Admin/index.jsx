@@ -6,17 +6,8 @@ import ToplamAdmin from "src/components/ToplamAdmin";
 import Users from "src/components/Users";
 import Nazoratchi from "../Nazoratchi";
 
-const Admin = ({
-  categories,
-  books,
-  setCategories,
-  FilerCategories,
-  users,
-  toplam,
-}) => {
+const Admin = ({ categories, books, setCategories, users, toplam }) => {
   const [page, setPage] = useState("admin");
-
-  FilerCategories(1);
 
   const nav = [
     { id: 1, page: "ctg", name: "Kategoriya sozlamari" },
@@ -43,6 +34,7 @@ const Admin = ({
             {nav.map((v) => {
               return (
                 <p
+                  key={v.id}
                   onClick={() => setPage(v.page)}
                   className={` ${page === v.page ? "child active" : "child"}`}
                 >
@@ -54,11 +46,7 @@ const Admin = ({
         </div>
         {page === "admin" ? <h1>Home</h1> : ""}
         {page === "ctg" ? (
-          <CategoryAdmin
-            categories={categories}
-            FilerCategories={FilerCategories}
-            notify={notify}
-          />
+          <CategoryAdmin categories={categories} notify={notify} />
         ) : (
           ""
         )}

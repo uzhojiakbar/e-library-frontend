@@ -22,24 +22,24 @@ const Root = () => {
   const [toplam, setToplam] = useState([]);
   const [users, setUsers] = useState([]);
 
-
   const FilerCategories = (filter) => {
     if (filter) {
-      const data = categories.sort((a, b) => a.idForFilter - b.idForFilter);
+      const data = categories.sort((a, b) => a.id - b.id);
       setCategories(data);
-      console.log(data);
     }
   };
 
   const getCategories = async (update = 0) => {
     if (categories.length === 0 || update === 1) {
       try {
-        const CollenctionRef = collection(db, "category");
-        const data = await getDocs(CollenctionRef);
-        const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
-
-        setCategories(getData);
-
+        try {
+          await fetch("http://localhost:3030/categories")
+            .then((response) => response.json())
+            .then((result) => {
+              setCategories(result);
+            })
+            .catch((error) => console.error("Xatolik:", error));
+        } catch (error) {}
       } catch (error) {
         console.error(error);
         console.log("Categoriya yuklanmadi!");
@@ -50,13 +50,14 @@ const Root = () => {
   const getBooks = async () => {
     if (books.length === 0) {
       try {
-        await fetch('http://localhost:3030/books').then((response) => response.json())
+        await fetch("http://localhost:3030/books")
+          .then((response) => response.json())
           .then((result) => {
             setBook(result);
             setCurrentBooks(result);
           })
           .catch((error) => console.error("Xatolik:", error));
-      } catch (error) { }
+      } catch (error) {}
     }
   };
 
@@ -67,7 +68,7 @@ const Root = () => {
         const data = await getDocs(ToplamCollection);
         const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
         setToplam(getData);
-      } catch (error) { }
+      } catch (error) {}
     }
   };
   const getUsers = async () => {
@@ -77,7 +78,7 @@ const Root = () => {
         const data = await getDocs(UserCollection);
         const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
         setUsers(getData);
-      } catch (error) { }
+      } catch (error) {}
     }
   };
 

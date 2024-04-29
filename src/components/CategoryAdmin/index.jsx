@@ -1,6 +1,4 @@
-import { addDoc, collection, deleteDoc, doc } from "firebase/firestore";
 import React, { useRef, useState } from "react";
-import { db } from "src/config/firebase";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import {
@@ -13,44 +11,61 @@ import {
   TableRow,
 } from "@mui/material";
 
-const CategoryAdmin = ({ categories, FilerCategories, notify }) => {
+const CategoryAdmin = ({ categories, notify }) => {
   const [ctgs, setctgs] = useState(categories);
 
   const ctgNameRef = useRef("");
 
+  const getCategories = async (update = 0) => {
+    if (categories.length === 0 || update === 1) {
+      try {
+        await fetch("http://localhost:3030/categories")
+          .then((response) => response.json())
+          .then((result) => {
+            setctgs(result);
+          })
+          .catch((error) => console.error("Xatolik:", error));
+      } catch (error) {}
+    }
+  };
+
   const AddCtg = async () => {
     try {
-      await FilerCategories(1);
-      setctgs([
-        ...ctgs,
-        {
-          auth: "admin",
-          count: 0,
-          idForFilter: categories[categories.length - 2].idForFilter + 1,
-          name: ctgNameRef.current.value,
+      await fetch("http://localhost:3030/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ]);
-      const CollenctionRef = collection(db, "category");
-      await addDoc(CollenctionRef, {
-        auth: "admin",
-        count: 0,
-        idForFilter: categories[categories.length - 2].idForFilter + 1,
-        name: ctgNameRef.current.value,
-      });
-      notify("ok", "Kategoriya qoshildi!");
+        body: JSON.stringify({
+          name: ctgNameRef.current.value,
+        }),
+      })
+        .then((response) => response.text())
+        .then((result) => {
+          console.log(result);
+
+          getCategories(1);
+          notify("ok", "Kategoriya qoshildi!");
+        })
+        .catch((error) => console.error(error));
     } catch (error) {
-      console.log(error);
       notify("err", "Qandaydur xatolik!");
     }
   };
   const DelCtg = async (id) => {
     try {
-      await deleteDoc(doc(db, "category", id));
-      let res = ctgs.filter((v) => (v.id !== id ? v : ""));
-      setctgs(res);
+      const response = await fetch(`http://localhost:3030/categories/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        notify("err", "Server Xatosi!");
+        throw new Error("Server xatosi");
+      }
+      getCategories(1);
       notify("ok", "Kategoriya o'chirildi!");
     } catch (error) {
-      notify("err", "Qandaydur xatolik!");
+      console.error(error.message);
+      notify("err", "Kitob Ochirilmadi!");
     }
   };
 
@@ -85,7 +100,6 @@ const CategoryAdmin = ({ categories, FilerCategories, notify }) => {
             <TableRow>
               <TableCell>ID raqam</TableCell>
               <TableCell>Nomi</TableCell>
-              <TableCell>Soni</TableCell>
               <TableCell>Turi</TableCell>
               <TableCell>Boshqarish</TableCell>
             </TableRow>
@@ -99,10 +113,12 @@ const CategoryAdmin = ({ categories, FilerCategories, notify }) => {
                 >
                   <TableCell>{v.id ? v.id : "NULL_RELOAD"}</TableCell>
                   <TableCell>{v.name}</TableCell>
-                  <TableCell>{v.count}</TableCell>
                   <TableCell>Kategoriya</TableCell>
                   <TableCell onClick={() => DelCtg(v.id)}>
-                    <i className="cursor-pointer text-center fa-solid fa-trash"></i>
+                    <i
+                      className="cursor-pointer hover:bg-black hover:text-[white] p-2  text-center fa-solid fa-trash"
+                      style={{ borderRadius: "50%" }}
+                    ></i>
                   </TableCell>
                   {/* <p onClick={() => DelCtg(v.id)} className="desc w-[25%] fa-solid fa-trash"></p> */}
                 </TableRow>

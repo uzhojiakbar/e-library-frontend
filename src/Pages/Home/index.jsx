@@ -14,7 +14,6 @@ const Home = ({
   books = [],
   setBook,
   users,
-  getCategories,
   toplam,
 }) => {
   const query = useParams();
@@ -24,7 +23,6 @@ const Home = ({
       {user?.type === "admin" ? (
         <Admin
           FilerCategories={FilerCategories}
-          getCategories={getCategories}
           categories={categories}
           users={users}
           setCategories={setCategories}
@@ -36,7 +34,11 @@ const Home = ({
         ""
       )}
       <Container>
-        {user?.type === "nazoratchi" ? <Nazoratchi q={query.q} books={books} /> : ""}
+        {user?.type === "nazoratchi" ? (
+          <Nazoratchi q={query.q} books={books} />
+        ) : (
+          ""
+        )}
         {user?.type === "user" || user?.type === undefined ? (
           <User toplam={toplam} q={query.q} books={books} />
         ) : (

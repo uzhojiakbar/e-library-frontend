@@ -5,6 +5,7 @@ import Nazoratchi from "../Rolls/Nazoratchi";
 import User from "../Rolls/User";
 import { Skeleton } from "src/components/ui/skeleton";
 import { useParams } from "react-router-dom";
+import Kafedra from "../Rolls/Kafedra";
 
 const Home = ({
   setCurrentBooks,
@@ -41,6 +42,11 @@ const Home = ({
         )}
         {user?.type === "user" || user?.type === undefined ? (
           <User toplam={toplam} q={query.q} books={books} />
+        ) : (
+          ""
+        )}
+        {user?.type === "kafedra" || user?.type === undefined ? (
+          <Kafedra toplam={toplam} books={books} />
         ) : (
           ""
         )}

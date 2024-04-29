@@ -8,7 +8,7 @@ import { addDoc, collection } from "firebase/firestore";
 import { db } from "src/config/firebase";
 import { NavLink } from "react-router-dom";
 
-const ToplamAdmin = ({ books, notify, toplam }) => {
+const ToplamAdmin = ({ books, notify, toplam, type = "admin" }) => {
   const [openModal, setOpenModal] = useState(false);
 
   const [bookInner, setBookInner] = useState(books);
@@ -62,13 +62,17 @@ const ToplamAdmin = ({ books, notify, toplam }) => {
   return (
     <>
       <div className="pl-[10px]">
-        <Button
-          onClick={handleClose}
-          className="text-[22px] button text-white"
-          type="submit"
-        >
-          Kafedra qoshish
-        </Button>
+        {type === "admin" ? (
+          <Button
+            onClick={handleClose}
+            className="text-[22px] button text-white"
+            type="submit"
+          >
+            Kafedra qoshish
+          </Button>
+        ) : (
+          <></>
+        )}
 
         <Modal
           title="Kafedra qoshish"

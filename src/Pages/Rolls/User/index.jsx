@@ -21,7 +21,7 @@ const User = ({ books = [], q = "", toplam }) => {
 
   const GetPic = (name) => {
     return `http://localhost:3030/files/${name.slice(6)}`;
-  }
+  };
 
   //* book,toplam
 
@@ -43,7 +43,6 @@ const User = ({ books = [], q = "", toplam }) => {
         <div className="seperator"></div>
       </ChangeView>
       {view === "book" ? (
-
         <ProductPage>
           <Books>
             {books.map(
@@ -52,9 +51,7 @@ const User = ({ books = [], q = "", toplam }) => {
                 v.name.toLowerCase().includes(q) && (
                   <Drawer key={v.id}>
                     <DrawerTrigger asChild>
-                      <ProductCard
-                        url={GetPic(v.pics[0])}
-                      >
+                      <ProductCard url={GetPic(v.pics[0])}>
                         <div className="img"></div>
                         <CardText>
                           <h2>{v.name}</h2>
@@ -70,6 +67,7 @@ const User = ({ books = [], q = "", toplam }) => {
             )}
           </Books>
         </ProductPage>
+      ) : (
         // <div>
         //   {
         //     books.map((v) => {
@@ -79,7 +77,6 @@ const User = ({ books = [], q = "", toplam }) => {
         //     })
         //   }
         // </div>
-      ) : (
         ""
       )}
       {view === "toplam" ? (

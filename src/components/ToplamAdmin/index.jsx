@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
-import { Card, Checkbox, Input, Modal } from "antd";
+import { Card, Checkbox, Input, List, Modal } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { Toplam, ToplamCard } from "./style";
 import { ButtonUpload } from "src/Pages/FIleUpload/style";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "src/config/firebase";
+import { NavLink } from "react-router-dom";
 
 const ToplamAdmin = ({ books, notify, toplam }) => {
   const [openModal, setOpenModal] = useState(false);
@@ -30,123 +31,151 @@ const ToplamAdmin = ({ books, notify, toplam }) => {
   };
 
   const UploadToplam = async () => {
-    console.log("uplaod");
-
-    let resBooks = [];
-
-    await bookInner.map((v) => {
-      return v.checked ? resBooks.push(v) : "";
-    });
-
-    console.log(resBooks);
-
-    const toplamCollection = collection(db, "toplam");
-
     const doc = {
       name: name || "nomalum",
       desc: desc || "nomalum",
+      fanlar: [],
     };
 
-    console.log({ ...doc, books: resBooks });
-
     try {
-      await addDoc(toplamCollection, { ...doc, books: resBooks });
-      setname("");
-      setDesc("");
-      notify("ok", "Toplam qoshildi!");
-      handleCancel();
+      await fetch("http://localhost:3030/kafedra", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(doc),
+      })
+        .then((response) => response.text())
+        .then((result) => {
+          console.log(result);
+          notify("ok", "Kafedra qoshildi!");
+          setname("");
+          setDesc("");
+          handleCancel();
+        })
+        .catch((error) => console.error(error));
     } catch (error) {
-      console.log(error);
-      notify("err", "Toplam qoshilmadi, Qandaydur xatolik!");
+      notify("err", "Kafedra qoshilmadi!");
     }
   };
 
   return (
-    <div>
-      <Button onClick={handleClose} className="text-[20] button" type="submit">
-        Toplam qoshish
-      </Button>
+    <>
+      <div className="pl-[10px]">
+        <Button
+          onClick={handleClose}
+          className="text-[22px] button text-white"
+          type="submit"
+        >
+          Kafedra qoshish
+        </Button>
 
-      <Modal
-        title="Toplam qoshish"
-        open={openModal}
-        onCancel={handleCancel}
-        footer={[
-          <div className="buttons w-[100%] flex justify-between">
-            <ButtonUpload
-              onClick={handleCancel}
-              type="reset"
-              color="red"
-              className="button"
-            >
-              Bekor qilish
-            </ButtonUpload>
-            <ButtonUpload
-              onClick={UploadToplam}
-              type="close"
-              color="green"
-              className="button "
-            >
-              Toplamni yuklash
-            </ButtonUpload>
-          </div>,
-        ]}
-      >
-        <div className="flex flex-col gap-[20px] pt-[20px] pb-[20px]">
-          <Input
-            showCount
-            maxLength={64}
-            type="text"
-            placeholder="Toplam nomini kiriting"
-            value={name}
-            onChange={(e) => setname(e.target.value)}
-          />
-          <TextArea
-            showCount
-            value={desc}
-            maxLength={1024}
-            autoSize={{
-              minRows: 2,
-              maxRows: 12,
-            }}
-            placeholder="Toplam haqida malumot kiriting"
-            onChange={(e) => setDesc(e.target.value)}
-          />
-          <Card title="Kitoblarni tanlang" type="inner">
-            <div className="flex flex-col gap-[15px]">
-              <Input
-                showCount
-                type="text"
-                placeholder="Kitob qidirish"
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <Toplam>
-                {bookInner.map((v) => {
-                  return (
-                    v.name.toLowerCase().includes(search.toLowerCase()) && (
-                      <Card>
-                        <ToplamCard>
-                          <Checkbox
-                            checked={v?.checked}
-                            onChange={(e) => onChecked(v.id, e.target.checked)}
-                          >
-                            <div className="inner">
-                              <div>{v.name}</div>
-                              <div>{v.muallif}</div>
-                              <div>{v.year}</div>
-                            </div>
-                          </Checkbox>
-                        </ToplamCard>
-                      </Card>
-                    )
-                  );
-                })}
-              </Toplam>
-            </div>
-          </Card>
-        </div>
-      </Modal>
-    </div>
+        <Modal
+          title="Kafedra qoshish"
+          open={openModal}
+          onCancel={handleCancel}
+          footer={[
+            <div className="buttons w-[100%] flex justify-between">
+              <ButtonUpload
+                onClick={handleCancel}
+                type="reset"
+                color="red"
+                className="button"
+              >
+                Bekor qilish
+              </ButtonUpload>
+              <ButtonUpload
+                onClick={UploadToplam}
+                type="close"
+                color="green"
+                className="button "
+              >
+                Kafedra yuklash
+              </ButtonUpload>
+            </div>,
+          ]}
+        >
+          <div className="flex flex-col gap-[20px] pt-[20px] pb-[20px]">
+            <Input
+              showCount
+              maxLength={64}
+              type="text"
+              placeholder="Toplam nomini kiriting"
+              value={name}
+              onChange={(e) => setname(e.target.value)}
+            />
+            <TextArea
+              showCount
+              value={desc}
+              maxLength={1024}
+              autoSize={{
+                minRows: 2,
+                maxRows: 12,
+              }}
+              placeholder="Toplam haqida malumot kiriting"
+              onChange={(e) => setDesc(e.target.value)}
+            />
+            {/* <Card title="Kitoblarni tanlang" type="inner">
+              <div className="flex flex-col gap-[15px]">
+                <Input
+                  showCount
+                  type="text"
+                  placeholder="Kitob qidirish"
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <Toplam>
+                  {bookInner.map((v) => {
+                    return (
+                      v.name.toLowerCase().includes(search.toLowerCase()) && (
+                        <Card>
+                          <ToplamCard>
+                            <Checkbox
+                              checked={v?.checked}
+                              onChange={(e) =>
+                                onChecked(v.id, e.target.checked)
+                              }
+                            >
+                              <div className="inner">
+                                <div>{v.name}</div>
+                                <div>{v.muallif}</div>
+                                <div>{v.year}</div>
+                              </div>
+                            </Checkbox>
+                          </ToplamCard>
+                        </Card>
+                      )
+                    );
+                  })}
+                </Toplam>
+              </div>
+            </Card> */}
+          </div>
+        </Modal>
+      </div>
+      <div>
+        <List
+          itemLayout="vertical"
+          dataSource={toplam}
+          renderItem={(item, index) => (
+            <NavLink to={`/toplam/${item.id}`}>
+              <Card
+                style={{ margin: "10px", cursor: "pointer", width: "100%" }}
+              >
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={
+                      <i className="fa-solid fa-book text-[30px] text-[#001869]"></i>
+                    }
+                    title={<div>{item.name}</div>}
+                    description={<h1 className="text-[18px]">{item.desc}</h1>}
+                  />
+                </List.Item>
+              </Card>
+            </NavLink>
+          )}
+        />
+      </div>
+    </>
   );
 };
 

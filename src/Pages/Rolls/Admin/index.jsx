@@ -12,7 +12,7 @@ const Admin = ({ categories, books, setCategories, users, toplam }) => {
   const nav = [
     { id: 1, page: "ctg", name: "Kategoriya sozlamari" },
     { id: 2, page: "user", name: "Foydaluvchilar" },
-    { id: 3, page: "toplam", name: "Toplamlar" },
+    { id: 3, page: "toplam", name: "Kafedralar" },
     { id: 4, page: "kitob", name: "Kitoblar" },
   ];
 
@@ -52,11 +52,6 @@ const Admin = ({ categories, books, setCategories, users, toplam }) => {
         )}
         {page === "user" ? <Users users={users} /> : ""}
 
-        {page === "toplam" ? (
-          <ToplamAdmin toplam={toplam} notify={notify} books={books} />
-        ) : (
-          ""
-        )}
         {page === "kitoblar" ? (
           <ToplamAdmin notify={notify} books={books} />
         ) : (
@@ -64,6 +59,11 @@ const Admin = ({ categories, books, setCategories, users, toplam }) => {
         )}
         {page === "kitob" ? <Nazoratchi books={books} /> : ""}
       </AdminContainer>
+      {page === "toplam" ? (
+        <ToplamAdmin toplam={toplam} notify={notify} books={books} />
+      ) : (
+        ""
+      )}
       <Toaster />
     </>
   );

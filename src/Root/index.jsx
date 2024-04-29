@@ -64,10 +64,16 @@ const Root = () => {
   const getToplam = async () => {
     if (toplam.length === 0) {
       try {
-        const ToplamCollection = collection(db, "toplam");
-        const data = await getDocs(ToplamCollection);
-        const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
-        setToplam(getData);
+        // const ToplamCollection = collection(db, "toplam");
+        // const data = await getDocs(ToplamCollection);
+        // const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
+        await fetch("http://localhost:3030/kafedra")
+          .then((response) => response.json())
+          .then((result) => {
+            setToplam(result);
+            console.log(result);
+          })
+          .catch((error) => console.error("Xatolik:", error));
       } catch (error) {}
     }
   };

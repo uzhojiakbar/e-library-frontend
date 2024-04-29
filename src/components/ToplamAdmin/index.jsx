@@ -1,33 +1,20 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
-import { Card, Checkbox, Input, List, Modal } from "antd";
+import { Card, Input, List, Modal } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { Toplam, ToplamCard } from "./style";
 import { ButtonUpload } from "src/Pages/FIleUpload/style";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "src/config/firebase";
 import { NavLink } from "react-router-dom";
 
 const ToplamAdmin = ({ books, notify, toplam, type = "admin" }) => {
   const [openModal, setOpenModal] = useState(false);
 
-  const [bookInner, setBookInner] = useState(books);
   const [name, setname] = useState("");
   const [desc, setDesc] = useState("");
-
-  const [search, setSearch] = useState("");
 
   const handleClose = () => setOpenModal(!openModal);
 
   const handleCancel = () => {
     setOpenModal(false);
-  };
-
-  const onChecked = (id, status) => {
-    let res = bookInner.map((v) => {
-      return v.id === id ? { ...v, checked: status } : v;
-    });
-    setBookInner(res);
   };
 
   const UploadToplam = async () => {

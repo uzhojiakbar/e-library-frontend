@@ -68,15 +68,6 @@ const User = ({ books = [], q = "", toplam }) => {
           </Books>
         </ProductPage>
       ) : (
-        // <div>
-        //   {
-        //     books.map((v) => {
-        //       return <>
-        //         {v.name}
-        //         <img src={GetPic(v.pics[0])} style={{ width: '100%' }} alt="asas" /></>
-        //     })
-        //   }
-        // </div>
         ""
       )}
       {view === "toplam" ? (
@@ -84,7 +75,7 @@ const User = ({ books = [], q = "", toplam }) => {
           itemLayout="vertical"
           dataSource={toplam}
           renderItem={(item, index) => (
-            <NavLink to={`/toplam/${item.id}`}>
+            <NavLink key={item.id} to={`/toplam/${item.id}`}>
               <Card style={{ margin: "10px", cursor: "pointer" }}>
                 <List.Item>
                   <List.Item.Meta

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
@@ -12,11 +12,6 @@ const Book = ({ id, books, setBook }) => {
   const [BookCurrent, setBookInfo] = useState(false);
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    getCategories();
-    getBook();
-  }, []);
 
   const getCategories = async (update = 0) => {
     if (categories.length === 0 || update === 1) {
@@ -47,6 +42,9 @@ const Book = ({ id, books, setBook }) => {
       }
     }
   };
+
+  getCategories();
+  getBook();
 
   const AcceptBook = async () => {
     try {

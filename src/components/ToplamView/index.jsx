@@ -1,26 +1,63 @@
-import { Card, Drawer, List } from "antd";
-import React, { useState } from "react";
+import { Button, Card, Checkbox, Form, Input, List, Modal } from "antd";
+import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
-import { DrawerContent, DrawerTrigger } from "../ui/drawer";
-import { CardText } from "src/Pages/Home/style";
-import { Book } from "lucide-react";
 import { BookOutlined } from "@ant-design/icons";
-// import {
-//   Books,
-//   CardText,
-//   ProductCard,
-//   ProductPage,
-// } from "src/Pages/Home/style";
-// import { DrawerContent, DrawerTrigger } from "../ui/drawer";
-// import Book from "../Book";
+import { Toplam, ToplamCard } from "../ToplamAdmin/style";
 
-const ToplamView = ({ toplam, books }) => {
+const ToplamView = () => {
   const { toplamId } = useParams();
 
   const [currentToplam, setCurrentToplam] = useState({
     fanlar: [{ books: [] }],
   });
   const [activeTabKey, setActiveTabKey] = useState("tab1");
+  const [fanName, setFanName] = useState("");
+  const [books, setBooks] = useState([]);
+  const [allBooks, setAllBooks] = useState([]);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:3030/books")
+      .then((response) => response.json())
+      .then((data) => {
+        setAllBooks(data);
+      })
+      .catch((error) => {
+        console.error("Xatolik:", error);
+      });
+  }, []);
+
+  const handleChange = (event) => {
+    setFanName(event.target.value);
+  };
+
+  const handleCheckboxChange = (event) => {
+    const { checked, value } = event.target;
+    if (checked) {
+      setBooks([...books, parseInt(value)]);
+    } else {
+      setBooks(books.filter((id) => id !== parseInt(value)));
+    }
+  };
+
+  const handleSubmit = () => {
+    fetch(`http://localhost:3030/kafedra/${toplamId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: fanName, books }),
+    })
+      .then((response) => response.text())
+      .then((data) => {
+        console.log(data);
+        setFanName("");
+        setBooks([]);
+      })
+      .catch((error) => {
+        console.error("Xatolik:", error);
+      });
+  };
 
   const getToplam = async () => {
     if (!currentToplam.name) {
@@ -107,6 +144,14 @@ const ToplamView = ({ toplam, books }) => {
     );
   });
 
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleClose = () => setOpenModal(!openModal);
+
+  const handleCancel = () => {
+    setOpenModal(false);
+  };
+
   return (
     <div className="p-[50px] flex flex-col gap-[20px]">
       <List itemLayout="vertical">
@@ -122,7 +167,10 @@ const ToplamView = ({ toplam, books }) => {
                   {JSON.parse(localStorage.getItem("user")).type === "admin" ||
                   JSON.parse(localStorage.getItem("user")).type ===
                     "kafedra" ? (
-                    <div className="fa-solid fa-edit text-black"></div>
+                    <div
+                      onClick={handleClose}
+                      className="fa-solid fa-edit text-black"
+                    ></div>
                   ) : (
                     ""
                   )}
@@ -146,6 +194,69 @@ const ToplamView = ({ toplam, books }) => {
       >
         {contentList[activeTabKey]}
       </Card>
+
+      <Modal
+        title="Fan qoshish"
+        open={openModal}
+        onCancel={handleCancel}
+        footer={[<></>]}
+      >
+        <Form
+          onSubmit={handleSubmit}
+          name="addFanForm"
+          initialValues={{ remember: true }}
+        >
+          <Form.Item
+            label="Fan nomi"
+            name="fanName"
+            onChange={handleChange}
+            rules={[
+              { required: true, message: "Iltimos, fan nomini kiriting!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Card title="Kitoblarni tanlang" type="inner">
+            <div className="flex flex-col gap-[15px]">
+              <Input
+                showCount
+                type="text"
+                placeholder="Kitob qidirish"
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <Toplam>
+                {allBooks.map((v) => {
+                  return (
+                    v.name.toLowerCase().includes(search.toLowerCase()) && (
+                      <Card>
+                        <ToplamCard>
+                          <Checkbox
+                            value={v.id}
+                            checked={books.includes(v.id)}
+                            onChange={handleCheckboxChange}
+                          >
+                            <div className="inner">
+                              <div>{v.name}</div>
+                              <div>{v.muallif}</div>
+                              <div>{v.year}</div>
+                            </div>
+                          </Checkbox>
+                        </ToplamCard>
+                      </Card>
+                    )
+                  );
+                })}
+              </Toplam>
+            </div>
+          </Card>
+          <Form.Item>
+            <Button onClick={handleSubmit} type="primary" htmlType="submit">
+              Saqlash
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

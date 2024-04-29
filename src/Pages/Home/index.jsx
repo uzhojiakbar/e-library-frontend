@@ -45,7 +45,7 @@ const Home = ({
         ) : (
           ""
         )}
-        {user?.type === "kafedra" || user?.type === undefined ? (
+        {user?.type === "kafedra" ? (
           <Kafedra toplam={toplam} books={books} />
         ) : (
           ""

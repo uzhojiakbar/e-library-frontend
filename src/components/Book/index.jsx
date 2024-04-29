@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookInformation, Container, Images } from "./style";
-import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { ButtonLink } from "../ui/button-link";
 
@@ -36,20 +36,34 @@ const Book = ({ id, books, setBook }) => {
   const getBook = async () => {
     if (!BookCurrent.name) {
       try {
-        await fetch(`http://localhost:3030/book/${id}`).then((response) => response.json())
+        await fetch(`http://localhost:3030/book/${id}`)
+          .then((response) => response.json())
           .then((result) => {
-            setBookInfo(result)
+            setBookInfo(result);
           })
           .catch((error) => console.error("Xatolik:", error));
-      } catch (error) { }
+      } catch (error) {}
     }
   };
 
   getBook();
 
   const AcceptBook = async () => {
-    const BookDoc = doc(db, "files", id);
-    await updateDoc(BookDoc, { hidden: false });
+    try {
+      const response = await fetch(`http://localhost:3030/books/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ hidden: false }),
+      });
+      if (!response.ok) {
+        throw new Error("Server xatosi");
+      }
+      console.log("Kitob yangilandi");
+    } catch (error) {
+      console.error(error.message);
+    }
     await navigate("/");
     document.location.reload();
   };
@@ -61,8 +75,7 @@ const Book = ({ id, books, setBook }) => {
 
   const getPic = (name) => {
     return `http://localhost:3030/files/${name.slice(6)}`;
-  }
-
+  };
 
   const onDownloadFile = (src, name) => {
     console.log(src);
@@ -95,10 +108,7 @@ const Book = ({ id, books, setBook }) => {
           ))}
         </div>
         <div className="currentPic">
-          <img
-            src={getPic(BookCurrent.pics[picid])}
-            alt="loading...."
-          />
+          <img src={getPic(BookCurrent.pics[picid])} alt="loading...." />
         </div>
       </Images>
       <BookInformation>
@@ -131,7 +141,7 @@ const Book = ({ id, books, setBook }) => {
             </ButtonLink>
 
             {(user?.type === "nazoratchi" || user?.type === "admin") &&
-              BookCurrent?.hidden ? (
+            BookCurrent?.hidden ? (
               <ButtonLink
                 onClick={AcceptBook}
                 className="bg-slate-700 hover:bg-slate-600 button"

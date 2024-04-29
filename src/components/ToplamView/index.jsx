@@ -1,6 +1,10 @@
-import { Card, List } from "antd";
+import { Card, Drawer, List } from "antd";
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
+import { DrawerContent, DrawerTrigger } from "../ui/drawer";
+import { CardText } from "src/Pages/Home/style";
+import { Book } from "lucide-react";
+import { BookOutlined } from "@ant-design/icons";
 // import {
 //   Books,
 //   CardText,
@@ -13,25 +17,95 @@ import { useParams } from "react-router-dom";
 const ToplamView = ({ toplam, books }) => {
   const { toplamId } = useParams();
 
-  const [currentToplam, setCurrentToplam] = useState(false);
-  const [booksInToplam, setBooksInToplam] = useState();
+  const [currentToplam, setCurrentToplam] = useState({
+    fanlar: [{ books: [] }],
+  });
+  const [activeTabKey, setActiveTabKey] = useState("tab1");
 
   const getToplam = async () => {
-    if (!currentToplam) {
-      await toplam.map((v) => {
-        if (v.id === toplamId) {
-          setCurrentToplam(v);
-          setBooksInToplam(v.books);
-          return v;
-        } else {
-          return "0";
-        }
-      });
+    if (!currentToplam.name) {
+      try {
+        await fetch(`http://localhost:3030/kafedra/${toplamId}`)
+          .then((response) => response.json())
+          .then((result) => {
+            setCurrentToplam(result);
+          })
+          .catch((error) => console.error("Xatolik:", error));
+      } catch (error) {}
     }
   };
 
   getToplam();
-  console.log(booksInToplam, "1");
+
+  const onTab1Change = (key) => {
+    setActiveTabKey(key);
+  };
+
+  const tabList = currentToplam.fanlar.map((v) => {
+    return {
+      key: v.id,
+      tab: v.name,
+    };
+  });
+
+  const contentList = {};
+
+  currentToplam.fanlar.forEach((fan) => {
+    contentList[`${fan.id}`] = (
+      <div
+        key={fan.id}
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "20px",
+        }}
+      >
+        {fan.books.map((v) => (
+          <NavLink
+            key={v.id}
+            style={{ textDecoration: "none" }}
+            to={`/book/${v.id}`}
+          >
+            <div
+              style={{
+                width: "300px",
+                margin: "10px",
+                borderRadius: "10px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                transition: "transform 0.3s",
+                overflow: "hidden",
+                ":hover": {
+                  transform: "scale(1.05)",
+                },
+              }}
+            >
+              <div
+                style={{
+                  padding: "10px",
+                  backgroundColor: "#f9f9f9",
+                  borderBottom: "1px solid #ddd",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "left",
+                  borderTopLeftRadius: "10px",
+                  borderTopRightRadius: "10px",
+                  gap: "10px",
+                }}
+              >
+                <div style={{ fontSize: "24px", color: "#1890ff" }}>
+                  <BookOutlined />
+                </div>
+                <div style={{ fontSize: "18px" }}>{v.name}</div>
+              </div>
+              <div style={{ padding: "10px", minHeight: "100px" }}>
+                {v.desc}
+              </div>
+            </div>
+          </NavLink>
+        ))}
+      </div>
+    );
+  });
 
   return (
     <div className="p-[50px] flex flex-col gap-[20px]">
@@ -42,40 +116,36 @@ const ToplamView = ({ toplam, books }) => {
               avatar={
                 <i className="fa-solid fa-book text-[30px] text-[#001869]"></i>
               }
-              title={<div>{currentToplam.name}</div>}
+              title={
+                <div className="flex w-[100%] items-center gap-[15px] ">
+                  <div>{currentToplam?.name}</div>
+                  {JSON.parse(localStorage.getItem("user")).type === "admin" ||
+                  JSON.parse(localStorage.getItem("user")).type ===
+                    "kafedra" ? (
+                    <div className="fa-solid fa-edit text-black"></div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              }
               description={
-                <h1 className="text-[18px]">{currentToplam.desc}</h1>
+                <h1 className="text-[18px]">{currentToplam?.desc}</h1>
               }
             />
           </List.Item>
         </Card>
       </List>
 
-      {currentToplam?.books?.map((v) => {
-        return <h1>{v.name}</h1>;
-      })}
-
-      {/* {currentToplam?.books?.map((v) => (
-        <Drawer key={v.id}>
-          <DrawerTrigger asChild>
-            <ProductCard
-              url={`https://firebasestorage.googleapis.com/v0/b/ochiqkutubxona-d034a.appspot.com/o/pics%2F${v.pics[0].slice(
-                5
-              )}?alt=media&token=27b56b0f-821a-45ae-9ccb-f282a53987fd`}
-              key={v.id}
-            >
-              <div className="img"></div>
-              <CardText>
-                <h2>{v.name}</h2>
-                <p>{v.desc}</p>
-              </CardText>
-            </ProductCard>
-          </DrawerTrigger>
-          <DrawerContent>
-            <Book id={v.id} books={books} />
-          </DrawerContent>
-        </Drawer>
-      ))} */}
+      <Card
+        type="inner"
+        title={"Fanlar"}
+        style={{ margin: "10px", cursor: "pointer" }}
+        tabList={tabList}
+        activeTabKey={activeTabKey}
+        onTabChange={onTab1Change}
+      >
+        {contentList[activeTabKey]}
+      </Card>
     </div>
   );
 };

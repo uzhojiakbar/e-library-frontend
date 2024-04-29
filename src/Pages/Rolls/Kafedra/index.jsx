@@ -1,7 +1,6 @@
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 import ToplamAdmin from "src/components/ToplamAdmin";
-import { AdminContainer } from "../Admin/style";
 
 const Kafedra = ({ toplam, books }) => {
   const notify = (type = "ok", text) => {

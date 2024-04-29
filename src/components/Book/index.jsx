@@ -1,18 +1,22 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { BookInformation, Container, Images } from "./style";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { ButtonLink } from "../ui/button-link";
+import { BookInformation, Container, Images } from "./style";
 
 const Book = ({ id, books, setBook }) => {
   const [user] = useState(JSON.parse(localStorage.getItem("user")) || {});
-
+  const { idB } = useParams();
   const [picid, setPicId] = useState(0);
-
   const [BookCurrent, setBookInfo] = useState(false);
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    getCategories();
+    getBook();
+  }, []);
 
   const getCategories = async (update = 0) => {
     if (categories.length === 0 || update === 1) {
@@ -20,9 +24,7 @@ const Book = ({ id, books, setBook }) => {
         const CollenctionRef = collection(db, "category");
         const data = await getDocs(CollenctionRef);
         const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
-
         setCategories(getData);
-
         console.log("Categoriya yuklandi!");
       } catch (error) {
         console.error(error);
@@ -31,22 +33,20 @@ const Book = ({ id, books, setBook }) => {
     }
   };
 
-  getCategories();
-
   const getBook = async () => {
     if (!BookCurrent.name) {
       try {
-        await fetch(`http://localhost:3030/book/${id}`)
-          .then((response) => response.json())
-          .then((result) => {
-            setBookInfo(result);
-          })
-          .catch((error) => console.error("Xatolik:", error));
-      } catch (error) {}
+        const response = await fetch(`http://localhost:3030/book/${id || idB}`);
+        if (!response.ok) {
+          throw new Error("Server xatosi");
+        }
+        const result = await response.json();
+        setBookInfo(result);
+      } catch (error) {
+        console.error("Xatolik:", error);
+      }
     }
   };
-
-  getBook();
 
   const AcceptBook = async () => {
     try {
@@ -78,7 +78,6 @@ const Book = ({ id, books, setBook }) => {
   };
 
   const onDownloadFile = (src, name) => {
-    console.log(src);
     fetch(`http://localhost:3030/${src}`)
       .then((response) => response.blob())
       .then((blob) => {
@@ -114,44 +113,30 @@ const Book = ({ id, books, setBook }) => {
       <BookInformation>
         <div className="first">
           <div className="title">{BookCurrent?.name}</div>
-          <div className="text-[20px]">
-            {" "}
-            <span>Muallif:</span> {BookCurrent?.muallif}
-          </div>
-          <div className="text-[20px]">
-            {" "}
-            <span>chiqgan yili:</span> {BookCurrent?.year}
-          </div>
-          <div className="text-[20px]">
-            {" "}
-            <span>Nashriyot:</span> {BookCurrent?.nashriyot}
-          </div>
-          <div className="text-[20px]">
-            {" "}
-            <span>kategoriya:</span> {getCategory(BookCurrent?.ctg)}
+          <div className="author">Muallif: {BookCurrent?.muallif}</div>
+          <div className="year">Chiqgan yili: {BookCurrent?.year}</div>
+          <div className="publisher">Nashriyot: {BookCurrent?.nashriyot}</div>
+          <div className="category">
+            Kategoriya: {getCategory(BookCurrent?.ctg)}
           </div>
           <div className="desc">{BookCurrent?.desc}</div>
-          <div className="flex gap-[20px]">
+          <div className="buttons">
             <ButtonLink
               href={getPic(BookCurrent.path)}
-              className="bg-slate-700 hover:bg-slate-600 button"
+              className="view-button"
               target="_blank"
             >
-              Kitobni korish
+              Kitobni ko'rish
             </ButtonLink>
-
             {(user?.type === "nazoratchi" || user?.type === "admin") &&
             BookCurrent?.hidden ? (
-              <ButtonLink
-                onClick={AcceptBook}
-                className="bg-slate-700 hover:bg-slate-600 button"
-              >
+              <ButtonLink onClick={AcceptBook} className="approve-button">
                 Ruhsat berish
               </ButtonLink>
             ) : (
               <ButtonLink
                 onClick={() => onDownloadFile(BookCurrent.path)}
-                className="bg-slate-700 hover:bg-slate-600 button"
+                className="download-button"
                 target="_blank"
               >
                 Kitobni yuklash
@@ -162,7 +147,7 @@ const Book = ({ id, books, setBook }) => {
       </BookInformation>
     </Container>
   ) : (
-    <div>loading</div>
+    <div>Yuklanmoqda...</div>
   );
 };
 

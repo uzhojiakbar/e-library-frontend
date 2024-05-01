@@ -19,7 +19,7 @@ const CategoryAdmin = ({ categories, notify }) => {
   const getCategories = async (update = 0) => {
     if (categories.length === 0 || update === 1) {
       try {
-        await fetch("http://localhost:3030/categories")
+        await fetch("http://localhost:3000/categories")
           .then((response) => response.json())
           .then((result) => {
             setctgs(result);
@@ -31,7 +31,7 @@ const CategoryAdmin = ({ categories, notify }) => {
 
   const AddCtg = async () => {
     try {
-      await fetch("http://localhost:3030/categories", {
+      await fetch("http://localhost:3000/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,7 +54,7 @@ const CategoryAdmin = ({ categories, notify }) => {
   };
   const DelCtg = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3030/categories/${id}`, {
+      const response = await fetch(`http://localhost:3000/categories/${id}`, {
         method: "DELETE",
       });
       if (!response.ok) {

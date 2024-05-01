@@ -25,7 +25,7 @@ const ToplamAdmin = ({ books, notify, toplam, type = "admin" }) => {
     };
 
     try {
-      await fetch("http://localhost:3030/kafedra", {
+      await fetch("http://localhost:3000/toplam", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -106,40 +106,6 @@ const ToplamAdmin = ({ books, notify, toplam, type = "admin" }) => {
               placeholder="Toplam haqida malumot kiriting"
               onChange={(e) => setDesc(e.target.value)}
             />
-            {/* <Card title="Kitoblarni tanlang" type="inner">
-              <div className="flex flex-col gap-[15px]">
-                <Input
-                  showCount
-                  type="text"
-                  placeholder="Kitob qidirish"
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-                <Toplam>
-                  {bookInner.map((v) => {
-                    return (
-                      v.name.toLowerCase().includes(search.toLowerCase()) && (
-                        <Card>
-                          <ToplamCard>
-                            <Checkbox
-                              checked={v?.checked}
-                              onChange={(e) =>
-                                onChecked(v.id, e.target.checked)
-                              }
-                            >
-                              <div className="inner">
-                                <div>{v.name}</div>
-                                <div>{v.muallif}</div>
-                                <div>{v.year}</div>
-                              </div>
-                            </Checkbox>
-                          </ToplamCard>
-                        </Card>
-                      )
-                    );
-                  })}
-                </Toplam>
-              </div>
-            </Card> */}
           </div>
         </Modal>
       </div>

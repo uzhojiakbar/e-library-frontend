@@ -33,7 +33,7 @@ const Root = () => {
     if (categories.length === 0 || update === 1) {
       try {
         try {
-          await fetch("http://localhost:3030/categories")
+          await fetch("http://localhost:3000/categories")
             .then((response) => response.json())
             .then((result) => {
               setCategories(result);
@@ -50,7 +50,7 @@ const Root = () => {
   const getBooks = async () => {
     if (books.length === 0) {
       try {
-        await fetch("http://localhost:3030/books")
+        await fetch("http://localhost:3000/books")
           .then((response) => response.json())
           .then((result) => {
             setBook(result);
@@ -64,7 +64,7 @@ const Root = () => {
   const getToplam = async () => {
     if (toplam.length === 0) {
       try {
-        await fetch("http://localhost:3030/kafedra")
+        await fetch("http://localhost:3000/toplam")
           .then((response) => response.json())
           .then((result) => {
             setToplam(result);

@@ -43,7 +43,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
 
   const CreateDoc = async (doc) => {
     try {
-      await fetch("http://localhost:3030/books", {
+      await fetch("http://localhost:3000/books", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,7 +87,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
 
       await setUploadPrcnt(["Fayl yuklanmoqda", 0]);
 
-      fetch("http://localhost:3030/uploadFile", {
+      fetch("http://localhost:3000/uploadFile", {
         method: "POST",
         body: formData,
       })
@@ -98,7 +98,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
         .catch((error) => console.error("Xatolik:", error));
 
       await setUploadPrcnt(["Birinchi surat yuklanmoqda", 20]);
-      fetch("http://localhost:3030/uploadPic", {
+      fetch("http://localhost:3000/uploadPic", {
         method: "POST",
         body: PicData1,
       })
@@ -109,7 +109,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
         .catch((error) => console.error("Xatolik:", error));
 
       await setUploadPrcnt(["Ikkinchi surat yuklanmoqda", 40]);
-      fetch("http://localhost:3030/uploadPic", {
+      fetch("http://localhost:3000/uploadPic", {
         method: "POST",
         body: PicData2,
       })
@@ -120,7 +120,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
         .catch((error) => console.error("Xatolik:", error));
 
       await setUploadPrcnt(["Uchinchi surat yuklanmoqda", 60]);
-      fetch("http://localhost:3030/uploadPic", {
+      fetch("http://localhost:3000/uploadPic", {
         method: "POST",
         body: PicData3,
       })
@@ -140,7 +140,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
       });
       await setUploadPrcnt(["Tayyor", 100]);
       handleCancel();
-      document.location.reload()
+      document.location.reload();
     } catch (err) {
       console.error(err);
     }
@@ -150,7 +150,10 @@ const FileUpload = ({ categories, FilerCategories }) => {
     nav("/");
   };
 
-  return isLogin !== "false" ? (
+  console.log(
+    !(isLogin === "false" || isLogin === undefined || isLogin === null)
+  );
+  return !(isLogin === "false" || isLogin === undefined || isLogin === null) ? (
     <Modal width={1000} open={close} onCancel={handleCancel} footer={[]}>
       <FileUploadMain>
         <div className="header">
@@ -291,7 +294,11 @@ const FileUpload = ({ categories, FilerCategories }) => {
             >
               <option value="">Kategoriya kiriting</option>
               {categories.map((v) => {
-                return <option value={v.id}>{v.name}</option>;
+                return (
+                  <option key={v.id} value={v.id}>
+                    {v.name}
+                  </option>
+                );
               })}
             </select>
 

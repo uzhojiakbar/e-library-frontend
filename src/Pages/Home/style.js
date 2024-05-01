@@ -42,21 +42,17 @@ const CardText = styled.div`
     font-style: normal;
     font-weight: 500;
     font-size: 24px;
-    line-height: 23px;
     color: #001869;
     opacity: 0.8;
     @media (max-width: 930px) {
       font-size: 30px;
       padding-top: 10px;
-      line-height: 30px;
     }
     @media (max-width: 800px) {
-      font-size: 30px;
-      line-height: 30px;
+      font-size: 24px;
     }
     @media (max-width: 530px) {
-      font-size: 22px;
-      line-height: 16px;
+      font-size: 18px;
     }
   }
   p {
@@ -72,7 +68,7 @@ const CardText = styled.div`
       font-size: 20px;
     }
     @media (max-width: 530px) {
-      line-height: 20px;
+      font-size: 16px;
     }
   }
   .card-flex {

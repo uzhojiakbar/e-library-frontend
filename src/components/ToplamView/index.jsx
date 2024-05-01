@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { BookOutlined } from "@ant-design/icons";
 import { Toplam, ToplamCard } from "../ToplamAdmin/style";
+import { useMediaQuery } from "@uidotdev/usehooks";
 
 const ToplamView = () => {
   const { toplamId } = useParams();
@@ -17,7 +18,7 @@ const ToplamView = () => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3030/books")
+    fetch("http://localhost:3000/books")
       .then((response) => response.json())
       .then((data) => {
         setAllBooks(data);
@@ -41,7 +42,7 @@ const ToplamView = () => {
   };
 
   const handleSubmit = () => {
-    fetch(`http://localhost:3030/kafedra/${toplamId}`, {
+    fetch(`http://localhost:3000/toplam/${toplamId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -62,7 +63,7 @@ const ToplamView = () => {
   const getToplam = async () => {
     if (!currentToplam.name) {
       try {
-        await fetch(`http://localhost:3030/kafedra/${toplamId}`)
+        await fetch(`http://localhost:3000/toplam/${toplamId}`)
           .then((response) => response.json())
           .then((result) => {
             setCurrentToplam(result);
@@ -87,10 +88,10 @@ const ToplamView = () => {
 
   const contentList = {};
 
-  currentToplam.fanlar.forEach((fan) => {
+  currentToplam.fanlar.forEach((fan, i) => {
     contentList[`${fan.id}`] = (
       <div
-        key={fan.id}
+        key={i}
         style={{
           display: "flex",
           flexWrap: "wrap",
@@ -152,8 +153,14 @@ const ToplamView = () => {
     setOpenModal(false);
   };
 
+  const IsMobile = useMediaQuery("(max-width : 605px)");
+
   return (
-    <div className="p-[50px] flex flex-col gap-[20px]">
+    <div
+      className={` ${
+        IsMobile ? "pt-[20px]" : "p-[50px]"
+      } flex flex-col gap-[20px]`}
+    >
       <List itemLayout="vertical">
         <Card style={{ margin: "10px", cursor: "pointer" }}>
           <List.Item>
@@ -164,8 +171,8 @@ const ToplamView = () => {
               title={
                 <div className="flex w-[100%] items-center gap-[15px] ">
                   <div>{currentToplam?.name}</div>
-                  {JSON.parse(localStorage.getItem("user")).type === "admin" ||
-                  JSON.parse(localStorage.getItem("user")).type ===
+                  {JSON.parse(localStorage.getItem("user"))?.type === "admin" ||
+                  JSON.parse(localStorage.getItem("user"))?.type ===
                     "kafedra" ? (
                     <div
                       onClick={handleClose}
@@ -229,7 +236,7 @@ const ToplamView = () => {
                 {allBooks.map((v) => {
                   return (
                     v.name.toLowerCase().includes(search.toLowerCase()) && (
-                      <Card>
+                      <Card key={v.id}>
                         <ToplamCard>
                           <Checkbox
                             value={v.id}

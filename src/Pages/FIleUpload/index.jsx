@@ -43,7 +43,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
 
   const CreateDoc = async (doc) => {
     try {
-      await fetch("http://localhost:3000/books", {
+      await fetch("https://openlesson.nammqi.uz/books", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,7 +87,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
 
       await setUploadPrcnt(["Fayl yuklanmoqda", 0]);
 
-      fetch("http://localhost:3000/uploadFile", {
+      fetch("https://openlesson.nammqi.uz/uploadFile", {
         method: "POST",
         body: formData,
       })
@@ -98,7 +98,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
         .catch((error) => console.error("Xatolik:", error));
 
       await setUploadPrcnt(["Birinchi surat yuklanmoqda", 20]);
-      fetch("http://localhost:3000/uploadPic", {
+      fetch("https://openlesson.nammqi.uz/uploadPic", {
         method: "POST",
         body: PicData1,
       })
@@ -109,7 +109,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
         .catch((error) => console.error("Xatolik:", error));
 
       await setUploadPrcnt(["Ikkinchi surat yuklanmoqda", 40]);
-      fetch("http://localhost:3000/uploadPic", {
+      fetch("https://openlesson.nammqi.uz/uploadPic", {
         method: "POST",
         body: PicData2,
       })
@@ -120,7 +120,7 @@ const FileUpload = ({ categories, FilerCategories }) => {
         .catch((error) => console.error("Xatolik:", error));
 
       await setUploadPrcnt(["Uchinchi surat yuklanmoqda", 60]);
-      fetch("http://localhost:3000/uploadPic", {
+      fetch("https://openlesson.nammqi.uz/uploadPic", {
         method: "POST",
         body: PicData3,
       })

@@ -31,7 +31,9 @@ const Book = ({ id, books, setBook }) => {
   const getBook = async () => {
     if (!BookCurrent.name) {
       try {
-        const response = await fetch(`http://localhost:3000/book/${id || idB}`);
+        const response = await fetch(
+          `https://openlesson.nammqi.uz/book/${id || idB}`
+        );
         if (!response.ok) {
           throw new Error("Server xatosi");
         }
@@ -48,7 +50,7 @@ const Book = ({ id, books, setBook }) => {
 
   const AcceptBook = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/books/${id}`, {
+      const response = await fetch(`https://openlesson.nammqi.uz/books/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -72,11 +74,11 @@ const Book = ({ id, books, setBook }) => {
   };
 
   const getPic = (name) => {
-    return `http://localhost:3000/files/${name.slice(6)}`;
+    return `https://openlesson.nammqi.uz/files/${name.slice(6)}`;
   };
 
   const onDownloadFile = (src, name) => {
-    fetch(`http://localhost:3000/${src}`)
+    fetch(`https://openlesson.nammqi.uz/${src}`)
       .then((response) => response.blob())
       .then((blob) => {
         const url = URL.createObjectURL(new Blob([blob]));

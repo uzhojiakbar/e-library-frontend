@@ -20,7 +20,7 @@ const User = ({ books = [], q = "", toplam }) => {
   const [view, setView] = useState("book");
 
   const GetPic = (name) => {
-    return `http://localhost:3000/files/${name.slice(6)}`;
+    return `https://openlesson.nammqi.uz/files/${name.slice(6)}`;
   };
 
   //* book,toplam

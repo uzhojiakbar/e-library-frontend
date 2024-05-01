@@ -18,7 +18,7 @@ const ToplamView = () => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3000/books")
+    fetch("https://openlesson.nammqi.uz/books")
       .then((response) => response.json())
       .then((data) => {
         setAllBooks(data);
@@ -42,7 +42,7 @@ const ToplamView = () => {
   };
 
   const handleSubmit = () => {
-    fetch(`http://localhost:3000/toplam/${toplamId}`, {
+    fetch(`https://openlesson.nammqi.uz/toplam/${toplamId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,7 +63,7 @@ const ToplamView = () => {
   const getToplam = async () => {
     if (!currentToplam.name) {
       try {
-        await fetch(`http://localhost:3000/toplam/${toplamId}`)
+        await fetch(`https://openlesson.nammqi.uz/toplam/${toplamId}`)
           .then((response) => response.json())
           .then((result) => {
             setCurrentToplam(result);

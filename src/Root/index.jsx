@@ -33,7 +33,7 @@ const Root = () => {
     if (categories.length === 0 || update === 1) {
       try {
         try {
-          await fetch("http://localhost:3000/categories")
+          await fetch("https://openlesson.nammqi.uz/categories")
             .then((response) => response.json())
             .then((result) => {
               setCategories(result);
@@ -50,7 +50,7 @@ const Root = () => {
   const getBooks = async () => {
     if (books.length === 0) {
       try {
-        await fetch("http://localhost:3000/books")
+        await fetch("https://openlesson.nammqi.uz/books")
           .then((response) => response.json())
           .then((result) => {
             setBook(result);
@@ -64,7 +64,7 @@ const Root = () => {
   const getToplam = async () => {
     if (toplam.length === 0) {
       try {
-        await fetch("http://localhost:3000/toplam")
+        await fetch("https://openlesson.nammqi.uz/toplam")
           .then((response) => response.json())
           .then((result) => {
             setToplam(result);

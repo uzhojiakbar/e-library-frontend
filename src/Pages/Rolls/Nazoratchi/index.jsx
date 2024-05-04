@@ -9,7 +9,7 @@ import Book from "../../../components/Book";
 
 const Nazoratchi = ({ books = [], q = "" }) => {
   const getPic = (name) => {
-    return `https://openlesson.nammqi.uz/files/${name.slice(6)}`;
+    return `http://localhost:4000/files/${name.slice(6)}`;
   };
 
   return (

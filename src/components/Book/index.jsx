@@ -32,7 +32,7 @@ const Book = ({ id, books, setBook }) => {
     if (!BookCurrent.name) {
       try {
         const response = await fetch(
-          `https://openlesson.nammqi.uz/book/${id || idB}`
+          `http://localhost:4000/book/${id || idB}`
         );
         if (!response.ok) {
           throw new Error("Server xatosi");
@@ -50,7 +50,7 @@ const Book = ({ id, books, setBook }) => {
 
   const AcceptBook = async () => {
     try {
-      const response = await fetch(`https://openlesson.nammqi.uz/books/${id}`, {
+      const response = await fetch(`http://localhost:4000/books/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -74,11 +74,11 @@ const Book = ({ id, books, setBook }) => {
   };
 
   const getPic = (name) => {
-    return `https://openlesson.nammqi.uz/files/${name.slice(6)}`;
+    return `http://localhost:4000/files/${name.slice(6)}`;
   };
 
   const onDownloadFile = (src, name) => {
-    fetch(`https://openlesson.nammqi.uz/${src}`)
+    fetch(`http://localhost:4000/${src}`)
       .then((response) => response.blob())
       .then((blob) => {
         const url = URL.createObjectURL(new Blob([blob]));
@@ -129,7 +129,7 @@ const Book = ({ id, books, setBook }) => {
               Kitobni ko'rish
             </ButtonLink>
             {(user?.type === "nazoratchi" || user?.type === "admin") &&
-            BookCurrent?.hidden ? (
+              BookCurrent?.hidden ? (
               <ButtonLink onClick={AcceptBook} className="approve-button">
                 Ruhsat berish
               </ButtonLink>

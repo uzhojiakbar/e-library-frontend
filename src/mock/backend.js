@@ -1,3 +1,3 @@
 export const BackEndConfig = {
-  link: "https://openlesson.nammqi.uz",
+  link: "http://localhost:4000",
 };

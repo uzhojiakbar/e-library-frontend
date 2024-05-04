@@ -33,13 +33,13 @@ const Root = () => {
     if (categories.length === 0 || update === 1) {
       try {
         try {
-          await fetch("https://openlesson.nammqi.uz/categories")
+          await fetch("http://localhost:4000/categories")
             .then((response) => response.json())
             .then((result) => {
               setCategories(result);
             })
             .catch((error) => console.error("Xatolik:", error));
-        } catch (error) {}
+        } catch (error) { }
       } catch (error) {
         console.error(error);
         console.log("Categoriya yuklanmadi!");
@@ -50,28 +50,28 @@ const Root = () => {
   const getBooks = async () => {
     if (books.length === 0) {
       try {
-        await fetch("https://openlesson.nammqi.uz/books")
+        await fetch("http://localhost:4000/books")
           .then((response) => response.json())
           .then((result) => {
             setBook(result);
             setCurrentBooks(result);
           })
           .catch((error) => console.error("Xatolik:", error));
-      } catch (error) {}
+      } catch (error) { }
     }
   };
 
   const getToplam = async () => {
     if (toplam.length === 0) {
       try {
-        await fetch("https://openlesson.nammqi.uz/toplam")
+        await fetch("http://localhost:4000/toplam")
           .then((response) => response.json())
           .then((result) => {
             setToplam(result);
             console.log(result);
           })
           .catch((error) => console.error("Xatolik:", error));
-      } catch (error) {}
+      } catch (error) { }
     }
   };
   const getUsers = async () => {
@@ -81,7 +81,7 @@ const Root = () => {
         const data = await getDocs(UserCollection);
         const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
         setUsers(getData);
-      } catch (error) {}
+      } catch (error) { }
     }
   };
 

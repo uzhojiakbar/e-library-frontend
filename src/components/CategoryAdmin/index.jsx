@@ -19,19 +19,19 @@ const CategoryAdmin = ({ categories, notify }) => {
   const getCategories = async (update = 0) => {
     if (categories.length === 0 || update === 1) {
       try {
-        await fetch("https://openlesson.nammqi.uz/categories")
+        await fetch("http://localhost:4000/categories")
           .then((response) => response.json())
           .then((result) => {
             setctgs(result);
           })
           .catch((error) => console.error("Xatolik:", error));
-      } catch (error) {}
+      } catch (error) { }
     }
   };
 
   const AddCtg = async () => {
     try {
-      await fetch("https://openlesson.nammqi.uz/categories", {
+      await fetch("http://localhost:4000/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -55,7 +55,7 @@ const CategoryAdmin = ({ categories, notify }) => {
   const DelCtg = async (id) => {
     try {
       const response = await fetch(
-        `https://openlesson.nammqi.uz/categories/${id}`,
+        `http://localhost:4000/categories/${id}`,
         {
           method: "DELETE",
         }

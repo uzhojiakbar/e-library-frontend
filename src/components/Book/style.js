@@ -76,6 +76,7 @@ const Images = styled.div`
     .thumb {
       flex-direction: row;
     }
+    
   }
 
   ${media.mobileS} {

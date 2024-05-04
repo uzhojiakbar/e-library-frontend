@@ -18,7 +18,7 @@ const ToplamView = () => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetch("https://openlesson.nammqi.uz/books")
+    fetch("http://localhost:4000/books")
       .then((response) => response.json())
       .then((data) => {
         setAllBooks(data);
@@ -42,7 +42,7 @@ const ToplamView = () => {
   };
 
   const handleSubmit = () => {
-    fetch(`https://openlesson.nammqi.uz/toplam/${toplamId}`, {
+    fetch(`http://localhost:4000/toplam/${toplamId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,13 +63,13 @@ const ToplamView = () => {
   const getToplam = async () => {
     if (!currentToplam.name) {
       try {
-        await fetch(`https://openlesson.nammqi.uz/toplam/${toplamId}`)
+        await fetch(`http://localhost:4000/toplam/${toplamId}`)
           .then((response) => response.json())
           .then((result) => {
             setCurrentToplam(result);
           })
           .catch((error) => console.error("Xatolik:", error));
-      } catch (error) {}
+      } catch (error) { }
     }
   };
 
@@ -157,9 +157,8 @@ const ToplamView = () => {
 
   return (
     <div
-      className={` ${
-        IsMobile ? "pt-[20px]" : "p-[50px]"
-      } flex flex-col gap-[20px]`}
+      className={` ${IsMobile ? "pt-[20px]" : "p-[50px]"
+        } flex flex-col gap-[20px]`}
     >
       <List itemLayout="vertical">
         <Card style={{ margin: "10px", cursor: "pointer" }}>
@@ -172,7 +171,7 @@ const ToplamView = () => {
                 <div className="flex w-[100%] items-center gap-[15px] ">
                   <div>{currentToplam?.name}</div>
                   {JSON.parse(localStorage.getItem("user"))?.type === "admin" ||
-                  JSON.parse(localStorage.getItem("user"))?.type ===
+                    JSON.parse(localStorage.getItem("user"))?.type ===
                     "kafedra" ? (
                     <div
                       onClick={handleClose}

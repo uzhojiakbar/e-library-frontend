@@ -25,7 +25,7 @@ const ToplamAdmin = ({ books, notify, toplam, type = "admin" }) => {
     };
 
     try {
-      await fetch("https://openlesson.nammqi.uz/toplam", {
+      await fetch("http://localhost:4000/toplam", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,7 +1,12 @@
+import { media } from "src/mock/media";
 import styled from "styled-components";
 
 export const HomeContainer = styled.div`
   padding: var(--padding);
+
+  ${media.mobileMM}{
+    padding: var(--min-padding);
+  }
 `;
 
 const Container = styled.div`
@@ -17,13 +22,16 @@ const ProductPage = styled.div`
   flex-direction: column;
 
   padding: 20px;
+  ${media.mobileMM}{
+    padding: var(--min-padding);
+  }
 `;
 const ProductCard = styled.div`
   background: #ffffff;
   cursor: pointer;
-
   .img {
     width: 100%;
+    min-width: var(--min-width-book);
     height: 300px;
     background-image: url(${({ url }) => url});
     background-size: cover;
@@ -140,6 +148,8 @@ const ChangeView = styled.div`
   justify-content: left;
   padding: 10px 5px;
   gap: 5px;
+  min-width: var(--min-width);
+
 
   .active {
     color: #001869;

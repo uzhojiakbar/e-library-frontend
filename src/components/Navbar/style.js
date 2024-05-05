@@ -7,7 +7,7 @@ const NavbarSt = styled.div`
   width: 100%;
 
   min-height: 80px;
-  min-width: 320px;
+  min-width: var(--min-width);
 
   background-color: white;
 

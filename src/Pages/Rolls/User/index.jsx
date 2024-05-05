@@ -52,7 +52,9 @@ const User = ({ books = [], q = "", toplam }) => {
                   <Drawer key={v.id}>
                     <DrawerTrigger asChild>
                       <ProductCard url={GetPic(v.pics[0])}>
-                        <div className="img"></div>
+                        <div className="img">
+                          {/* <img src={GetPic(v.pics[0])} alt="" /> */}
+                        </div>
                         <CardText>
                           <h2>{v.name}</h2>
                           <p>{v.desc}</p>

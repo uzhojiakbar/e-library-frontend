@@ -24,8 +24,8 @@ const Root = () => {
 
   const FilerCategories = (filter) => {
     if (filter) {
-      const data = categories.sort((a, b) => a.id - b.id);
-      setCategories(data);
+      const sortedCategories = categories
+      setCategories(sortedCategories);
     }
   };
 
@@ -36,7 +36,10 @@ const Root = () => {
           await fetch("http://localhost:4000/categories")
             .then((response) => response.json())
             .then((result) => {
-              setCategories(result);
+              setCategories(result.sort((a, b) => {
+                if (a.id === "bottom") return 1;
+                return a.id - b.id;
+              }));
             })
             .catch((error) => console.error("Xatolik:", error));
         } catch (error) { }

@@ -24,11 +24,11 @@ const Users = ({ users }) => {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: "200" },
-    { field: "name", headerName: "FIO", width: "200" },
-    { field: "email", headerName: "Email", width: "200" },
-    { field: "pass", headerName: "Parol", width: "200" },
-    { field: "type", headerName: "status", width: "200" },
+    { id: 1, field: "id", headerName: "ID", width: "200" },
+    { id: 2, field: "name", headerName: "FIO", width: "200" },
+    { id: 3, field: "email", headerName: "Email", width: "200" },
+    { id: 4, field: "pass", headerName: "Parol", width: "200" },
+    { id: 5, field: "type", headerName: "status", width: "200" },
   ];
   return (
     <div>

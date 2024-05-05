@@ -22,7 +22,10 @@ const CategoryAdmin = ({ categories, notify }) => {
         await fetch("http://localhost:4000/categories")
           .then((response) => response.json())
           .then((result) => {
-            setctgs(result);
+            setctgs(result.sort((a, b) => {
+              if (a.id === "bottom") return 1;
+              return a.id - b.id;
+            }));
           })
           .catch((error) => console.error("Xatolik:", error));
       } catch (error) { }
@@ -52,6 +55,8 @@ const CategoryAdmin = ({ categories, notify }) => {
       notify("err", "Qandaydur xatolik!");
     }
   };
+
+
   const DelCtg = async (id) => {
     try {
       const response = await fetch(

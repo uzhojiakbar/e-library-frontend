@@ -117,9 +117,24 @@ const ToplamView = () => {
           gap: "20px",
         }}
       >
-        <div onClick={() => handleDelete(toplamId, activeTabKey)}>
-          Delete Fan
-        </div>
+
+        {
+          JSON.parse(localStorage.getItem("user"))?.type === "admin" ||
+            JSON.parse(localStorage.getItem("user"))?.type ===
+            "kafedra" ? (
+              <div onClick={() => handleDelete(toplamId, activeTabKey)}
+              style={{
+                padding: "5px 10px",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+            >
+              Delete Fan
+            </div>
+          ) : (
+            ""
+          )}
+        
         {fan.books.map((v) => (
           <NavLink
             key={v.id}
@@ -203,10 +218,16 @@ const ToplamView = () => {
                       {JSON.parse(localStorage.getItem("user"))?.type === "admin" ||
                         JSON.parse(localStorage.getItem("user"))?.type ===
                         "kafedra" ? (
-                        <div
-                          onClick={handleClose}
-                          className="fa-solid fa-edit text-black"
-                        ></div>
+                        <div className="flex gap-[20px]">
+                          <div
+                            onClick={handleClose}
+                            className="fa-solid text-[16px] fa-edit text-black"
+                          ></div>
+                          <div
+                            onClick={handleClose}
+                            className="fa-solid text-[16px] fa-file-excel text-[green]"
+                          ></div>
+                        </div>
                       ) : (
                         ""
                       )}

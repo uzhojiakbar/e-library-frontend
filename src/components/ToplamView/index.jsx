@@ -41,27 +41,26 @@ const ToplamView = () => {
     }
   };
 
-  const handleSubmit = () => {
-    fetch(`http://localhost:4000/toplam/${toplamId}`, {
+  const handleSubmit = async () => {
+    await fetch(`http://localhost:4000/toplam/${toplamId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ name: fanName, books }),
     })
-      .then((response) => response.text())
-      .then((data) => {
-        console.log(data);
-        setFanName("");
-        setBooks([]);
-      })
       .catch((error) => {
         console.error("Xatolik:", error);
       });
+
+    setBooks([]);
+    setFanName("");
+    await getToplam(1)
+    await handleClose()
   };
 
-  const getToplam = async () => {
-    if (!currentToplam?.name) {
+  const getToplam = async (update = 0) => {
+    if (!currentToplam?.name || update) {
       try {
         await fetch(`http://localhost:4000/toplam/${toplamId}`)
           .then((response) => response.json())
@@ -75,7 +74,7 @@ const ToplamView = () => {
 
   const handleDelete = async (kafedraId, fanId) => {
     try {
-      const response = await fetch(
+      await fetch(
         `http://localhost:4000/toplam/${kafedraId}/${fanId}`,
         {
           method: "DELETE",
@@ -85,9 +84,8 @@ const ToplamView = () => {
           body: JSON.stringify({ fanId }),
         }
       );
-      const data = await response;
-      console.log(data);
-      getToplam();
+      await getToplam(1)
+
     } catch (error) {
       console.error("Kafedra ochirishda xatolik:", error);
       // setMessage('Server bilan muammo yuz berdi');
@@ -123,49 +121,47 @@ const ToplamView = () => {
           Delete Fan
         </div>
         {fan.books.map((v) => (
-          <>
-            <NavLink
-              key={v.id}
-              style={{ textDecoration: "none" }}
-              to={`/book/${v.id}`}
+          <NavLink
+            key={v.id}
+            style={{ textDecoration: "none" }}
+            to={`/book/${v.id}`}
+          >
+            <div
+              style={{
+                width: "300px",
+                margin: "10px",
+                borderRadius: "10px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                transition: "transform 0.3s",
+                overflow: "hidden",
+                ":hover": {
+                  transform: "scale(1.05)",
+                },
+              }}
             >
               <div
                 style={{
-                  width: "300px",
-                  margin: "10px",
-                  borderRadius: "10px",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  transition: "transform 0.3s",
-                  overflow: "hidden",
-                  ":hover": {
-                    transform: "scale(1.05)",
-                  },
+                  padding: "10px",
+                  backgroundColor: "#f9f9f9",
+                  borderBottom: "1px solid #ddd",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "left",
+                  borderTopLeftRadius: "10px",
+                  borderTopRightRadius: "10px",
+                  gap: "10px",
                 }}
               >
-                <div
-                  style={{
-                    padding: "10px",
-                    backgroundColor: "#f9f9f9",
-                    borderBottom: "1px solid #ddd",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "left",
-                    borderTopLeftRadius: "10px",
-                    borderTopRightRadius: "10px",
-                    gap: "10px",
-                  }}
-                >
-                  <div style={{ fontSize: "24px", color: "#1890ff" }}>
-                    <BookOutlined />
-                  </div>
-                  <div style={{ fontSize: "18px" }}>{v.name}</div>
+                <div style={{ fontSize: "24px", color: "#1890ff" }}>
+                  <BookOutlined />
                 </div>
-                <div style={{ padding: "10px", minHeight: "100px" }}>
-                  {v.desc}
-                </div>
+                <div style={{ fontSize: "18px" }}>{v.name}</div>
               </div>
-            </NavLink>
-          </>
+              <div style={{ padding: "10px", minHeight: "100px" }}>
+                {v.desc}
+              </div>
+            </div>
+          </NavLink>
         ))}
       </div>
     );
@@ -173,7 +169,11 @@ const ToplamView = () => {
 
   const [openModal, setOpenModal] = useState(false);
 
-  const handleClose = () => setOpenModal(!openModal);
+  const handleClose = () => {
+    setBooks([]);
+    setFanName("");
+    setOpenModal(!openModal)
+  };
 
   const handleCancel = () => {
     setOpenModal(false);

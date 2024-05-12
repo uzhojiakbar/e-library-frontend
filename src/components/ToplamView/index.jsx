@@ -61,7 +61,7 @@ const ToplamView = () => {
   };
 
   const getToplam = async () => {
-    if (!currentToplam.name) {
+    if (!currentToplam?.name) {
       try {
         await fetch(`http://localhost:4000/toplam/${toplamId}`)
           .then((response) => response.json())
@@ -73,13 +73,34 @@ const ToplamView = () => {
     }
   };
 
+  const handleDelete = async (kafedraId, fanId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:4000/toplam/${kafedraId}/${fanId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ fanId }),
+        }
+      );
+      const data = await response;
+      console.log(data);
+      getToplam();
+    } catch (error) {
+      console.error("Kafedra ochirishda xatolik:", error);
+      // setMessage('Server bilan muammo yuz berdi');
+    }
+  };
+
   getToplam();
 
   const onTab1Change = (key) => {
     setActiveTabKey(key);
   };
 
-  const tabList = currentToplam.fanlar.map((v) => {
+  const tabList = currentToplam?.fanlar.map((v) => {
     return {
       key: v.id,
       tab: v.name,
@@ -88,7 +109,7 @@ const ToplamView = () => {
 
   const contentList = {};
 
-  currentToplam.fanlar.forEach((fan, i) => {
+  currentToplam?.fanlar.forEach((fan, i) => {
     contentList[`${fan.id}`] = (
       <div
         key={i}
@@ -98,48 +119,53 @@ const ToplamView = () => {
           gap: "20px",
         }}
       >
+        <div onClick={() => handleDelete(toplamId, activeTabKey)}>
+          Delete Fan
+        </div>
         {fan.books.map((v) => (
-          <NavLink
-            key={v.id}
-            style={{ textDecoration: "none" }}
-            to={`/book/${v.id}`}
-          >
-            <div
-              style={{
-                width: "300px",
-                margin: "10px",
-                borderRadius: "10px",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                transition: "transform 0.3s",
-                overflow: "hidden",
-                ":hover": {
-                  transform: "scale(1.05)",
-                },
-              }}
+          <>
+            <NavLink
+              key={v.id}
+              style={{ textDecoration: "none" }}
+              to={`/book/${v.id}`}
             >
               <div
                 style={{
-                  padding: "10px",
-                  backgroundColor: "#f9f9f9",
-                  borderBottom: "1px solid #ddd",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "left",
-                  borderTopLeftRadius: "10px",
-                  borderTopRightRadius: "10px",
-                  gap: "10px",
+                  width: "300px",
+                  margin: "10px",
+                  borderRadius: "10px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  transition: "transform 0.3s",
+                  overflow: "hidden",
+                  ":hover": {
+                    transform: "scale(1.05)",
+                  },
                 }}
               >
-                <div style={{ fontSize: "24px", color: "#1890ff" }}>
-                  <BookOutlined />
+                <div
+                  style={{
+                    padding: "10px",
+                    backgroundColor: "#f9f9f9",
+                    borderBottom: "1px solid #ddd",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "left",
+                    borderTopLeftRadius: "10px",
+                    borderTopRightRadius: "10px",
+                    gap: "10px",
+                  }}
+                >
+                  <div style={{ fontSize: "24px", color: "#1890ff" }}>
+                    <BookOutlined />
+                  </div>
+                  <div style={{ fontSize: "18px" }}>{v.name}</div>
                 </div>
-                <div style={{ fontSize: "18px" }}>{v.name}</div>
+                <div style={{ padding: "10px", minHeight: "100px" }}>
+                  {v.desc}
+                </div>
               </div>
-              <div style={{ padding: "10px", minHeight: "100px" }}>
-                {v.desc}
-              </div>
-            </div>
-          </NavLink>
+            </NavLink>
+          </>
         ))}
       </div>
     );
@@ -155,114 +181,131 @@ const ToplamView = () => {
 
   const IsMobile = useMediaQuery("(max-width : 605px)");
 
+
   return (
     <div
       className={` ${IsMobile ? "pt-[20px]" : "p-[50px]"
         } flex flex-col gap-[20px]`}
     >
-      <List itemLayout="vertical">
-        <Card style={{ margin: "10px", cursor: "pointer" }}>
-          <List.Item>
-            <List.Item.Meta
-              avatar={
-                <i className="fa-solid fa-book text-[30px] text-[#001869]"></i>
-              }
-              title={
-                <div className="flex w-[100%] items-center gap-[15px] ">
-                  <div>{currentToplam?.name}</div>
-                  {JSON.parse(localStorage.getItem("user"))?.type === "admin" ||
-                    JSON.parse(localStorage.getItem("user"))?.type ===
-                    "kafedra" ? (
-                    <div
-                      onClick={handleClose}
-                      className="fa-solid fa-edit text-black"
-                    ></div>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              }
-              description={
-                <h1 className="text-[18px]">{currentToplam?.desc}</h1>
-              }
-            />
-          </List.Item>
-        </Card>
-      </List>
+      {
+        currentToplam.name ? <div>
+          {/* Kafedra nomi */}
+          <List itemLayout="vertical">
+            <Card style={{ margin: "10px", cursor: "pointer" }}>
+              <List.Item>
+                <List.Item.Meta
+                  avatar={
+                    <i className="fa-solid fa-book text-[30px] text-[#001869]"></i>
+                  }
+                  title={
+                    <div className="flex w-[100%] items-center gap-[15px] ">
+                      <div>{currentToplam?.name}</div>
+                      {JSON.parse(localStorage.getItem("user"))?.type === "admin" ||
+                        JSON.parse(localStorage.getItem("user"))?.type ===
+                        "kafedra" ? (
+                        <div
+                          onClick={handleClose}
+                          className="fa-solid fa-edit text-black"
+                        ></div>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  }
+                  description={
+                    <h1 className="text-[18px]">{currentToplam?.desc}</h1>
+                  }
+                />
+              </List.Item>
+            </Card>
+          </List>
 
-      <Card
-        type="inner"
-        title={"Fanlar"}
-        style={{ margin: "10px", cursor: "pointer" }}
-        tabList={tabList}
-        activeTabKey={activeTabKey}
-        onTabChange={onTab1Change}
-      >
-        {contentList[activeTabKey]}
-      </Card>
+          {/* Fanlar */}
 
-      <Modal
-        title="Fan qoshish"
-        open={openModal}
-        onCancel={handleCancel}
-        footer={[<></>]}
-      >
-        <Form
-          onSubmit={handleSubmit}
-          name="addFanForm"
-          initialValues={{ remember: true }}
-        >
-          <Form.Item
-            label="Fan nomi"
-            name="fanName"
-            onChange={handleChange}
-            rules={[
-              { required: true, message: "Iltimos, fan nomini kiriting!" },
-            ]}
+          {
+            currentToplam?.fanlar.length ?
+              <Card
+                type="inner"
+                title={"Fanlar"}
+                style={{ margin: "10px", cursor: "pointer" }}
+                tabList={tabList}
+                activeTabKey={activeTabKey}
+                onTabChange={onTab1Change}
+              >
+                {contentList[activeTabKey]}
+              </Card>
+              : <div>
+                <h1 className="text-2xl font-bold text-center">Hozircha fanlar yoq</h1>
+              </div>
+          }
+
+          {/* Fan qoshish */}
+          <Modal
+            title="Fan qoshish"
+            open={openModal}
+            onCancel={handleCancel}
+            footer={[<></>]}
           >
-            <Input />
-          </Form.Item>
+            <Form
+              onSubmit={handleSubmit}
+              name="addFanForm"
+              initialValues={{ remember: true }}
+            >
+              <Form.Item
+                label="Fan nomi"
+                name="fanName"
+                onChange={handleChange}
+                rules={[
+                  { required: true, message: "Iltimos, fan nomini kiriting!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
 
-          <Card title="Kitoblarni tanlang" type="inner">
-            <div className="flex flex-col gap-[15px]">
-              <Input
-                showCount
-                type="text"
-                placeholder="Kitob qidirish"
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <Toplam>
-                {allBooks.map((v) => {
-                  return (
-                    v.name.toLowerCase().includes(search.toLowerCase()) && (
-                      <Card key={v.id}>
-                        <ToplamCard>
-                          <Checkbox
-                            value={v.id}
-                            checked={books.includes(v.id)}
-                            onChange={handleCheckboxChange}
-                          >
-                            <div className="inner">
-                              <div>{v.name}</div>
-                              <div>{v.muallif}</div>
-                              <div>{v.year}</div>
-                            </div>
-                          </Checkbox>
-                        </ToplamCard>
-                      </Card>
-                    )
-                  );
-                })}
-              </Toplam>
-            </div>
-          </Card>
-          <Form.Item>
-            <Button onClick={handleSubmit} type="primary" htmlType="submit">
-              Saqlash
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
+              <Card title="Kitoblarni tanlang" type="inner">
+                <div className="flex flex-col gap-[15px]">
+                  <Input
+                    showCount
+                    type="text"
+                    placeholder="Kitob qidirish"
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  <Toplam>
+                    {allBooks.map((v) => {
+                      return (
+                        v.name.toLowerCase().includes(search.toLowerCase()) && (
+                          <Card key={v.id}>
+                            <ToplamCard>
+                              <Checkbox
+                                value={v.id}
+                                checked={books.includes(v.id)}
+                                onChange={handleCheckboxChange}
+                              >
+                                <div className="inner">
+                                  <div>{v.name}</div>
+                                  <div>{v.muallif}</div>
+                                  <div>{v.year}</div>
+                                </div>
+                              </Checkbox>
+                            </ToplamCard>
+                          </Card>
+                        )
+                      );
+                    })}
+                  </Toplam>
+                </div>
+              </Card>
+              <Form.Item>
+                <Button onClick={handleSubmit} type="primary" htmlType="submit">
+                  Saqlash
+                </Button>
+              </Form.Item>
+            </Form>
+          </Modal>
+        </div> : <div>
+          <h1 className="text-2xl font-bold text-center">Qandaydur Xatolik yoki Toplam topilmadi</h1>
+        </div>
+      }
     </div>
   );
 };

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
+import React from "react";
 import {
   Paper,
   Table,
@@ -15,7 +16,7 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
 const Users = ({ users }) => {
-  const [selectedStatus, setSelectedStatus] = useState("");
+  // const [selectedStatus, setSelectedStatus] = useState("");
 
   const handleStatusChange = (userId, newStatus) => {
     // Update user status in Firebase
@@ -23,9 +24,9 @@ const Users = ({ users }) => {
     console.log(`User ${userId} status updated to ${newStatus}`);
 
     // Find the user in the users array and update their status
-    const updatedUsers = users.map((user) =>
-      user.id === userId ? { ...user, type: newStatus } : user
-    );
+    // const updatedUsers = users.map((user) =>
+    //   user.id === userId ? { ...user, type: newStatus } : user
+    // );
 
     // Update the users state with the updated users array
     // setUsers(updatedUsers);
@@ -73,8 +74,10 @@ const Users = ({ users }) => {
     worksheet.getRow(1).eachCell({ includeEmpty: true }, (cell) => {
       const textLength = cell.value ? cell.value.toString().length : 0;
       if (textLength > 0) {
-        worksheet.getRow(1).height =
-          Math.max(worksheet.getRow(1).height || 0, Math.ceil(textLength / 10) * 15);
+        worksheet.getRow(1).height = Math.max(
+          worksheet.getRow(1).height || 0,
+          Math.ceil(textLength / 10) * 15
+        );
       }
     });
 
@@ -130,7 +133,9 @@ const Users = ({ users }) => {
                     <TableCell>
                       <Select
                         value={v.type}
-                        onChange={(e) => handleStatusChange(v.id, e.target.value)}
+                        onChange={(e) =>
+                          handleStatusChange(v.id, e.target.value)
+                        }
                       >
                         <MenuItem value="admin">Admin</MenuItem>
                         <MenuItem value="user">User</MenuItem>

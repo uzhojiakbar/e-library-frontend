@@ -203,7 +203,7 @@ const Root = () => {
             path="user"
             element={
               <AdminRoute>
-                <Users users={users} />
+                <Users users={users} setUsers={setUsers} />
               </AdminRoute>
             }
           />

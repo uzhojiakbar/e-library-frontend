@@ -1,5 +1,4 @@
-// import React, { useState } from "react";
-import React from "react";
+import React, { useState } from "react";
 import {
   Paper,
   Table,
@@ -10,31 +9,50 @@ import {
   TableRow,
   Select,
   MenuItem,
+  Button,
 } from "@mui/material";
-
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import { CheckCheck, UserRoundCog } from "lucide-react";
 
-const Users = ({ users }) => {
-  // const [selectedStatus, setSelectedStatus] = useState("");
+const Users = ({ users, setUsers }) => {
+  const [editUserId, setEditUserId] = useState(null);
+  const [editUserName, setEditUserName] = useState("");
+  const [editUserStatus, setEditUserStatus] = useState("");
 
   const handleStatusChange = (userId, newStatus) => {
-    // Update user status in Firebase
-    // For demonstration purposes, we'll just log the changes
+    const updatedUsers = users.map((user) =>
+      user.id === userId ? { ...user, type: newStatus } : user
+    );
+    setUsers(updatedUsers);
     console.log(`User ${userId} status updated to ${newStatus}`);
+  };
 
-    // Find the user in the users array and update their status
-    // const updatedUsers = users.map((user) =>
-    //   user.id === userId ? { ...user, type: newStatus } : user
-    // );
+  const handleEditUser = (userId) => {
+    const user = users.find((user) => user.id === userId);
+    if (user) {
+      setEditUserId(userId);
+      setEditUserName(user.name);
+      setEditUserStatus(user.type);
+      console.log(editUserId);
+    }
+  };
 
-    // Update the users state with the updated users array
-    // setUsers(updatedUsers);
+  const saveEditedUser = () => {
+    const updatedUsers = users.map((user) =>
+      user.id === editUserId
+        ? { ...user, name: editUserName, type: editUserStatus }
+        : user
+    );
+    setUsers(updatedUsers);
+    setEditUserId(null);
+    setEditUserName("");
+    setEditUserStatus("");
   };
 
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Foydaluvchilar royxati");
+    const worksheet = workbook.addWorksheet("Foydalanuvchilar ro'yxati");
 
     // Ustunlar
     worksheet.columns = [
@@ -92,14 +110,37 @@ const Users = ({ users }) => {
     { field: "email", headerName: "Email", width: 200 },
     { field: "pass", headerName: "Parol", width: 200 },
     { field: "type", headerName: "status", width: 200 },
-    { field: "", headerName: "", width: 0 }, // Bu qatorni ko'rsatmaydi
+    { field: "edit", headerName: "tahrirlash", width: 200 },
+  ];
+
+  const validStatuses = [
+    {
+      id: 1,
+      name: "Foydaluvchi",
+      key: "user",
+    },
+    {
+      id: 2,
+      name: "Admin",
+      key: "admin",
+    },
+    {
+      id: 3,
+      name: "Kafedra",
+      key: "kafedra",
+    },
+    {
+      id: 4,
+      name: "nazoratchi",
+      key: "nazoratchi",
+    },
   ];
 
   return (
     <div>
       <div className="flex flex-col gap-[20px]">
         <div className="flex justify-between">
-          <h1 className="text-[20px]">Foydaluvchilar: {users.length}</h1>
+          <h1 className="text-[20px]">Foydalanuvchilar: {users.length}</h1>
           <h1 className="text-[20px]" onClick={exportToExcel}>
             Export
           </h1>
@@ -114,12 +155,11 @@ const Users = ({ users }) => {
                 {columns.map((v) => {
                   return <TableCell key={v.field}>{v.headerName}</TableCell>;
                 })}
-                <TableCell>Edit</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((v, i) => {
-                return (
+              {users.length ? (
+                users.map((v, i) => (
                   <TableRow
                     key={v.id}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -131,19 +171,48 @@ const Users = ({ users }) => {
                       {v.pass.length > 9 ? v.pass.slice(26) : "Google orqali"}
                     </TableCell>
                     <TableCell>
-                      <Select
-                        value={v.type}
-                        onChange={(e) =>
-                          handleStatusChange(v.id, e.target.value)
-                        }
-                      >
-                        <MenuItem value="admin">Admin</MenuItem>
-                        <MenuItem value="user">User</MenuItem>
-                      </Select>
+                      {editUserId === v.id ? (
+                        <Select
+                          value={v.type || "nomalum"}
+                          onChange={(e) =>
+                            handleStatusChange(v.id, e.target.value)
+                          }
+                          style={{ minWidth: 100 }}
+                          variant="outlined"
+                          size="small"
+                        >
+                          {validStatuses.map((status) => (
+                            <MenuItem key={status.id} value={status.key}>
+                              {status.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      ) : (
+                        v.type
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {editUserId === v.id ? (
+                        <Button onClick={() => saveEditedUser(v.id)}>
+                          <CheckCheck size={16} />
+                        </Button>
+                      ) : (
+                        <Button onClick={() => handleEditUser(v.id)}>
+                          <UserRoundCog size={16} />
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
-                );
-              })}
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns.length + 1}>
+                    <div className="loaderWindow">
+                      <div className="loader"></div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>

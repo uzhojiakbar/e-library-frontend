@@ -191,69 +191,6 @@ const ToplamView = () => {
 
   const IsMobile = useMediaQuery("(max-width : 605px)");
 
-  const FanQoshish = () => (
-    <Modal
-      title="Fan qoshish"
-      open={openModal}
-      onCancel={handleCancel}
-      footer={[<></>]}
-    >
-      <Form
-        onSubmit={handleSubmit}
-        name="addFanForm"
-        initialValues={{ remember: true }}
-      >
-        <Form.Item
-          label="Fan nomi"
-          name="fanName"
-          onChange={handleChange}
-          rules={[{ required: true, message: "Iltimos, fan nomini kiriting!" }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Card title="Kitoblarni tanlang" type="inner">
-          <div className="flex flex-col gap-[15px]">
-            <Input
-              showCount
-              type="text"
-              placeholder="Kitob qidirish"
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <Toplam>
-              {allBooks.map((v) => {
-                return (
-                  v.name.toLowerCase().includes(search.toLowerCase()) && (
-                    <Card key={v.id}>
-                      <ToplamCard>
-                        <Checkbox
-                          value={v.id}
-                          checked={books.includes(v.id)}
-                          onChange={handleCheckboxChange}
-                        >
-                          <div className="inner">
-                            <div>{v.name}</div>
-                            <div>{v.muallif}</div>
-                            <div>{v.year}</div>
-                          </div>
-                        </Checkbox>
-                      </ToplamCard>
-                    </Card>
-                  )
-                );
-              })}
-            </Toplam>
-          </div>
-        </Card>
-        <Form.Item>
-          <Button onClick={handleSubmit} type="primary" htmlType="submit">
-            Saqlash
-          </Button>
-        </Form.Item>
-      </Form>
-    </Modal>
-  );
-
   const FanFound = () => {
     return contentList[activeTabKey];
   };
@@ -324,7 +261,68 @@ const ToplamView = () => {
           </Card>
 
           {/* Fan qoshish */}
-          <FanQoshish />
+          <Modal
+            title="Fan qoshish"
+            open={openModal}
+            onCancel={handleCancel}
+            footer={[<></>]}
+          >
+            <Form
+              onSubmit={handleSubmit}
+              name="addFanForm"
+              initialValues={{ remember: true }}
+            >
+              <Form.Item
+                label="Fan nomi"
+                name="fanName"
+                onChange={handleChange}
+                rules={[
+                  { required: true, message: "Iltimos, fan nomini kiriting!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Card title="Kitoblarni tanlang" type="inner">
+                <div className="flex flex-col gap-[15px]">
+                  <Input
+                    showCount
+                    type="text"
+                    placeholder="Kitob qidirish"
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  <Toplam>
+                    {allBooks.map((v) => {
+                      return (
+                        v.name.toLowerCase().includes(search.toLowerCase()) && (
+                          <Card key={v.id}>
+                            <ToplamCard>
+                              <Checkbox
+                                value={v.id}
+                                checked={books.includes(v.id)}
+                                onChange={handleCheckboxChange}
+                              >
+                                <div className="inner">
+                                  <div>{v.name}</div>
+                                  <div>{v.muallif}</div>
+                                  <div>{v.year}</div>
+                                </div>
+                              </Checkbox>
+                            </ToplamCard>
+                          </Card>
+                        )
+                      );
+                    })}
+                  </Toplam>
+                </div>
+              </Card>
+              <Form.Item>
+                <Button onClick={handleSubmit} type="primary" htmlType="submit">
+                  Saqlash
+                </Button>
+              </Form.Item>
+            </Form>
+          </Modal>
         </div>
       ) : (
         <div>

@@ -5,7 +5,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
   --padding: 10px 25px;
   --padding-body: 86px;
@@ -13,6 +12,8 @@
   --min-padding: 2px;
   --min-width: 320px;
   --min-width-book: 210px;
+
+  --main-color: rgb(0, 24, 105);
 }
 
 * {
@@ -67,7 +68,6 @@ body {
   z-index: 999 !important;
   display: block;
 }
-
 
 /* *SHADCN */
 
@@ -142,5 +142,49 @@ body {
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 50px;
+  --b: 8px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--main-color);
+  -webkit-mask: repeating-conic-gradient(
+      #0000 0deg,
+      #000 1deg 70deg,
+      #0000 71deg 90deg
+    ),
+    radial-gradient(
+      farthest-side,
+      #0000 calc(100% - var(--b) - 1px),
+      #000 calc(100% - var(--b))
+    );
+  -webkit-mask-composite: destination-in;
+  mask-composite: intersect;
+  animation: l5 1s infinite;
+}
+.loaderWindow {
+  width: 100%;
+  height: 100%;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 111;
+  background-color: rgba(255, 255, 255, 0.4);
+
+  transition: 0.2s;
+}
+
+@keyframes l5 {
+  to {
+    transform: rotate(0.5turn);
   }
 }

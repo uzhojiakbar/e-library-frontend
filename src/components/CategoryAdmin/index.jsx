@@ -14,6 +14,8 @@ import {
 const CategoryAdmin = ({ categories, notify }) => {
   const [ctgs, setctgs] = useState(categories);
 
+  console.log(ctgs);
+
   const ctgNameRef = useRef("");
 
   const getCategories = async (update = 0) => {
@@ -22,13 +24,15 @@ const CategoryAdmin = ({ categories, notify }) => {
         await fetch("http://localhost:4000/categories")
           .then((response) => response.json())
           .then((result) => {
-            setctgs(result.sort((a, b) => {
-              if (a.id === "bottom") return 1;
-              return a.id - b.id;
-            }));
+            setctgs(
+              result.sort((a, b) => {
+                if (a.id === "bottom") return 1;
+                return a.id - b.id;
+              })
+            );
           })
           .catch((error) => console.error("Xatolik:", error));
-      } catch (error) { }
+      } catch (error) {}
     }
   };
 
@@ -56,15 +60,11 @@ const CategoryAdmin = ({ categories, notify }) => {
     }
   };
 
-
   const DelCtg = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:4000/categories/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`http://localhost:4000/categories/${id}`, {
+        method: "DELETE",
+      });
       if (!response.ok) {
         notify("err", "Server Xatosi!");
         throw new Error("Server xatosi");
@@ -77,6 +77,7 @@ const CategoryAdmin = ({ categories, notify }) => {
     }
   };
 
+  getCategories();
   return (
     <div
       className={`w-[100%] max-w-[100vw] flex flex-col  border-red-600 gap-[30px]`}

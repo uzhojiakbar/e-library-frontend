@@ -16,6 +16,7 @@ import {
 import Book from "../../../components/Book";
 import { Card, List } from "antd";
 import { NavLink } from "react-router-dom";
+
 const User = ({ books = [], q = "", toplam }) => {
   const [view, setView] = useState("book");
 
@@ -44,70 +45,78 @@ const User = ({ books = [], q = "", toplam }) => {
       </ChangeView>
       {view === "book" ? (
         <ProductPage>
-          {
-            books.length ?
-              <Books>
-                {books?.map(
-                  (v) =>
-                    !v.hidden &&
-                    v.name.toLowerCase().includes(q) && (
-                      <Drawer key={v.id}>
-                        <DrawerTrigger asChild>
-                          <ProductCard url={GetPic(v.pics[0])}>
-                            <div className="img">
-                              {/* <img src={GetPic(v.pics[0])} alt="" /> */}
-                            </div>
-                            <CardText>
-                              <h2>{v.name}</h2>
-                              <p>{v.desc}</p>
-                            </CardText>
-                          </ProductCard>
-                        </DrawerTrigger>
-                        <DrawerContent>
-                          <Book id={v.id} books={books} />
-                        </DrawerContent>
-                      </Drawer>
-                    )
-                )}
-              </Books>
-              : <div>
-                <h1 className="text-2xl font-bold text-center">Qandaydur Xatolik yoki Kitoblar topilmadi</h1>
-              </div>
-          }
+          {books.length ? (
+            <Books>
+              {books?.map(
+                (v) =>
+                  !v.hidden &&
+                  v.name.toLowerCase().includes(q) && (
+                    <Drawer key={v.id}>
+                      <DrawerTrigger asChild>
+                        <ProductCard url={GetPic(v.pics[0])}>
+                          <div className="img">
+                            {/* <img src={GetPic(v.pics[0])} alt="" /> */}
+                          </div>
+                          <CardText>
+                            <h2>{v.name}</h2>
+                            <p>{v.desc}</p>
+                          </CardText>
+                        </ProductCard>
+                      </DrawerTrigger>
+                      <DrawerContent>
+                        <Book id={v.id} books={books} />
+                      </DrawerContent>
+                    </Drawer>
+                  )
+              )}
+            </Books>
+          ) : (
+            <div>
+              <h1 className="text-2xl font-bold text-center">
+                Qandaydur Xatolik yoki Kitoblar topilmadi
+              </h1>
+            </div>
+          )}
         </ProductPage>
       ) : (
         ""
       )}
-      {view === "toplam" ?
+      {view === "toplam" ? (
         <>
-          {
-            toplam ? <List
+          {toplam ? (
+            <List
               itemLayout="vertical"
               dataSource={toplam}
-              renderItem={
-                (item) => (
-                  <NavLink key={item.id} to={`/toplam/${item.id}`}>
-                    <Card style={{ margin: "10px", cursor: "pointer" }}>
-                      <List.Item>
-                        <List.Item.Meta
-                          avatar={
-                            <i className="fa-solid fa-book text-[30px] text-[#001869]"></i>
-                          }
-                          title={<div>{item.name}</div>}
-                          description={<h1 className="text-[18px]">{item.desc}</h1>}
-                        />
-                      </List.Item>
-                    </Card>
-                  </NavLink>
-                )
-              }
-            /> : <div>
-              <h1 className="text-2xl font-bold text-center">Toplamlar topilmadi</h1>
+              renderItem={(item) => (
+                <NavLink key={item.id} to={`/toplam/${item.id}`}>
+                  <Card style={{ margin: "10px", cursor: "pointer" }}>
+                    <List.Item>
+                      <List.Item.Meta
+                        avatar={
+                          <i className="fa-solid fa-book text-[30px] text-[#001869]"></i>
+                        }
+                        title={<div>{item.name}</div>}
+                        description={
+                          <h1 className="text-[18px]">{item.desc}</h1>
+                        }
+                      />
+                    </List.Item>
+                  </Card>
+                </NavLink>
+              )}
+            />
+          ) : (
+            <div>
+              <h1 className="text-2xl font-bold text-center">
+                Toplamlar topilmadi
+              </h1>
             </div>
-          }
+          )}
         </>
-        : <></>}
-    </div >
+      ) : (
+        <></>
+      )}
+    </div>
   );
 };
 

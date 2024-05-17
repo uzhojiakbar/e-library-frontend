@@ -4,6 +4,7 @@ import { NavLink, useParams } from "react-router-dom";
 import { BookOutlined } from "@ant-design/icons";
 import { Toplam, ToplamCard } from "../ToplamAdmin/style";
 import { useMediaQuery } from "@uidotdev/usehooks";
+import toast, { Toaster } from "react-hot-toast";
 
 const ToplamView = () => {
   const { toplamId } = useParams();
@@ -16,6 +17,8 @@ const ToplamView = () => {
   const [books, setBooks] = useState([]);
   const [allBooks, setAllBooks] = useState([]);
   const [search, setSearch] = useState("");
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetch("http://localhost:4000/books")
@@ -42,20 +45,29 @@ const ToplamView = () => {
   };
 
   const handleSubmit = async () => {
-    await fetch(`http://localhost:4000/toplam/${toplamId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: fanName, books }),
-    }).catch((error) => {
-      console.error("Xatolik:", error);
-    });
+    try {
+      await setLoading(1);
+      await fetch(`http://localhost:4000/toplam/${toplamId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: fanName, books }),
+      }).catch((error) => {
+        console.error("Xatolik:", error);
+      });
 
-    setBooks([]);
-    setFanName("");
-    await getToplam(1);
-    await handleClose();
+      setBooks([]);
+      setFanName("");
+
+      await getToplam(1);
+      notify("ok", "Fan qoshildi!");
+      await handleClose();
+      await setLoading(0);
+    } catch (error) {
+      console.log("err", "Fan qoshilmadi, qandaydur xatolik!");
+      notify("err", "Fan qoshilmadi, qandaydur xatolik!");
+    }
   };
 
   const getToplam = async (update = 0) => {
@@ -71,8 +83,19 @@ const ToplamView = () => {
     }
   };
 
+  const notify = (type = "ok", text) => {
+    if (type === "ok") {
+      toast.success(text || "Tayyor");
+    } else if (type === "err") {
+      toast.error(text || "Xato");
+    } else if (type === "wait") {
+      toast.loading(text || "Kuting...");
+    }
+  };
+
   const handleDelete = async (kafedraId, fanId) => {
     try {
+      await setLoading(1);
       await fetch(`http://localhost:4000/toplam/${kafedraId}/${fanId}`, {
         method: "DELETE",
         headers: {
@@ -81,9 +104,11 @@ const ToplamView = () => {
         body: JSON.stringify({ fanId }),
       });
       await getToplam(1);
+      await setLoading(0);
+      notify("ok", "Belgilangan Fan o'chirildi!");
     } catch (error) {
-      console.error("Kafedra ochirishda xatolik:", error);
-      // setMessage('Server bilan muammo yuz berdi');
+      console.error("Fanni ochirishda xatolik:", error);
+      notify("err", "Fanni ochirishda xatolik!");
     }
   };
 
@@ -197,7 +222,9 @@ const ToplamView = () => {
 
   const FanNotFound = () => {
     return (
-      <h1 className="text-2xl font-bold text-center">Hozircha fanlar yoq</h1>
+      <h1 className="text-2xl font-semibold  text-center p-[50px]">
+        Hozircha fanlar yoq....
+      </h1>
     );
   };
 
@@ -322,6 +349,14 @@ const ToplamView = () => {
                 </Button>
               </Form.Item>
             </Form>
+
+            {loading ? (
+              <div className="loaderWindow">
+                <div className="loader"></div>
+              </div>
+            ) : (
+              <></>
+            )}
           </Modal>
         </div>
       ) : (
@@ -331,6 +366,16 @@ const ToplamView = () => {
           </h1>
         </div>
       )}
+
+      {loading ? (
+        <div className="loaderWindow">
+          <div className="loader"></div>
+        </div>
+      ) : (
+        <></>
+      )}
+
+      <Toaster />
     </div>
   );
 };

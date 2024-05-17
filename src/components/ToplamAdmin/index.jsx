@@ -47,7 +47,7 @@ const ToplamAdmin = ({ books, notify, toplam, type = "admin" }) => {
   };
 
   return (
-    <>
+    <div className="w-[100%]">
       <div className="pl-[10px]">
         {type === "admin" ? (
           <Button
@@ -132,7 +132,7 @@ const ToplamAdmin = ({ books, notify, toplam, type = "admin" }) => {
           )}
         />
       </div>
-    </>
+    </div>
   );
 };
 

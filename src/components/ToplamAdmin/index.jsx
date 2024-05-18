@@ -1,12 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Card, Input, List, Modal } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { ButtonUpload } from "src/Pages/FIleUpload/style";
 import { NavLink } from "react-router-dom";
 
-const ToplamAdmin = ({ books, notify, toplam, type = "admin" }) => {
+const ToplamAdmin = ({ getToplams, books, notify, toplam, type = "admin" }) => {
   const [openModal, setOpenModal] = useState(false);
+  const [zero, setZero] = useState(1);
+
+  useEffect(() => {
+    return () => {
+      if (zero) {
+        getToplams(1);
+        setZero(0);
+      }
+    };
+  });
 
   const [name, setname] = useState("");
   const [desc, setDesc] = useState("");
@@ -39,6 +49,7 @@ const ToplamAdmin = ({ books, notify, toplam, type = "admin" }) => {
           setname("");
           setDesc("");
           handleCancel();
+          getToplams(1);
         })
         .catch((error) => console.error(error));
     } catch (error) {

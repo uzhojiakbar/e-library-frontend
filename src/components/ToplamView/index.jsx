@@ -1,12 +1,13 @@
 import { Button, Card, Checkbox, Form, Input, List, Modal } from "antd";
 import React, { useEffect, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { BookOutlined } from "@ant-design/icons";
 import { Toplam, ToplamCard } from "../ToplamAdmin/style";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
 
-const ToplamView = () => {
+const ToplamView = ({ getToplams }) => {
   const { toplamId } = useParams();
 
   const [currentToplam, setCurrentToplam] = useState({
@@ -18,7 +19,9 @@ const ToplamView = () => {
   const [allBooks, setAllBooks] = useState([]);
   const [search, setSearch] = useState("");
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState();
+
+  const nav = useNavigate();
 
   useEffect(() => {
     fetch("http://localhost:4000/books")
@@ -120,15 +123,15 @@ const ToplamView = () => {
 
   const tabList = currentToplam?.fanlar.map((v) => {
     return {
-      key: v.id,
-      tab: v.name,
+      key: v?.id,
+      tab: v?.name,
     };
   });
 
   const contentList = {};
 
   currentToplam?.fanlar.forEach((fan, i) => {
-    contentList[`${fan.id}`] = (
+    contentList[`${fan?.id}`] = (
       <>
         <div
           key={i}
@@ -138,49 +141,52 @@ const ToplamView = () => {
             gap: "20px",
           }}
         >
-          {fan.books.map((v) => (
-            <NavLink
-              key={v.id}
-              style={{ textDecoration: "none" }}
-              to={`/book/${v.id}`}
-            >
-              <div
-                style={{
-                  width: "300px",
-                  margin: "10px",
-                  borderRadius: "10px",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  transition: "transform 0.3s",
-                  overflow: "hidden",
-                  ":hover": {
-                    transform: "scale(1.05)",
-                  },
-                }}
-              >
-                <div
-                  style={{
-                    padding: "10px",
-                    backgroundColor: "#f9f9f9",
-                    borderBottom: "1px solid #ddd",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "left",
-                    borderTopLeftRadius: "10px",
-                    borderTopRightRadius: "10px",
-                    gap: "10px",
-                  }}
+          {fan?.books?.map(
+            (v) =>
+              v?.id && (
+                <NavLink
+                  key={v?.id}
+                  style={{ textDecoration: "none" }}
+                  to={`/book/${v?.id}`}
                 >
-                  <div style={{ fontSize: "24px", color: "#1890ff" }}>
-                    <BookOutlined />
+                  <div
+                    style={{
+                      width: "300px",
+                      margin: "10px",
+                      borderRadius: "10px",
+                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                      transition: "transform 0.3s",
+                      overflow: "hidden",
+                      ":hover": {
+                        transform: "scale(1.05)",
+                      },
+                    }}
+                  >
+                    <div
+                      style={{
+                        padding: "10px",
+                        backgroundColor: "#f9f9f9",
+                        borderBottom: "1px solid #ddd",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "left",
+                        borderTopLeftRadius: "10px",
+                        borderTopRightRadius: "10px",
+                        gap: "10px",
+                      }}
+                    >
+                      <div style={{ fontSize: "24px", color: "#1890ff" }}>
+                        <BookOutlined />
+                      </div>
+                      <div style={{ fontSize: "18px" }}>{v?.name}</div>
+                    </div>
+                    <div style={{ padding: "10px", minHeight: "100px" }}>
+                      {v?.desc}
+                    </div>
                   </div>
-                  <div style={{ fontSize: "18px" }}>{v.name}</div>
-                </div>
-                <div style={{ padding: "10px", minHeight: "100px" }}>
-                  {v.desc}
-                </div>
-              </div>
-            </NavLink>
-          ))}
+                </NavLink>
+              )
+          )}
         </div>
         {JSON.parse(localStorage.getItem("user"))?.type === "admin" ||
         JSON.parse(localStorage.getItem("user"))?.type === "kafedra" ? (
@@ -216,10 +222,6 @@ const ToplamView = () => {
 
   const IsMobile = useMediaQuery("(max-width : 605px)");
 
-  const FanFound = () => {
-    return contentList[activeTabKey];
-  };
-
   const FanNotFound = () => {
     return (
       <h1 className="text-2xl font-semibold  text-center p-[50px]">
@@ -228,13 +230,26 @@ const ToplamView = () => {
     );
   };
 
+  const DeleteKafedra = async (id) => {
+    setLoading(true);
+    try {
+      await axios.delete(`http://localhost:4000/toplam/${toplamId}`);
+      await notify("ok", "Kafedra ochirildi!");
+      await nav("/admin/kafedra");
+      // await document.location.reload();
+    } catch (error) {
+      notify("err", "Kafedra ochirilmadi!");
+    }
+    setLoading(false);
+  };
+
   return (
     <div
       className={` ${
         IsMobile ? "pt-[20px]" : "p-[50px]"
       } flex flex-col gap-[20px]`}
     >
-      {currentToplam.name ? (
+      {currentToplam?.name ? (
         <div>
           {/* Kafedra nomi */}
           <List itemLayout="vertical">
@@ -260,6 +275,10 @@ const ToplamView = () => {
                             onClick={handleClose}
                             className="fa-solid text-[16px] fa-file-excel text-[green]"
                           ></div>
+                          <div
+                            onClick={DeleteKafedra}
+                            className="fa-solid text-[16px] fa-trash text-[red]"
+                          ></div>
                         </div>
                       ) : (
                         ""
@@ -284,7 +303,11 @@ const ToplamView = () => {
             activeTabKey={activeTabKey}
             onTabChange={onTab1Change}
           >
-            {currentToplam?.fanlar.length ? <FanFound /> : <FanNotFound />}
+            {currentToplam?.fanlar.length ? (
+              contentList[activeTabKey]
+            ) : (
+              <FanNotFound />
+            )}
           </Card>
 
           {/* Fan qoshish */}

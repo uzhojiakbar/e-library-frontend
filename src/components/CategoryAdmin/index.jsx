@@ -15,17 +15,24 @@ import {
 import { motion } from "framer-motion";
 import { Delete } from "lucide-react";
 import { BoxCenter } from "src/Root/style";
+import axios from "axios"; // Axios kutubxonasini import qilamiz
 
 const CategoryAdmin = ({ notify }) => {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:4000/categories")
-      .then((response) => response.json())
-      .then((data) => setCategories(data))
-      .catch((error) => console.error("Failed to fetch categories:", error));
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/categories");
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+    }
+  };
 
   const handleAddCategory = async () => {
     if (!newCategory.trim()) {
@@ -36,14 +43,13 @@ const CategoryAdmin = ({ notify }) => {
     const newCategoryData = { name: newCategory };
 
     try {
-      const response = await fetch("http://localhost:4000/categories", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newCategoryData),
-      });
+      const response = await axios.post(
+        "http://localhost:4000/categories",
+        newCategoryData
+      );
 
-      if (response.ok) {
-        const addedCategory = await response.json();
+      if (response.status === 201) {
+        const addedCategory = response.data;
         setCategories([...categories, addedCategory]);
         setNewCategory("");
         notify("ok", "Yangi ro'yxat muvaffaqiyatli qo'shildi!");
@@ -58,11 +64,11 @@ const CategoryAdmin = ({ notify }) => {
 
   const handleDeleteCategory = async (id) => {
     try {
-      const response = await fetch(`http://localhost:4000/categories/${id}`, {
-        method: "DELETE",
-      });
+      const response = await axios.delete(
+        `http://localhost:4000/categories/${id}`
+      );
 
-      if (response.ok) {
+      if (response.status === 200) {
         setCategories(categories.filter((category) => category.id !== id));
         notify("ok", "Ro'yxat muvaffaqiyatli o'chirildi!");
       } else {
@@ -81,6 +87,7 @@ const CategoryAdmin = ({ notify }) => {
         style={{
           padding: "2rem",
           maxWidth: "700px",
+          margin: "0 auto",
           width: "100%",
         }}
       >

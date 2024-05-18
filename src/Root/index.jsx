@@ -73,8 +73,8 @@ const Root = () => {
     }
   };
 
-  const getToplam = async () => {
-    if (toplam.length === 0) {
+  const getToplam = async (update) => {
+    if (toplam.length === 0 || update === 1) {
       try {
         await fetch("http://localhost:4000/toplam")
           .then((response) => response.json())
@@ -212,7 +212,12 @@ const Root = () => {
             path="kafedra"
             element={
               <AdminRoute>
-                <ToplamAdmin toplam={toplam} notify={notify} books={books} />
+                <ToplamAdmin
+                  getToplams={getToplam}
+                  toplam={toplam}
+                  notify={notify}
+                  books={books}
+                />
               </AdminRoute>
             }
           />

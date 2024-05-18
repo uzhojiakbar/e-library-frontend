@@ -7,7 +7,7 @@ const LibraryRoot = styled.div`
 const BoxCenter = styled.div`
   width: 100%;
   display: flex;
-  border: 1px solid red;
+  justify-content: center;
 `;
 
 export { LibraryRoot, BoxCenter };

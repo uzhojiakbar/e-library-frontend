@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -9,64 +9,118 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   IconButton,
+  Divider,
+  Box,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { Delete } from "lucide-react";
+import { BoxCenter } from "src/Root/style";
 
-const CategoryAdmin = ({
-  categories = () => {},
-  setCategories = () => {},
-  notify,
-}) => {
+const CategoryAdmin = ({ notify }) => {
+  const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
 
-  const handleAddCategory = () => {
+  useEffect(() => {
+    fetch("http://localhost:4000/categories")
+      .then((response) => response.json())
+      .then((data) => setCategories(data))
+      .catch((error) => console.error("Failed to fetch categories:", error));
+  }, []);
+
+  const handleAddCategory = async () => {
     if (!newCategory.trim()) {
       notify("err", "Bo'sh ro'yxatni qo'sha olmaysiz!");
       return;
     }
 
-    const newId =
-      categories.reduce(
-        (max, category) => (category.id > max ? category.id : max),
-        0
-      ) + 1;
+    const newCategoryData = { name: newCategory };
 
-    const newCategories = [...categories, { id: newId, name: newCategory }];
-    setCategories(newCategories);
-    setNewCategory("");
-    notify("ok", "Yangi ro'yxat muvaffaqiyatli qo'shildi!");
+    try {
+      const response = await fetch("http://localhost:4000/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newCategoryData),
+      });
+
+      if (response.ok) {
+        const addedCategory = await response.json();
+        setCategories([...categories, addedCategory]);
+        setNewCategory("");
+        notify("ok", "Yangi ro'yxat muvaffaqiyatli qo'shildi!");
+      } else {
+        notify("err", "Ro'yxat qo'shishda xatolik yuz berdi!");
+      }
+    } catch (error) {
+      console.error("Failed to add category:", error);
+      notify("err", "Server xatosi ro'yxat qo'shishda xatolik yuz berdi!");
+    }
   };
 
-  const handleDeleteCategory = (id) => {
-    const filteredCategories = categories.filter(
-      (category) => category.id !== id
-    );
-    setCategories(filteredCategories);
-    notify("ok", "Ro'yxat muvaffaqiyatli o'chirildi!");
+  const handleDeleteCategory = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:4000/categories/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setCategories(categories.filter((category) => category.id !== id));
+        notify("ok", "Ro'yxat muvaffaqiyatli o'chirildi!");
+      } else {
+        notify("err", "Ro'yxat o'chirishda xatolik yuz berdi!");
+      }
+    } catch (error) {
+      console.error("Failed to delete category:", error);
+      notify("err", "Server xatosi ro'yxat o'chirishda xatolik yuz berdi!");
+    }
   };
 
   return (
-    <div>
-      <Paper elevation={3} className="p-4">
-        <Typography variant="h5" gutterBottom>
+    <BoxCenter>
+      <Paper
+        elevation={6}
+        style={{
+          padding: "2rem",
+          maxWidth: "700px",
+          width: "100%",
+        }}
+      >
+        <Typography variant="h4" align="center" gutterBottom>
           Kategoriyalar
         </Typography>
-        <div className="flex items-center gap-2 mb-4">
+        <Box display="flex" gap="1rem" mb="1.5rem">
           <TextField
             label="Yangi kategoriya nomi"
             variant="outlined"
+            fullWidth
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
           />
-          <Button variant="contained" onClick={handleAddCategory}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddCategory}
+            style={{ minWidth: "120px" }}
+          >
             Qo'shish
           </Button>
-        </div>
+        </Box>
+        <Divider style={{ marginBottom: "1.5rem" }} />
         <List>
           {categories.map((category) => (
-            <motion.div key={category.id} layout>
-              <ListItem className="justify-between">
+            <motion.div
+              key={category.id}
+              initial={{ opacity: 0, translateY: -20 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              exit={{ opacity: 0, translateY: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ListItem
+                style={{
+                  backgroundColor: "#fafafa",
+                  marginBottom: "0.5rem",
+                  borderRadius: "8px",
+                }}
+              >
                 <ListItemText primary={category.name} />
                 <ListItemSecondaryAction>
                   <IconButton
@@ -82,7 +136,7 @@ const CategoryAdmin = ({
           ))}
         </List>
       </Paper>
-    </div>
+    </BoxCenter>
   );
 };
 

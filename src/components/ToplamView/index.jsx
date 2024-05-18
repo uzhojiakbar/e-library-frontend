@@ -7,7 +7,7 @@ import { useMediaQuery } from "@uidotdev/usehooks";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
-const ToplamView = ({ getToplams }) => {
+const ToplamView = () => {
   const { toplamId } = useParams();
 
   const [currentToplam, setCurrentToplam] = useState({
@@ -209,6 +209,7 @@ const ToplamView = ({ getToplams }) => {
   });
 
   const [openModal, setOpenModal] = useState(false);
+  const [openModalEdit, setOpenModalEdit] = useState(false);
 
   const handleClose = () => {
     setBooks([]);
@@ -218,6 +219,10 @@ const ToplamView = ({ getToplams }) => {
 
   const handleCancel = () => {
     setOpenModal(false);
+  };
+
+  const handleCancelEdit = () => {
+    setOpenModalEdit(!openModalEdit);
   };
 
   const IsMobile = useMediaQuery("(max-width : 605px)");
@@ -243,6 +248,35 @@ const ToplamView = ({ getToplams }) => {
     setLoading(false);
   };
 
+  const EditFan = async () => {
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/toplam/${toplamId}`,
+        updatedData
+      );
+      await handleCancelEdit();
+      await getToplam(1);
+      console.log("Updated data:", response.data);
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
+  };
+
+  const [updatedData, setUpdatedData] = useState({
+    name: currentToplam?.name,
+    desc: currentToplam?.desc,
+  });
+
+  const handleFanInfoChange = (event) => {
+    const { name, value } = event.target;
+    setUpdatedData({
+      ...updatedData,
+      [name]: value,
+    });
+
+    console.log(updatedData);
+  };
+
   return (
     <div
       className={` ${
@@ -262,31 +296,65 @@ const ToplamView = ({ getToplams }) => {
                   title={
                     <div className="flex w-[100%] items-center gap-[15px] ">
                       <div>{currentToplam?.name}</div>
+                    </div>
+                  }
+                  description={
+                    <div>
+                      <h1 className="text-[18px]">{currentToplam?.desc}</h1>
                       {JSON.parse(localStorage.getItem("user"))?.type ===
                         "admin" ||
                       JSON.parse(localStorage.getItem("user"))?.type ===
                         "kafedra" ? (
-                        <div className="flex gap-[20px]">
-                          <div
+                        <div className="flex gap-[20px] mt-[20px] overflow-auto">
+                          <Button
+                            style={{
+                              display: "flex",
+                              gap: "10px",
+                              alignItems: "center",
+                            }}
                             onClick={handleClose}
-                            className="fa-solid text-[16px] fa-edit text-black"
-                          ></div>
-                          <div
+                          >
+                            <div className="fa-solid text-[16px] fa-plus text-black"></div>
+                            <div>Fan qoshish</div>
+                          </Button>
+                          <Button
+                            style={{
+                              display: "flex",
+                              gap: "10px",
+                              alignItems: "center",
+                            }}
+                            onClick={handleCancelEdit}
+                          >
+                            <div className="fa-solid text-[16px] fa-edit text-black"></div>
+                            <div>Tahrirlash</div>
+                          </Button>
+                          <Button
+                            style={{
+                              display: "flex",
+                              gap: "10px",
+                              alignItems: "center",
+                            }}
                             onClick={handleClose}
-                            className="fa-solid text-[16px] fa-file-excel text-[green]"
-                          ></div>
-                          <div
+                          >
+                            <div className="fa-solid text-[16px] fa-file-excel text-[green]"></div>
+                            <div>Exsel ga olish</div>
+                          </Button>
+                          <Button
+                            style={{
+                              display: "flex",
+                              gap: "10px",
+                              alignItems: "center",
+                            }}
                             onClick={DeleteKafedra}
-                            className="fa-solid text-[16px] fa-trash text-[red]"
-                          ></div>
+                          >
+                            <div className="fa-solid text-[16px] fa-trash text-[red]"></div>
+                            <div>Kafedrani ochirish</div>
+                          </Button>
                         </div>
                       ) : (
                         ""
                       )}
                     </div>
-                  }
-                  description={
-                    <h1 className="text-[18px]">{currentToplam?.desc}</h1>
                   }
                 />
               </List.Item>
@@ -327,7 +395,10 @@ const ToplamView = ({ getToplams }) => {
                 name="fanName"
                 onChange={handleChange}
                 rules={[
-                  { required: true, message: "Iltimos, fan nomini kiriting!" },
+                  {
+                    required: true,
+                    message: "Iltimos, fan nomini kiriting!",
+                  },
                 ]}
               >
                 <Input />
@@ -381,6 +452,74 @@ const ToplamView = ({ getToplams }) => {
               <></>
             )}
           </Modal>
+
+          {/* Fan Tahrirlash */}
+          <Modal
+            title={`${currentToplam?.name}: tahrirlash `}
+            open={openModalEdit}
+            onCancel={handleCancelEdit}
+            footer={""}
+          >
+            <Form
+              onSubmit={EditFan}
+              name="addFanForm"
+              initialValues={{
+                remember: true,
+                name: currentToplam?.name,
+                desc: currentToplam?.desc,
+              }}
+            >
+              <Form.Item
+                label="Fan nomi"
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                    message: "Iltimos, fan nomini kiriting!",
+                  },
+                ]}
+              >
+                <Input
+                  showCount
+                  maxLength={64}
+                  name={"name"}
+                  onChange={handleFanInfoChange}
+                />
+              </Form.Item>
+
+              <Form.Item
+                label="Fan Haqida malumot"
+                name="desc"
+                rules={[
+                  {
+                    required: true,
+                    message: "Iltimos, biror nima kiriting!",
+                  },
+                ]}
+              >
+                <Input
+                  showCount
+                  maxLength={1024}
+                  name={"desc"}
+                  onChange={handleFanInfoChange}
+                />
+              </Form.Item>
+
+              <Form.Item>
+                <Button onClick={EditFan} type="primary" htmlType="submit">
+                  Saqlash
+                </Button>
+              </Form.Item>
+            </Form>
+
+            {loading ? (
+              <div className="loaderWindow">
+                <div className="loader"></div>
+              </div>
+            ) : (
+              <></>
+            )}
+          </Modal>
         </div>
       ) : (
         <div>
@@ -402,5 +541,4 @@ const ToplamView = ({ getToplams }) => {
     </div>
   );
 };
-
 export default ToplamView;

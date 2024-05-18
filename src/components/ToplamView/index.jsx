@@ -252,7 +252,10 @@ const ToplamView = () => {
     try {
       const response = await axios.put(
         `http://localhost:4000/toplam/${toplamId}`,
-        updatedData
+        {
+          name: updatedData?.name || currentToplam?.name,
+          desc: updatedData?.desc || currentToplam?.desc,
+        }
       );
       await handleCancelEdit();
       await getToplam(1);

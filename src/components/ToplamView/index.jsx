@@ -7,6 +7,9 @@ import { useMediaQuery } from "@uidotdev/usehooks";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
+import * as excel from "exceljs";
+import { saveAs } from "file-saver";
+
 const ToplamView = () => {
   const { toplamId } = useParams();
 
@@ -280,6 +283,126 @@ const ToplamView = () => {
     console.log(updatedData);
   };
 
+  const KafedraToExcel = (index = 0) => {
+    const kafedraData = [
+      {
+        id: 1,
+        name: "34-36-ATT-23",
+        desc: "1-kurs Ahborot texnalogiya tizimlari fakulteti talabalari uchun kitoblar to'plami",
+        fanlar: [
+          {
+            id: 1,
+            name: "Oliy Matematika",
+            books: [1],
+          },
+          {
+            id: 2,
+            name: "Ingliz tili",
+            books: [2],
+          },
+        ],
+      },
+    ];
+
+    const getBook = async (id) => {
+      if (id) {
+        try {
+          const response = await axios.get(`http://localhost:4000/book/${id}`);
+          return response.data;
+        } catch (error) {
+          console.error("Xatolik:", error);
+          throw error;
+        }
+      }
+    };
+
+    const exportToExcel = async () => {
+      // Yangi Excel workbook yarating
+      const workbook = new excel.Workbook();
+      const worksheet = workbook.addWorksheet("Kafedra");
+
+      // Excel worksheet uchun sarlavhalarni qo'shing
+      worksheet.columns = [
+        { header: "ID", key: "id" },
+        { header: "Fan nomi", key: "Fanname" },
+        { header: "Adabiyot nomi", key: "BooKName" },
+        { header: "Adabiyot muallifi", key: "Muallif" },
+        { header: "Nashr yili", key: "yil" },
+        { header: "Nashriyot", key: "nashriyot" },
+        { header: "Til", key: "til" },
+        { header: "Kategoriya", key: "ctg" },
+      ];
+
+      worksheet.getRow(1).font = {
+        bold: true,
+        horizontal: "center",
+        vertical: "center",
+      };
+
+      worksheet.getRow(1).alignment = {
+        horizontal: "center",
+        vertical: "middle",
+      };
+
+      // Kafedra ma'lumotlarini worksheet-ga qo'shing
+      const data = kafedraData[index];
+      console.log(data);
+      const promises = data.fanlar.flatMap((fan) =>
+        fan.books.map((bookId) => getBook(bookId))
+      );
+
+      try {
+        const books = await Promise.all(promises);
+        books.forEach((book, index) => {
+          const fan = data.fanlar.find((fan) => fan.books.includes(book.id));
+          worksheet.addRow({
+            id: book.id,
+            Fanname: fan.name,
+            BooKName: book.name,
+            Muallif: book.muallif,
+            yil: book.year,
+            nashriyot: book.nashriyot,
+            til: "uzbek",
+            ctg: book.ctg,
+          });
+        });
+
+        worksheet.columns.forEach((column) => {
+          let maxLength = 0;
+          column.eachCell({ includeEmpty: true }, (cell) => {
+            maxLength = Math.max(
+              maxLength,
+              cell.value ? cell.value.toString().length : 0
+            );
+          });
+          column.width = maxLength < 10 ? 10 : maxLength + 2;
+        });
+
+        // Autosize rows
+        worksheet.getRow(1).eachCell({ includeEmpty: true }, (cell) => {
+          const textLength = cell.value ? cell.value.toString().length : 0;
+          if (textLength > 0) {
+            worksheet.getRow(1).height = Math.max(
+              worksheet.getRow(1).height || 0,
+              Math.ceil(textLength / 10) * 15
+            );
+          }
+        });
+
+        // Excel faylini saqlash
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+        });
+        saveAs(blob, `${kafedraData[index]?.name || "Kafedra"}_hisobot.xlsx`);
+      } catch (error) {
+        console.error("Xatolik:", error);
+      }
+    };
+
+    exportToExcel();
+  };
+
   return (
     <div
       className={` ${
@@ -337,7 +460,7 @@ const ToplamView = () => {
                               gap: "10px",
                               alignItems: "center",
                             }}
-                            onClick={handleClose}
+                            onClick={KafedraToExcel}
                           >
                             <div className="fa-solid text-[16px] fa-file-excel text-[green]"></div>
                             <div>Exsel ga olish</div>

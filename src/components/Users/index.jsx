@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Paper,
   Table,
@@ -14,8 +14,31 @@ import {
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { CheckCheck, UserRoundCog } from "lucide-react";
+import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import { db } from "src/config/firebase";
 
-const Users = ({ users, setUsers }) => {
+let login = 1
+
+const Users = () => {
+
+  const [users,setUsers] = useState([])
+
+  const getUsers = async(update) => {
+    if ((!users.length && login) || update===1) {
+      const UsersCollection = collection(db, "users");
+      const data = await getDocs(UsersCollection);
+      const getData = data.docs.map((v) => ({ id: v.id, ...v.data() }));
+      setUsers(getData)  
+      login = 0
+      console.log(1);
+    }
+  }
+
+  useEffect(() => {
+    getUsers()
+  } )
+    
+
   const [editUserId, setEditUserId] = useState(null);
   const [editUserName, setEditUserName] = useState("");
   const [editUserStatus, setEditUserStatus] = useState("");
@@ -25,7 +48,6 @@ const Users = ({ users, setUsers }) => {
       user.id === userId ? { ...user, type: newStatus } : user
     );
     setUsers(updatedUsers);
-    console.log(`User ${userId} status updated to ${newStatus}`);
   };
 
   const handleEditUser = (userId) => {
@@ -34,20 +56,22 @@ const Users = ({ users, setUsers }) => {
       setEditUserId(userId);
       setEditUserName(user.name);
       setEditUserStatus(user.type);
-      console.log(editUserId);
     }
   };
 
-  const saveEditedUser = () => {
-    const updatedUsers = users.map((user) =>
-      user.id === editUserId
-        ? { ...user, name: editUserName, type: editUserStatus }
-        : user
-    );
-    setUsers(updatedUsers);
-    setEditUserId(null);
-    setEditUserName("");
-    setEditUserStatus("");
+  const saveEditedUser = async() => {
+    await console.log(editUserStatus);
+    const UsersCollection = await collection(db, "users");
+
+    const userDoc = await doc(UsersCollection, editUserId); // Foydalanuvchi hujjatini aniqlash
+
+    await updateDoc(userDoc,{type: editUserStatus } )
+
+    await getUsers(1)
+    
+    await setEditUserId(null);
+    await setEditUserName("");
+    await setEditUserStatus("");
   };
 
   const exportToExcel = async () => {
@@ -193,7 +217,7 @@ const Users = ({ users, setUsers }) => {
                     </TableCell>
                     <TableCell>
                       {editUserId === v.id ? (
-                        <Button onClick={() => saveEditedUser(v.id)}>
+                        <Button onClick={() => saveEditedUser(v.id, )}>
                           <CheckCheck size={16} />
                         </Button>
                       ) : (

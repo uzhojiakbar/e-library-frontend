@@ -347,14 +347,14 @@ const ToplamView = () => {
       // Kafedra ma'lumotlarini worksheet-ga qo'shing
       const data = kafedraData[index];
       console.log(data);
-      const promises = data.fanlar.flatMap((fan) =>
+      const promises = data?.fanlar?.flatMap((fan) =>
         fan.books.map((bookId) => getBook(bookId))
       );
 
       try {
         const books = await Promise.all(promises);
         books.forEach((book, index) => {
-          const fan = data.fanlar.find((fan) => fan.books.includes(book.id));
+          const fan = data?.fanlar?.find((fan) => fan.books.includes(book.id));
           worksheet.addRow({
             id: book.id,
             Fanname: fan.name,

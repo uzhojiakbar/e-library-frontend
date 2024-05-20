@@ -5,15 +5,33 @@ import TextArea from "antd/es/input/TextArea";
 import { ButtonUpload } from "src/Pages/FIleUpload/style";
 import { NavLink } from "react-router-dom";
 
-const ToplamAdmin = ({ getToplams, books, notify, toplam, type = "admin" }) => {
+const ToplamAdmin = ({  notify, toplam, type = "admin" }) => {
   const [openModal, setOpenModal] = useState(false);
+  const [allToplam, setAllToplam] = useState(toplam);
+  const [loading, setLoading] = useState(true);
+
   const [zero, setZero] = useState(1);
+
+  const getToplams = async (update) => {
+    if (allToplam.length === 0 || update === 1) {
+      try {
+        await fetch("http://localhost:4000/toplam")
+          .then((response) => response.json())
+          .then((result) => {
+            setAllToplam(result);
+            console.log(result);
+          })
+          .catch((error) => console.error("Xatolik:", error));
+      } catch (error) {}
+    }
+  };
 
   useEffect(() => {
     return () => {
       if (zero) {
         getToplams(1);
         setZero(0);
+        setLoading(0)
       }
     };
   });
@@ -123,7 +141,7 @@ const ToplamAdmin = ({ getToplams, books, notify, toplam, type = "admin" }) => {
       <div>
         <List
           itemLayout="vertical"
-          dataSource={toplam}
+          dataSource={allToplam}
           renderItem={(item, index) => (
             <NavLink to={`/toplam/${item.id}`}>
               <Card
@@ -143,6 +161,13 @@ const ToplamAdmin = ({ getToplams, books, notify, toplam, type = "admin" }) => {
           )}
         />
       </div>
+      {loading ? (
+              <div className="loaderWindow">
+                <div className="loader"></div>
+              </div>
+            ) : (
+              <></>
+            )}
     </div>
   );
 };

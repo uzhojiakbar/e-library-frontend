@@ -7,7 +7,8 @@ import { useMediaQuery } from "@uidotdev/usehooks";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
-import * as excel from "exceljs";
+import ExcelJS from 'exceljs';
+
 import { saveAs } from "file-saver";
 
 const ToplamView = () => {
@@ -283,90 +284,53 @@ const ToplamView = () => {
     console.log(updatedData);
   };
 
-  const KafedraToExcel = (index = 0) => {
-    const kafedraData = [
-      {
-        id: 1,
-        name: "34-36-ATT-23",
-        desc: "1-kurs Ahborot texnalogiya tizimlari fakulteti talabalari uchun kitoblar to'plami",
-        fanlar: [
-          {
-            id: 1,
-            name: "Oliy Matematika",
-            books: [1],
-          },
-          {
-            id: 2,
-            name: "Ingliz tili",
-            books: [2],
-          },
-        ],
-      },
-    ];
-
-    const getBook = async (id) => {
-      if (id) {
-        try {
-          const response = await axios.get(`http://localhost:4000/book/${id}`);
-          return response.data;
-        } catch (error) {
-          console.error("Xatolik:", error);
-          throw error;
-        }
-      }
-    };
-
-    const exportToExcel = async () => {
-      // Yangi Excel workbook yarating
-      const workbook = new excel.Workbook();
-      const worksheet = workbook.addWorksheet("Kafedra");
-
-      // Excel worksheet uchun sarlavhalarni qo'shing
-      worksheet.columns = [
-        { header: "ID", key: "id" },
-        { header: "Fan nomi", key: "Fanname" },
-        { header: "Adabiyot nomi", key: "BooKName" },
-        { header: "Adabiyot muallifi", key: "Muallif" },
-        { header: "Nashr yili", key: "yil" },
-        { header: "Nashriyot", key: "nashriyot" },
-        { header: "Til", key: "til" },
-        { header: "Kategoriya", key: "ctg" },
-      ];
-
-      worksheet.getRow(1).font = {
-        bold: true,
-        horizontal: "center",
-        vertical: "center",
-      };
-
-      worksheet.getRow(1).alignment = {
-        horizontal: "center",
-        vertical: "middle",
-      };
-
-      // Kafedra ma'lumotlarini worksheet-ga qo'shing
-      const data = kafedraData[index];
-      console.log(data);
-      const promises = data?.fanlar?.flatMap((fan) =>
-        fan.books.map((bookId) => getBook(bookId))
+  const KafedraToExcel = async() => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/toplam/${toplamId}`
       );
+      const { fanlar, kafedra } = response.data;
 
-      try {
-        const books = await Promise.all(promises);
-        books.forEach((book, index) => {
-          const fan = data?.fanlar?.find((fan) => fan.books.includes(book.id));
-          worksheet.addRow({
-            id: book.id,
-            Fanname: fan.name,
-            BooKName: book.name,
-            Muallif: book.muallif,
-            yil: book.year,
-            nashriyot: book.nashriyot,
-            til: "uzbek",
-            ctg: book.ctg,
+
+      const exportToExcel = async () => {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet(`${kafedra?.name}`);
+
+        // Ustunlar
+        worksheet.columns = [
+          { header: "ID", key: "id" },
+          { header: "Fan nomi", key: "Fanname" },
+          { header: "Adabiyot nomi", key: "BooKName" },
+          { header: "Adabiyot muallifi", key: "Muallif" },
+          { header: "Nashr yili", key: "yil" },
+          { header: "Nashriyot", key: "nashriyot" },
+          { header: "Til", key: "til" },
+          { header: "Kategoriya", key: "ctg" },
+        ];
+
+
+        worksheet.getRow(1).font = { bold: true };
+
+
+        
+        let count = 1
+
+        fanlar.forEach((fan) => {
+          fan.books.forEach((book) => {
+            worksheet.addRow([
+              count,
+              fan?.name, 
+              book?.name,
+              book?.muallif,
+              book?.year,
+              book?.nashriyot,
+              book?.lang || "uzbek",
+              book?.ctg])
           });
+            count++
         });
 
+        // Autosize columns
         worksheet.columns.forEach((column) => {
           let maxLength = 0;
           column.eachCell({ includeEmpty: true }, (cell) => {
@@ -389,20 +353,21 @@ const ToplamView = () => {
           }
         });
 
-        // Excel faylini saqlash
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
-        saveAs(blob, `${kafedraData[index]?.name || "Kafedra"}_hisobot.xlsx`);
-      } catch (error) {
-        console.error("Xatolik:", error);
+
+        saveAs(blob, `${kafedra?.name}.xlsx`);
+        notify("ok", "File muvaffaqiyatli yuklab olindi");
       }
+      exportToExcel();
+
+     } catch (error) {
+    notify("err", "Fayl yuklashda xaolik");
+    }
     };
-
-    exportToExcel();
-  };
-
+  
   return (
     <div
       className={` ${

@@ -23,12 +23,11 @@ const Root = () => {
   const [isLogin, setIsLogin] = [localStorage.getItem("login")];
 
   const [categories, setCategories] = useState([]);
-
   const [CurrentBooks, setCurrentBooks] = useState("");
   const [books, setBook] = useState([]);
   const [toplam, setToplam] = useState([]);
   
-  
+
   const [users, setUsers] = useState([]);
 
   const FilerCategories = (filter) => {
